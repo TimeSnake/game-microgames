@@ -13,6 +13,7 @@ import de.timesnake.game.microgames.server.MicroGamesServer;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Tuple;
 import de.timesnake.library.basic.util.chat.ChatColor;
+import de.timesnake.library.extension.util.chat.Chat;
 import org.bukkit.GameRule;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -206,7 +207,7 @@ public abstract class MicroGame {
         this.isGameRunning = false;
 
         if (this.first != null) {
-            MicroGamesServer.broadcastMicroGamesMessage(Server.getChat().getLineSeparator());
+            MicroGamesServer.broadcastMicroGamesMessage(Chat.getLineSeparator());
 
             if (MicroGamesServer.isPartyMode()) {
                 this.first.addPoints(FIRST_POINTS);
@@ -238,7 +239,7 @@ public abstract class MicroGame {
                 }
             }
 
-            MicroGamesServer.broadcastMicroGamesMessage(Server.getChat().getLineSeparator());
+            MicroGamesServer.broadcastMicroGamesMessage(Chat.getLineSeparator());
         }
 
         this.previousMap = this.currentMap;

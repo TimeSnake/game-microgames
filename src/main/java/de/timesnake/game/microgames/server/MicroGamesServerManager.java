@@ -16,6 +16,7 @@ import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.game.microgames.user.PartyManager;
 import de.timesnake.game.microgames.user.TablistManager;
+import de.timesnake.library.extension.util.chat.Chat;
 import org.bukkit.Instrument;
 import org.bukkit.Note;
 import org.bukkit.entity.Player;
@@ -287,12 +288,12 @@ public class MicroGamesServerManager extends GameServerManager implements Listen
         }
 
         this.broadcastMicroGamesMessage(ChatColor.WARNING + "Starting party mode!");
-        this.broadcastMicroGamesMessage(Server.getChat().getLineSeparator());
+        this.broadcastMicroGamesMessage(Chat.getLineSeparator());
         this.broadcastMicroGamesMessage(ChatColor.GOLD + "Points Distribution:");
         this.broadcastMicroGamesMessage(ChatColor.PUBLIC + "    1. Place: " + ChatColor.VALUE + MicroGame.FIRST_POINTS + " points");
         this.broadcastMicroGamesMessage(ChatColor.PUBLIC + "    2. Place: " + ChatColor.VALUE + MicroGame.SECOND_POINTS + " points");
         this.broadcastMicroGamesMessage(ChatColor.PUBLIC + "    3. Place: " + ChatColor.VALUE + MicroGame.THIRD_POINTS + " points");
-        this.broadcastMicroGamesMessage(Server.getChat().getLineSeparator());
+        this.broadcastMicroGamesMessage(Chat.getLineSeparator());
         Server.broadcastTitle("§cParty Mode", "Earn points by winning a game. The player with most points wins", Duration.ofSeconds(5));
         Server.broadcastNote(Instrument.BELL, Note.natural(0, Note.Tone.C));
 
@@ -344,7 +345,7 @@ public class MicroGamesServerManager extends GameServerManager implements Listen
         this.broadcastMicroGamesMessage("");
         this.broadcastMicroGamesMessage("");
         this.broadcastMicroGamesMessage(ChatColor.WARNING + "The party has ended");
-        this.broadcastMicroGamesMessage(Server.getChat().getLineSeparator());
+        this.broadcastMicroGamesMessage(Chat.getLineSeparator());
 
         int i = 1;
         for (User user : users) {
@@ -357,7 +358,7 @@ public class MicroGamesServerManager extends GameServerManager implements Listen
             ((MicroGamesUser) user).resetPoints();
             this.getTablistManager().getTablist().updateEntryValue(user, ((MicroGamesUser) user).getPoints());
         }
-        this.broadcastMicroGamesMessage(Server.getChat().getLineSeparator());
+        this.broadcastMicroGamesMessage(Chat.getLineSeparator());
 
         this.partyGameIterator = null;
         this.partyMode = false;
