@@ -1,9 +1,0 @@
-main: de.timesnake.game.microgames.main.GameMicroGames
-version: 1.0
-name: game-microgames
-author: Mn
-api-version: 1.13
-depend: [ basic-bukkit ]
-
-commands:
-
