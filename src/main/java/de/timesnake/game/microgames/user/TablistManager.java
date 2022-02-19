@@ -5,7 +5,7 @@ import de.timesnake.basic.bukkit.util.chat.ChatColor;
 import de.timesnake.basic.bukkit.util.permission.Group;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.scoreboard.*;
-import de.timesnake.database.util.object.Status;
+import de.timesnake.library.basic.util.Status;
 
 import java.util.LinkedList;
 import java.util.List;
