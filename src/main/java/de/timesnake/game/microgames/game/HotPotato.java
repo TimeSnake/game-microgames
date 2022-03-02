@@ -39,11 +39,11 @@ public class HotPotato extends MicroGame implements Listener {
 
     private final HashMap<MicroGamesUser, Integer> potatoTimesByUser = new HashMap<>();
 
-    protected static final ExItemStack HOT_POTATO = new ExItemStack(Material.POTATO, "§cHOT POTATO");
+    protected static final ExItemStack HOT_POTATO = new ExItemStack(Material.POTATO, "§cHot Potato");
 
 
     public HotPotato() {
-        super("hotpotato", "HOT POTATO", Material.BAKED_POTATO, "Don't hold the potato!", 2);
+        super("hotpotato", "Hot Potato", Material.BAKED_POTATO, "Don't hold the potato", 2);
 
         Server.registerListener(this, GameMicroGames.getPlugin());
     }
