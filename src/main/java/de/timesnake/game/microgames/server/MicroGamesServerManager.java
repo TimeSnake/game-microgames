@@ -80,11 +80,6 @@ public class MicroGamesServerManager extends GameServerManager implements Listen
 
          */
 
-        TntRun tntRun = new TntRun();
-        if (tntRun.getMaps().size() > 0) {
-            games.add(tntRun);
-        }
-
         Parkour parkour = new Parkour();
         if (parkour.getMaps().size() > 0) {
             games.add(parkour);
@@ -110,13 +105,15 @@ public class MicroGamesServerManager extends GameServerManager implements Listen
             games.add(dropper);
         }
 
-        /*
         BoatRace boatRace = new BoatRace();
         if (boatRace.getMaps().size() > 0) {
             games.add(boatRace);
         }
 
-        */
+        TntRun tntRun = new TntRun();
+        if (tntRun.getMaps().size() > 0) {
+            games.add(tntRun);
+        }
 
         this.partyManager = new PartyManager();
 
@@ -421,7 +418,7 @@ public class MicroGamesServerManager extends GameServerManager implements Listen
     @EventHandler
     public void onUserMove(UserMoveEvent e) {
         User user = e.getUser();
-        if (!user.getStatus().equals(Status.User.IN_GAME) && e.getTo().getY() < -10) {
+        if (!user.getStatus().equals(Status.User.IN_GAME) && e.getTo().getY() < user.getWorld().getMinHeight() - 10) {
             user.getPlayer().setVelocity(new Vector());
             user.teleport(this.currentGame.getStartLocation());
         }

@@ -115,7 +115,7 @@ public abstract class LocationFinishGame extends MicroGame implements Listener {
             return;
         }
 
-        if (user.getLocation().getY() < 0) {
+        if (user.getLocation().getY() < user.getWorld().getMinHeight()) {
             user.getPlayer().setVelocity(new Vector());
             user.teleport(this.getSpawnLocation());
             return;
