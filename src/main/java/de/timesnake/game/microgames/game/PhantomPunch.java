@@ -8,7 +8,7 @@ import de.timesnake.basic.bukkit.util.user.event.UserMoveEvent;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.basic.entities.EntityManager;
 import de.timesnake.basic.entities.entity.bukkit.ExPhantom;
-import de.timesnake.basic.entities.pathfinder.goals.ExPathfinderGoalPhantomTarget;
+import de.timesnake.basic.entities.pathfinder.ExPathfinderGoalPhantomTarget;
 import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Status;
