@@ -45,6 +45,10 @@ public class BoatRace extends LocationFinishGame implements Listener {
     public void start() {
         super.start();
 
+        for (User user : Server.getInGameUsers()) {
+            user.setAllowFlight(false);
+        }
+
         this.getStartLocation().clone().add(0, -1, 0).getBlock().setType(Material.WATER);
     }
 
@@ -55,6 +59,10 @@ public class BoatRace extends LocationFinishGame implements Listener {
         }
 
         this.boatByUser.clear();
+
+        if (this.previousMap != null) {
+            Server.getWorldManager().reloadWorld(this.previousMap.getWorld());
+        }
     }
 
     @Override
@@ -90,6 +98,8 @@ public class BoatRace extends LocationFinishGame implements Listener {
 
         this.enterableUsers.add(user);
         boat.addPassenger(user.getPlayer());
+
+        user.setAllowFlight(true);
 
         this.boatByUser.put(user, boat);
     }

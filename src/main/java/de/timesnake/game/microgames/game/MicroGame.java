@@ -73,26 +73,30 @@ public abstract class MicroGame {
                 }
 
                 this.maps.add(map);
-                ExWorld world = map.getWorld();
-
-                world.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
-                world.setGameRule(GameRule.DO_MOB_SPAWNING, false);
-                world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
-                world.setGameRule(GameRule.DO_PATROL_SPAWNING, false);
-                world.setGameRule(GameRule.DO_TRADER_SPAWNING, false);
-                world.setGameRule(GameRule.RANDOM_TICK_SPEED, 0);
-                world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
-                world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
-                world.allowFoodChange(false);
-                world.allowFireSpread(false);
-                world.setTime(1000);
-                world.setAutoSave(false);
+                this.onMapLoad(map);
 
                 Server.printText(Plugin.MICRO_GAMES, "Added map " + map.getName(), this.displayName);
             }
         }
 
         this.sideboard = Server.getScoreboardManager().registerNewSideboard(name, "§6§l" + displayName);
+    }
+
+    public void onMapLoad(Map map) {
+        ExWorld world = map.getWorld();
+
+        world.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
+        world.setGameRule(GameRule.DO_MOB_SPAWNING, false);
+        world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+        world.setGameRule(GameRule.DO_PATROL_SPAWNING, false);
+        world.setGameRule(GameRule.DO_TRADER_SPAWNING, false);
+        world.setGameRule(GameRule.RANDOM_TICK_SPEED, 0);
+        world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
+        world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
+        world.allowFoodChange(false);
+        world.allowFireSpread(false);
+        world.setTime(1000);
+        world.setAutoSave(false);
     }
 
     public abstract Integer getLocationAmount();

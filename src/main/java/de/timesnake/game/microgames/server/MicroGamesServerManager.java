@@ -115,6 +115,11 @@ public class MicroGamesServerManager extends GameServerManager implements Listen
             games.add(tntRun);
         }
 
+        Firefighter firefighter = new Firefighter();
+        if (firefighter.getMaps().size() > 0) {
+            games.add(firefighter);
+        }
+
         this.partyManager = new PartyManager();
 
         for (MicroGame game : games) {
@@ -335,32 +340,40 @@ public class MicroGamesServerManager extends GameServerManager implements Listen
 
     public void stopParty() {
 
-        List<User> users = new LinkedList<>(Server.getGameNotServiceUsers());
-        users.sort(Comparator.comparingInt((user) -> ((MicroGamesUser) user).getPoints()));
-        users = Lists.reverse(users);
+        Server.runTaskLaterSynchrony(() -> {
+            List<User> users = new LinkedList<>(Server.getGameNotServiceUsers());
+            users.sort(Comparator.comparingInt((user) -> ((MicroGamesUser) user).getPoints()));
+            users = Lists.reverse(users);
 
-        this.broadcastMicroGamesMessage("");
-        this.broadcastMicroGamesMessage("");
-        this.broadcastMicroGamesMessage(ChatColor.WARNING + "The party has ended");
-        this.broadcastMicroGamesMessage(Chat.getLineSeparator());
+            this.broadcastMicroGamesMessage("");
+            this.broadcastMicroGamesMessage("");
+            this.broadcastMicroGamesMessage(ChatColor.WARNING + "The party has ended");
+            this.broadcastMicroGamesMessage(Chat.getLineSeparator());
 
-        int i = 1;
-        for (User user : users) {
-            if (i == 1) {
-                Server.broadcastTitle(user.getChatName() + " §fwins", "", Duration.ofSeconds(3));
+            Server.broadcastTitle(users.get(0) + " §fwins", ChatColor.WARNING + "The party has ended", Duration.ofSeconds(4));
+
+            int i = 1;
+            for (User user : users) {
+                this.broadcastMicroGamesMessage(ChatColor.GOLD + "§l " + i + ".  " + user.getChatName());
+                i++;
+
+                ((MicroGamesUser) user).resetPoints();
+                this.getTablistManager().getTablist().updateEntryValue(user, ((MicroGamesUser) user).getPoints());
             }
-            this.broadcastMicroGamesMessage(ChatColor.GOLD + "§l " + i + ".  " + user.getChatName());
-            i++;
+            this.broadcastMicroGamesMessage(Chat.getLineSeparator());
 
-            ((MicroGamesUser) user).resetPoints();
-            this.getTablistManager().getTablist().updateEntryValue(user, ((MicroGamesUser) user).getPoints());
+            this.partyGameIterator = null;
+            this.partyMode = false;
+
+            Server.runTaskLaterSynchrony(this::nextGame, 20 * 7, GameMicroGames.getPlugin());
+        }, 5 * 20, GameMicroGames.getPlugin());
+
+    }
+
+    public void skipGame() {
+        if (this.currentGame != null && this.currentGame.isGameRunning()) {
+            this.currentGame.stop();
         }
-        this.broadcastMicroGamesMessage(Chat.getLineSeparator());
-
-        this.partyGameIterator = null;
-        this.partyMode = false;
-
-        Server.runTaskLaterSynchrony(this::nextGame, 20 * 5, GameMicroGames.getPlugin());
     }
 
     public void broadcastMicroGamesMessage(String message) {

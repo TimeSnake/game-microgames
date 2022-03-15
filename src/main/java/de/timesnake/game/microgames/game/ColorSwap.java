@@ -195,6 +195,10 @@ public class ColorSwap extends FallOutGame implements Listener {
 
         this.currentLevel = 1;
         super.sideboard.setScore(3, "§f" + this.currentLevel);
+
+        if (this.previousMap != null) {
+            Server.getWorldManager().reloadWorld(this.previousMap.getWorld());
+        }
     }
 
     private void clearFloor() {

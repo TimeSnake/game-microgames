@@ -87,7 +87,7 @@ public class TntRun extends FallOutGame implements Listener {
             for (Block block : blocks) {
                 Location loc = block.getLocation().add(0.5, 0, 0.5);
                 loc.getBlock().setType(Material.AIR);
-                TNTPrimed tnt = loc.getWorld().spawn(loc.getBlock().getLocation().add(0.5, 0, 0.5), TNTPrimed.class);
+                TNTPrimed tnt = loc.getWorld().spawn(loc, TNTPrimed.class);
                 Server.runTaskLaterSynchrony(tnt::remove, TNT_REMOVE_DELAY, GameMicroGames.getPlugin());
             }
         }, REMOVE_DELAY, GameMicroGames.getPlugin());
