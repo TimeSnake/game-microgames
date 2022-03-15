@@ -41,4 +41,8 @@ public class MicroGamesServer extends GameServer {
     public static TablistManager getTablistManager() {
         return server.getTablistManager();
     }
+
+    public static void skipGame() {
+        server.skipGame();
+    }
 }

@@ -62,8 +62,6 @@ public class HotPotato extends MicroGame implements Listener {
         super.sideboard.setScore(4, "§f---------------");
         super.sideboard.setScore(3, "§c§lPotato Time");
         super.sideboard.setScore(2, "0s");
-        super.sideboard.setScore(1, "§c§f---------------");
-        super.sideboard.setScore(0, "§aRUNNER");
 
     }
 
@@ -84,7 +82,7 @@ public class HotPotato extends MicroGame implements Listener {
         }
     }
 
-    private void setSetup(User user) {
+    private void giveHotPotatoTo(User user) {
         if (this.holders.contains(user)) {
             user.getInventory().setHelmet(new ExItemStack(Material.GOLDEN_HELMET));
             user.getInventory().setChestplate(new ExItemStack(Material.GOLDEN_CHESTPLATE));
@@ -92,14 +90,12 @@ public class HotPotato extends MicroGame implements Listener {
             user.getInventory().setBoots(new ExItemStack(Material.GOLDEN_BOOTS));
             user.fillHotBar(HOT_POTATO);
             user.playNote(Instrument.PIANO, Note.natural(0, Note.Tone.C));
-            user.setSideboardScore(0, "§cHOT POTATO");
             if (this.time.equals(TIME)) {
-                user.sendPluginMessage(Plugin.MICRO_GAMES, "§6You have the §cHOT POTATO!");
+                user.sendPluginMessage(Plugin.MICRO_GAMES, "§6You have the §chot potato");
             }
         } else {
             user.playNote(Instrument.PIANO, Note.natural(1, Note.Tone.C));
             user.clearInventory();
-            user.setSideboardScore(0, "§aRUNNER");
         }
     }
 
@@ -109,7 +105,7 @@ public class HotPotato extends MicroGame implements Listener {
             User random = users.get(this.random.nextInt(users.size()));
             if (!this.holders.contains(random)) {
                 this.holders.add(random);
-                this.setSetup(random);
+                this.giveHotPotatoTo(random);
                 return;
             }
         }
@@ -119,8 +115,8 @@ public class HotPotato extends MicroGame implements Listener {
     public void start() {
         super.start();
 
-        while (this.holders.size() < Server.getInGameUsers().size() / 2) {
-            chooseHolder();
+        for (int i = 0; i < Server.getInGameUsers().size() / 2; i++) {
+            this.chooseHolder();
         }
 
         for (User user : MicroGamesServer.getInGameUsers()) {
@@ -144,8 +140,8 @@ public class HotPotato extends MicroGame implements Listener {
 
             if (this.time <= TIME / 2) {
                 if (this.time == TIME / 2) {
-                    MicroGamesServer.broadcastMicroGamesMessage("§6The best Player is now §cGLOWING!");
-                    Server.broadcastTitle("§cHALFTIME", "Glowing activated!", Duration.ofSeconds(3));
+                    MicroGamesServer.broadcastMicroGamesMessage("§6The best Player is now §cglowing!");
+                    Server.broadcastTitle("§cHalftime", "Glowing activated!", Duration.ofSeconds(3));
                 }
 
                 List<Map.Entry<MicroGamesUser, Integer>> entries = new ArrayList<>(this.potatoTimesByUser.entrySet());
@@ -161,8 +157,6 @@ public class HotPotato extends MicroGame implements Listener {
 
     @Override
     public void stop() {
-        super.sideboard.setScore(0, "§cHOT POTATO");
-
         super.calcPlaces(this.potatoTimesByUser::get, false);
 
         if (this.task != null) {
@@ -178,7 +172,6 @@ public class HotPotato extends MicroGame implements Listener {
         this.time = TIME;
         this.potatoTimesByUser.clear();
         this.holders.clear();
-
     }
 
     @Override
@@ -197,7 +190,7 @@ public class HotPotato extends MicroGame implements Listener {
             this.stop();
         } else if (this.holders.remove(user)) {
             if (this.holders.size() == 0) {
-                chooseHolder();
+                this.chooseHolder();
             }
         }
 
@@ -259,12 +252,10 @@ public class HotPotato extends MicroGame implements Listener {
         }
 
         this.holders.add(target);
-        this.setSetup(target);
+        this.giveHotPotatoTo(target);
 
         this.holders.remove(damager);
-        this.setSetup(damager);
-
-        target.sendPluginMessage(Plugin.MICRO_GAMES, damager.getChatName() + "§c gave you the Hot Potato!");
+        this.giveHotPotatoTo(damager);
     }
 }
 

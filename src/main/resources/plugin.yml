@@ -6,4 +6,6 @@ api-version: 1.13
 depend: [ basic-bukkit ]
 
 commands:
+  microgames:
+  mg:
 
