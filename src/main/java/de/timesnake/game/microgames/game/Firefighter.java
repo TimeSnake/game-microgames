@@ -19,6 +19,7 @@ import org.bukkit.block.data.type.Fire;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import java.util.HashMap;
@@ -37,6 +38,7 @@ public class Firefighter extends MicroGame implements Listener {
     private static final List<Tuple<Vector, BlockFace>> NEAR_BLOCKS = List.of(new Tuple<>(new Vector(1, 0, 0), BlockFace.WEST), new Tuple<>(new Vector(-1, 0, 0), BlockFace.EAST), new Tuple<>(new Vector(0, 1, 0), null), new Tuple<>(new Vector(0, -1, 0), BlockFace.UP), new Tuple<>(new Vector(0, 0, 1), BlockFace.NORTH), new Tuple<>(new Vector(0, 0, -1), BlockFace.SOUTH));
 
     private final HashMap<User, Integer> punchedOutNumberByUser = new HashMap<>();
+    private BukkitTask timeTask;
 
     public Firefighter() {
         super("firefighter", "Firefighter", Material.BLAZE_POWDER, "Punch out the fire", 1);
@@ -134,7 +136,7 @@ public class Firefighter extends MicroGame implements Listener {
             user.setGameMode(GameMode.SURVIVAL);
         }
 
-        Server.runTaskTimerSynchrony((time) -> {
+        this.timeTask = Server.runTaskTimerSynchrony((time) -> {
             super.sideboard.setScore(3, Chat.getTimeString(time));
 
             if (time == 0) {
@@ -145,6 +147,10 @@ public class Firefighter extends MicroGame implements Listener {
 
     @Override
     public void stop() {
+        if (this.timeTask != null) {
+            this.timeTask.cancel();
+        }
+
         super.calcPlaces(this.punchedOutNumberByUser::get, true);
         super.stop();
     }
@@ -199,15 +205,14 @@ public class Firefighter extends MicroGame implements Listener {
     public void onPlayerInteract(PlayerInteractEvent e) {
         User user = Server.getUser(e.getPlayer());
 
-        if (user == null || !user.getStatus().equals(Status.User.IN_GAME)) {
+        if (user == null || !user.getStatus().equals(Status.User.IN_GAME) || !this.isGameRunning()) {
+            e.setCancelled(true);
             return;
         }
 
         if (e.getClickedBlock() == null || !e.getClickedBlock().getType().equals(Material.FIRE)) {
             return;
         }
-
-        System.out.println("fire");
 
         int number = this.punchedOutNumberByUser.compute(user, (u, v) -> v == null ? 1 : v + 1);
         user.setSideboardScore(0, "§f" + number);

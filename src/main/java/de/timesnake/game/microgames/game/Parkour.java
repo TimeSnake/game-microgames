@@ -20,7 +20,6 @@ public class Parkour extends LocationFinishGame implements Listener {
     @Override
     protected void onUserDeath(UserDeathEvent e) {
         e.setAutoRespawn(true);
-        e.setBroadcastDeathMessage(false);
     }
 
     @Override
