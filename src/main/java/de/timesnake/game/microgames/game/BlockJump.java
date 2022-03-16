@@ -19,7 +19,7 @@ public class BlockJump extends LocationFinishGame implements Listener {
 
     private static final Integer ARENA_SIZE = 50;
     private static final Material PLATFORM = Material.GREEN_CONCRETE;
-    private static final double DENSITY = 0.4;
+    private static final double DENSITY = 0.37;
     private static final int HEIGHT = 50;
 
     private final Random random = new Random();
