@@ -96,6 +96,11 @@ public class Firefighter extends MicroGame implements Listener {
             for (int y = first.getBlockY(); y < second.getBlockY(); y++) {
                 for (int z = first.getBlockZ(); z < second.getBlockZ(); z++) {
                     Block block = world.getBlockAt(x, y, z);
+
+                    if (block.getType().equals(Material.FIRE)) {
+                        block.setType(Material.AIR);
+                    }
+
                     if (!block.isBurnable()) {
                         continue;
                     }
