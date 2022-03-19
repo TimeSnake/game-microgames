@@ -350,7 +350,7 @@ public class MicroGamesServerManager extends GameServerManager implements Listen
             this.broadcastMicroGamesMessage(ChatColor.WARNING + "The party has ended");
             this.broadcastMicroGamesMessage(Chat.getLineSeparator());
 
-            Server.broadcastTitle(users.get(0) + " §fwins", ChatColor.WARNING + "The party has ended", Duration.ofSeconds(4));
+            Server.broadcastTitle(users.get(0).getChatName() + " §fwins", ChatColor.WARNING + "The party has ended", Duration.ofSeconds(4));
 
             int i = 1;
             for (User user : users) {
