@@ -12,6 +12,7 @@ import de.timesnake.basic.entities.pathfinder.ExPathfinderGoalPhantomTarget;
 import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Status;
+import de.timesnake.library.basic.util.Tuple;
 import org.bukkit.GameRule;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -43,7 +44,8 @@ public class PhantomPunch extends ShrinkingPlatformGame implements Listener {
 
     public static final Integer START_PHANTOMS = 6;
 
-    public static final ExItemStack BOW = new ExItemStack(Material.BOW, true, List.of(Enchantment.ARROW_INFINITE), List.of(1));
+    public static final ExItemStack BOW =
+            new ExItemStack(Material.BOW).unbreakable().addEnchantments(new Tuple<>(Enchantment.ARROW_INFINITE, 1));
 
     private BukkitTask spawnTask;
 
