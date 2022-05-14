@@ -120,11 +120,17 @@ public class MicroGamesServerManager extends GameServerManager implements Listen
             games.add(firefighter);
         }
 
+        Graffiti graffiti = new Graffiti();
+        if (graffiti.getMaps().size() > 0) {
+            games.add(graffiti);
+        }
+
         this.partyManager = new PartyManager();
 
         for (MicroGame game : games) {
             this.microGamesByName.put(game.getName(), game);
-            List<MicroGame> list = this.microGamesByMinPlayers.computeIfAbsent(game.getMinPlayers(), k -> new ArrayList<>());
+            List<MicroGame> list = this.microGamesByMinPlayers.computeIfAbsent(game.getMinPlayers(),
+                    k -> new ArrayList<>());
             list.add(game);
             Server.printText(Plugin.MICRO_GAMES, "Loaded game " + game.getDisplayName());
         }

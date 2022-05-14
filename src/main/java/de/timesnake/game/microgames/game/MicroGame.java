@@ -95,6 +95,7 @@ public abstract class MicroGame {
         world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
         world.allowFoodChange(false);
         world.allowFireSpread(false);
+        world.setExceptService(true);
         world.setTime(1000);
         world.setAutoSave(false);
     }
