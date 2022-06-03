@@ -68,7 +68,8 @@ public abstract class MicroGame {
                 }
 
                 if (map.getLocations().size() < this.getLocationAmount()) {
-                    Server.printWarning(Plugin.MICRO_GAMES, "Can not load map " + map.getName() + ", too few locations");
+                    Server.printWarning(Plugin.MICRO_GAMES, "Can not load map " + map.getName() + ", too few " +
+                            "locations");
                     continue;
                 }
 
@@ -167,7 +168,8 @@ public abstract class MicroGame {
             } else if (users == 1) {
                 this.second = user;
                 MicroGamesServer.broadcastMicroGamesMessage(user.getChatName() + ChatColor.WARNING + " finished " + ChatColor.WARNING + "#2");
-                this.first = ((MicroGamesUser) Server.getInGameUsers().stream().filter((u) -> !u.equals(second)).iterator().next());
+                this.first =
+                        ((MicroGamesUser) Server.getInGameUsers().stream().filter((u) -> !u.equals(second)).iterator().next());
             } else if (users == 0) {
                 this.first = user;
                 MicroGamesServer.broadcastMicroGamesMessage(user.getChatName() + ChatColor.WARNING + " finished " + ChatColor.WARNING + "#1");
@@ -225,22 +227,26 @@ public abstract class MicroGame {
             } else {
                 if (MicroGamesServer.isPartyMode()) {
                     this.second.addPoints(SECOND_POINTS);
-                    MicroGamesServer.getTablistManager().getTablist().updateEntryValue(this.second, this.second.getPoints());
+                    MicroGamesServer.getTablistManager().getTablist().updateEntryValue(this.second,
+                            this.second.getPoints());
                 }
 
                 MicroGamesServer.broadcastMicroGamesMessage(ChatColor.GOLD + "§l1.  " + this.first.getChatName());
                 MicroGamesServer.broadcastMicroGamesMessage(ChatColor.GOLD + "§l2.  " + this.second.getChatName());
 
                 if (this.third == null) {
-                    Server.broadcastTitle(first.getChatName() + " §fwins", "2. " + this.second.getChatName(), Duration.ofSeconds(3));
+                    Server.broadcastTitle(first.getChatName() + " §fwins", "2. " + this.second.getChatName(),
+                            Duration.ofSeconds(3));
                 } else {
                     if (MicroGamesServer.isPartyMode()) {
                         this.third.addPoints(THIRD_POINTS);
-                        MicroGamesServer.getTablistManager().getTablist().updateEntryValue(this.third, this.third.getPoints());
+                        MicroGamesServer.getTablistManager().getTablist().updateEntryValue(this.third,
+                                this.third.getPoints());
                     }
 
                     MicroGamesServer.broadcastMicroGamesMessage(ChatColor.GOLD + "§l3.  " + this.third.getChatName());
-                    Server.broadcastTitle(first.getChatName() + " §fwins", "2. " + this.second.getChatName() + "    3. " + this.third.getChatName(), Duration.ofSeconds(3));
+                    Server.broadcastTitle(first.getChatName() + " §fwins", "2. " + this.second.getChatName() + "    3" +
+                            ". " + this.third.getChatName(), Duration.ofSeconds(3));
                 }
             }
 

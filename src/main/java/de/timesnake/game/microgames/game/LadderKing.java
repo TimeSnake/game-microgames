@@ -34,7 +34,8 @@ public class LadderKing extends MicroGame implements Listener {
     private final HashMap<MicroGamesUser, Integer> ladderTimesByUser = new HashMap<>();
 
     public LadderKing() {
-        super("ladderking", "King of the Ladder", Material.LADDER, "Try stand the longest time on top of the ladder", 2);
+        super("ladderking", "King of the Ladder", Material.LADDER, "Try stand the longest time on top of the ladder",
+                2);
         Server.registerListener(this, GameMicroGames.getPlugin());
     }
 

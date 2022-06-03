@@ -302,7 +302,8 @@ public class MicroGamesServerManager extends GameServerManager implements Listen
         this.broadcastMicroGamesMessage(ChatColor.PUBLIC + "    2. Place: " + ChatColor.VALUE + MicroGame.SECOND_POINTS + " points");
         this.broadcastMicroGamesMessage(ChatColor.PUBLIC + "    3. Place: " + ChatColor.VALUE + MicroGame.THIRD_POINTS + " points");
         this.broadcastMicroGamesMessage(Chat.getLineSeparator());
-        Server.broadcastTitle("§cParty Mode", "Earn points by winning a game. The player with most points wins", Duration.ofSeconds(5));
+        Server.broadcastTitle("§cParty Mode", "Earn points by winning a game. The player with most points wins",
+                Duration.ofSeconds(5));
         Server.broadcastNote(Instrument.BELL, Note.natural(0, Note.Tone.C));
 
         this.partyMode = true;
@@ -356,7 +357,8 @@ public class MicroGamesServerManager extends GameServerManager implements Listen
             this.broadcastMicroGamesMessage(ChatColor.WARNING + "The party has ended");
             this.broadcastMicroGamesMessage(Chat.getLineSeparator());
 
-            Server.broadcastTitle(users.get(0).getChatName() + " §fwins", ChatColor.WARNING + "The party has ended", Duration.ofSeconds(4));
+            Server.broadcastTitle(users.get(0).getChatName() + " §fwins", ChatColor.WARNING + "The party has ended",
+                    Duration.ofSeconds(4));
 
             int i = 1;
             for (User user : users) {

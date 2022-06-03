@@ -17,7 +17,8 @@ public abstract class ShrinkingPlatformGame extends FallOutGame {
     private Integer delay;
     private Integer radius;
 
-    public ShrinkingPlatformGame(String name, String displayName, Material material, String description, Integer minPlayers) {
+    public ShrinkingPlatformGame(String name, String displayName, Material material, String description,
+                                 Integer minPlayers) {
         super(name, displayName, material, description, minPlayers);
     }
 

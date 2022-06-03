@@ -35,7 +35,11 @@ public class Firefighter extends MicroGame implements Listener {
     private static final Integer DURATION = 30;
     private static final double FIRE_CHANCE = 0.2;
 
-    private static final List<Tuple<Vector, BlockFace>> NEAR_BLOCKS = List.of(new Tuple<>(new Vector(1, 0, 0), BlockFace.WEST), new Tuple<>(new Vector(-1, 0, 0), BlockFace.EAST), new Tuple<>(new Vector(0, 1, 0), null), new Tuple<>(new Vector(0, -1, 0), BlockFace.UP), new Tuple<>(new Vector(0, 0, 1), BlockFace.NORTH), new Tuple<>(new Vector(0, 0, -1), BlockFace.SOUTH));
+    private static final List<Tuple<Vector, BlockFace>> NEAR_BLOCKS = List.of(new Tuple<>(new Vector(1, 0, 0),
+                    BlockFace.WEST), new Tuple<>(new Vector(-1, 0, 0), BlockFace.EAST), new Tuple<>(new Vector(0, 1, 0),
+                    null), new Tuple<>(new Vector(0, -1, 0), BlockFace.UP), new Tuple<>(new Vector(0, 0, 1),
+                    BlockFace.NORTH)
+            , new Tuple<>(new Vector(0, 0, -1), BlockFace.SOUTH));
 
     private final HashMap<User, Integer> punchedOutNumberByUser = new HashMap<>();
     private BukkitTask timeTask;

@@ -30,7 +30,10 @@ public class ColorSwap extends FallOutGame implements Listener {
 
     protected static final Integer MAX_LEVEL = 30;
 
-    protected static final Material[] MATERIALS = {Material.BLACK_WOOL, Material.BLUE_WOOL, Material.GRAY_WOOL, Material.GREEN_WOOL, Material.LIGHT_BLUE_WOOL, Material.LIGHT_GRAY_WOOL, Material.LIME_WOOL, Material.MAGENTA_WOOL, Material.ORANGE_WOOL, Material.PURPLE_WOOL, Material.RED_WOOL, Material.WHITE_WOOL, Material.YELLOW_WOOL};
+    protected static final Material[] MATERIALS = {Material.BLACK_WOOL, Material.BLUE_WOOL, Material.GRAY_WOOL,
+            Material.GREEN_WOOL, Material.LIGHT_BLUE_WOOL, Material.LIGHT_GRAY_WOOL, Material.LIME_WOOL,
+            Material.MAGENTA_WOOL, Material.ORANGE_WOOL, Material.PURPLE_WOOL, Material.RED_WOOL, Material.WHITE_WOOL
+            , Material.YELLOW_WOOL};
 
     protected static final Integer PATTERN_SIZE = 2; //beware of arena-size
 
@@ -60,7 +63,8 @@ public class ColorSwap extends FallOutGame implements Listener {
     int endZ;
 
     public ColorSwap() {
-        super("colorswap", "ColorSwap", Material.WHITE_WOOL, "Try to stand on the color, which is shown in your hotbar", 1);
+        super("colorswap", "ColorSwap", Material.WHITE_WOOL, "Try to stand on the color, which is shown in your " +
+                "hotbar", 1);
 
         Server.registerListener(this, GameMicroGames.getPlugin());
     }
@@ -282,9 +286,11 @@ public class ColorSwap extends FallOutGame implements Listener {
         protected Level(Integer level) {
             this.level = level;
             int tickDifference = ColorSwap.LEVEL_TICKS - ColorSwap.MIN_LEVEL_TICKS;
-            this.ticks = (int) (tickDifference * Math.pow((double) (tickDifference - 1) / tickDifference, ColorSwap.LEVEL_TICKS_DECREASE * this.level) + ColorSwap.MIN_LEVEL_TICKS);
+            this.ticks = (int) (tickDifference * Math.pow((double) (tickDifference - 1) / tickDifference,
+                    ColorSwap.LEVEL_TICKS_DECREASE * this.level) + ColorSwap.MIN_LEVEL_TICKS);
 
-            int differentMaterials = (int) (ColorSwap.DIFFERENT_MATERIALS + (level - 1) * ColorSwap.DIFFERENT_MATERIALS_INCREASE);
+            int differentMaterials =
+                    (int) (ColorSwap.DIFFERENT_MATERIALS + (level - 1) * ColorSwap.DIFFERENT_MATERIALS_INCREASE);
 
             ArrayList<Material> materials = new ArrayList<>(Arrays.asList(ColorSwap.MATERIALS));
 
@@ -307,7 +313,8 @@ public class ColorSwap extends FallOutGame implements Listener {
                 for (int x = ColorSwap.this.beginX; x <= ColorSwap.this.endX; x += 2) {
                     for (int z = ColorSwap.this.beginZ; z <= ColorSwap.this.endZ; z += 2) {
 
-                        Material material = selectedMaterials.get(ColorSwap.this.random.nextInt(selectedMaterials.size()));
+                        Material material =
+                                selectedMaterials.get(ColorSwap.this.random.nextInt(selectedMaterials.size()));
 
                         for (int patternX = 0; patternX < 2; patternX++) {
                             for (int patternZ = 0; patternZ < 2; patternZ++) {
@@ -326,7 +333,8 @@ public class ColorSwap extends FallOutGame implements Listener {
 
                     for (int x = ColorSwap.this.beginX; x <= ColorSwap.this.endX; x += 1) {
 
-                        Material material = selectedMaterials.get(ColorSwap.this.random.nextInt(selectedMaterials.size()));
+                        Material material =
+                                selectedMaterials.get(ColorSwap.this.random.nextInt(selectedMaterials.size()));
 
                         for (int z = ColorSwap.this.beginZ; z <= halfZEnd; z += 1) {
                             this.blocks.put(world.getBlockAt(x, y, z), material);
@@ -343,7 +351,8 @@ public class ColorSwap extends FallOutGame implements Listener {
 
                     for (int z = ColorSwap.this.beginZ; z <= ColorSwap.this.endZ; z += 1) {
 
-                        Material material = selectedMaterials.get(ColorSwap.this.random.nextInt(selectedMaterials.size()));
+                        Material material =
+                                selectedMaterials.get(ColorSwap.this.random.nextInt(selectedMaterials.size()));
 
                         for (int x = ColorSwap.this.beginX; x <= halfXEnd; x += 1) {
                             this.blocks.put(world.getBlockAt(x, y, z), material);
@@ -360,7 +369,8 @@ public class ColorSwap extends FallOutGame implements Listener {
             } else if (type == 2) {
                 for (int x = ColorSwap.this.beginX; x <= ColorSwap.this.endX; x += 1) {
                     for (int z = ColorSwap.this.beginZ; z <= ColorSwap.this.endZ; z += 1) {
-                        Material material = selectedMaterials.get(ColorSwap.this.random.nextInt(selectedMaterials.size()));
+                        Material material =
+                                selectedMaterials.get(ColorSwap.this.random.nextInt(selectedMaterials.size()));
                         this.blocks.put(world.getBlockAt(x, y, z), material);
                     }
                 }
