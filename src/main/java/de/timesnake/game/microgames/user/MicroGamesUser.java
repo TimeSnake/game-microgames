@@ -109,7 +109,8 @@ public class MicroGamesUser extends User {
 
             int i = 0;
             for (MicroGame game : games) {
-                ExItemStack item = new ExItemStack(i, game.getMaterial(), ChatColor.GOLD + game.getDisplayName(), List.of(ChatColor.WHITE + game.getDescription()));
+                ExItemStack item = new ExItemStack(i, game.getMaterial(), ChatColor.GOLD + game.getDisplayName(),
+                        List.of(ChatColor.WHITE + game.getDescription()));
                 item.hideAll();
                 this.inv.setItemStack(item);
                 i++;
@@ -146,7 +147,8 @@ public class MicroGamesUser extends User {
                     item.disenchant();
                     item.setLore(ChatColor.WHITE + microGame.getDescription());
 
-                    Server.printText(Plugin.MICRO_GAMES, MicroGamesUser.this.getName() + " devoted " + microGame.getName(), "Voting");
+                    Server.printText(Plugin.MICRO_GAMES,
+                            MicroGamesUser.this.getName() + " devoted " + microGame.getName(), "Voting");
                 } else {
                     MicroGamesUser.this.votedGames.add(microGame);
                     microGame.addVote();
@@ -154,7 +156,8 @@ public class MicroGamesUser extends User {
                     item.enchant();
                     item.setLore(ChatColor.WHITE + microGame.getDescription(), "", "§aVoted");
 
-                    Server.printText(Plugin.MICRO_GAMES, MicroGamesUser.this.getName() + " voted for " + microGame.getName(), "Voting");
+                    Server.printText(Plugin.MICRO_GAMES,
+                            MicroGamesUser.this.getName() + " voted for " + microGame.getName(), "Voting");
                 }
 
                 this.gamesByItem.put(item, microGame);

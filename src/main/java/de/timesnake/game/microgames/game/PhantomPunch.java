@@ -32,24 +32,18 @@ import java.util.List;
 
 public class PhantomPunch extends ShrinkingPlatformGame implements Listener {
 
-    protected static final Integer SPEC_LOCATION_INDEX = 0;
-    protected static final Integer START_LOCATION_INDEX = 1;
     public static final Integer SPAWN_LOCATION_INDEX = 2;
-
     public static final Integer START_RADIUS = 3;
     public static final Integer MIN_RADIUS = 1;
-
     public static final Integer DECREASE_DELAY = 40;
     public static final Integer SPAWN_DELAY = 11;
-
     public static final Integer START_PHANTOMS = 6;
-
     public static final ExItemStack BOW =
             new ExItemStack(Material.BOW).unbreakable().addEnchantments(new Tuple<>(Enchantment.ARROW_INFINITE, 1));
-
-    private BukkitTask spawnTask;
-
+    protected static final Integer SPEC_LOCATION_INDEX = 0;
+    protected static final Integer START_LOCATION_INDEX = 1;
     private final List<ExPhantom> phantoms = new ArrayList<>();
+    private BukkitTask spawnTask;
 
     public PhantomPunch() {
         super("phantompunch", "PhantomPunch", Material.PHANTOM_MEMBRANE, "Try to defend the phantoms, as a team", 1);
@@ -113,12 +107,13 @@ public class PhantomPunch extends ShrinkingPlatformGame implements Listener {
 
         this.spawnTask = Server.runTaskTimerSynchrony(() -> {
 
-            for (ExPhantom phantom : this.phantoms) {
-                phantom.setTarget(this.getRandomUser().getPlayer());
-            }
-            this.spawnPhantom();
+                    for (ExPhantom phantom : this.phantoms) {
+                        phantom.setTarget(this.getRandomUser().getPlayer());
+                    }
+                    this.spawnPhantom();
 
-        }, (int) (20 / SPAWN_DELAY * Math.sqrt(Server.getInGameUsers().size())), 20 * SPAWN_DELAY, GameMicroGames.getPlugin());
+                }, (int) (20 / SPAWN_DELAY * Math.sqrt(Server.getInGameUsers().size())), 20 * SPAWN_DELAY,
+                GameMicroGames.getPlugin());
 
     }
 

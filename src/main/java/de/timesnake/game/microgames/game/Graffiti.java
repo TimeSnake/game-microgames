@@ -44,7 +44,7 @@ public class Graffiti extends MicroGame implements Listener, UserInventoryIntera
     private static final int TIME = 180;
     private static final int RADIUS = 5;
     private static final int COOLDOWN = 4;
-    private static final double DAMAGE = 5;
+    private static final double DAMAGE = 6;
     private static final ExItemStack PAINT_GUN =
             new ExItemStack(Material.SEA_PICKLE).setMoveable(false).setDropable(false).setSlot(0);
 
@@ -290,7 +290,8 @@ public class Graffiti extends MicroGame implements Listener, UserInventoryIntera
             return;
         }
 
-        if (!e.getDamageCause().equals(EntityDamageEvent.DamageCause.CUSTOM)) {
+        if (e.getDamageCause().equals(EntityDamageEvent.DamageCause.FALL)) {
+            e.setCancelled(true);
             e.setCancelDamage(true);
         }
     }
@@ -364,13 +365,6 @@ public class Graffiti extends MicroGame implements Listener, UserInventoryIntera
             e.setCancelDamage(true);
             e.setCancelled(true);
         }
-
-        User target = e.getUser();
-        User damager = e.getUserDamager();
-
-        target.damage(DAMAGE);
-
-        damager.playSound(Sound.ENTITY_PLAYER_LEVELUP, 2);
     }
 
     @EventHandler
@@ -499,6 +493,7 @@ public class Graffiti extends MicroGame implements Listener, UserInventoryIntera
             if ((this.blueTeam.contains(user) && !this.blueTeam.contains(hitUser))
                     || (!this.blueTeam.contains(user) && this.blueTeam.contains(hitUser))) {
                 hitUser.damage(DAMAGE, p);
+                user.playSound(Sound.ENTITY_PLAYER_LEVELUP, 2);
             } else {
                 e.setCancelled(true);
             }

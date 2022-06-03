@@ -77,16 +77,18 @@ public class TablistManager {
         LinkedList<TablistGroupType> types = new LinkedList<>();
         types.add(Group.getTablistType());
 
-        this.tablist = Server.getScoreboardManager().registerNewTeamTablist("lounge_side", Tablist.Type.DUMMY, TeamTablist.ColorType.WHITE, List.of(this.gameTeam), this.gameTeam.getTeamType(), types, this.spectatorTeam, types, (e, tablist) -> {
-            User user = e.getUser();
-            Status.User status = user.getStatus();
+        this.tablist = Server.getScoreboardManager().registerNewTeamTablist("lounge_side", Tablist.Type.DUMMY,
+                TeamTablist.ColorType.WHITE, List.of(this.gameTeam), this.gameTeam.getTeamType(), types,
+                this.spectatorTeam, types, (e, tablist) -> {
+                    User user = e.getUser();
+                    Status.User status = user.getStatus();
 
-            if (status.equals(Status.User.OUT_GAME) || status.equals(Status.User.SPECTATOR)) {
-                ((TeamTablist) tablist).addRemainEntry(e.getUser());
-            } else {
-                tablist.addEntry(e.getUser());
-            }
-        }, (e, tablist) -> tablist.removeEntry(e.getUser()));
+                    if (status.equals(Status.User.OUT_GAME) || status.equals(Status.User.SPECTATOR)) {
+                        ((TeamTablist) tablist).addRemainEntry(e.getUser());
+                    } else {
+                        tablist.addEntry(e.getUser());
+                    }
+                }, (e, tablist) -> tablist.removeEntry(e.getUser()));
 
         this.tablist.setHeader("§6MicroGames");
 

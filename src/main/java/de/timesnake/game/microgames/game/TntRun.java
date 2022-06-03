@@ -27,7 +27,8 @@ public class TntRun extends FallOutGame implements Listener {
     protected static final Integer REMOVE_DELAY = 20;
     protected static final Integer TNT_REMOVE_DELAY = 10;
 
-    protected static final Double[][] NEAR_BLOCK_VECTORS = {{0.3, 0.0}, {0.0, 0.3}, {-0.3, 0.0}, {0.0, -0.3}, {0.3, 0.3}, {0.3, -0.3}, {-0.3, 0.3}, {-0.3, -0.3}};
+    protected static final Double[][] NEAR_BLOCK_VECTORS = {{0.3, 0.0}, {0.0, 0.3}, {-0.3, 0.0}, {0.0, -0.3}, {0.3,
+            0.3}, {0.3, -0.3}, {-0.3, 0.3}, {-0.3, -0.3}};
 
     public TntRun() {
         super("tntrun", "TNT Run", Material.TNT, "Try to not fall", 1);
