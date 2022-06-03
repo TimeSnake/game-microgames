@@ -58,9 +58,19 @@ tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
 
+task buildFatJar(type: Jar) {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    baseName = rootProject.name
+    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+jar.finalizedBy(buildFatJar)
+
 task copyJarToPlugins(type: Copy) {
     from jar
     into "../../plugins"
 }
 
+copyJarToPlugins.dependsOn(buildFatJar)
 jar.finalizedBy(copyJarToPlugins)
