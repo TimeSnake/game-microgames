@@ -12,7 +12,7 @@ import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.basic.util.Tuple;
 import de.timesnake.library.entities.EntityManager;
 import de.timesnake.library.entities.entity.bukkit.ExPhantom;
-import de.timesnake.library.entities.pathfinder.ExPathfinderGoalPhantomTarget;
+import de.timesnake.library.entities.pathfinder.custom.ExCustomPathfinderGoalPhantomTarget;
 import org.bukkit.GameRule;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -122,7 +122,7 @@ public class PhantomPunch extends ShrinkingPlatformGame implements Listener {
         ExPhantom phantom = new ExPhantom(this.getSpawnLocation().getWorld(), true);
         phantom.setPosition(loc.getX(), loc.getY() + 30, loc.getZ());
         phantom.clearGoalTargets();
-        phantom.addPathfinderGoal(1, new ExPathfinderGoalPhantomTarget());
+        phantom.addPathfinderGoal(1, new ExCustomPathfinderGoalPhantomTarget());
         phantom.setTarget(this.getRandomUser().getPlayer());
 
         EntityManager.spawnEntity(this.getSpawnLocation().getWorld(), phantom);
