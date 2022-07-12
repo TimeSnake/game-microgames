@@ -28,7 +28,8 @@ public class BoatRace extends LocationFinishGame implements Listener {
     private final HashMap<User, Boat> boatByUser = new HashMap<>();
 
     public BoatRace() {
-        super("boatrace", "Boat Race", Material.OAK_BOAT, "Try to be the first at the finish", 1);
+        super("boatrace", "Boat Race", Material.OAK_BOAT,
+                "Try to be the first at the finish", 1);
     }
 
     @Override
@@ -80,7 +81,7 @@ public class BoatRace extends LocationFinishGame implements Listener {
     protected void onUserMove(UserMoveEvent e) {
         MicroGamesUser user = (MicroGamesUser) e.getUser();
         if (this.getFinishLocation().distance(e.getTo()) < 2) {
-            super.addWinner(user, true);
+            super.addWinner(user, false);
         }
     }
 
