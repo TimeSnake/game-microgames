@@ -12,21 +12,15 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import java.util.List;
-
 public class KnockOut extends ShrinkingPlatformGame implements Listener {
-
-    protected static final Integer SPEC_LOCATION_INDEX = 0;
-    protected static final Integer START_LOCATION_INDEX = 1;
-    protected static final Integer SPAWN_LOCATION_INDEX = 2;
 
     public static final Integer START_RADIUS = 10;
     public static final Integer MIN_RADIUS = 3;
-
     public static final Integer DECREASE_DELAY = 20;
-
-    protected static final ExItemStack STICK = new ExItemStack(Material.STICK, List.of(Enchantment.KNOCKBACK),
-            List.of(2));
+    protected static final Integer SPEC_LOCATION_INDEX = 0;
+    protected static final Integer START_LOCATION_INDEX = 1;
+    protected static final Integer SPAWN_LOCATION_INDEX = 2;
+    protected static final ExItemStack STICK = new ExItemStack(Material.STICK).addExEnchantment(Enchantment.KNOCKBACK, 2);
 
 
     public KnockOut() {
