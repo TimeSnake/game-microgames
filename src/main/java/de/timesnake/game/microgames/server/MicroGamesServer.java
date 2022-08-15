@@ -3,12 +3,11 @@ package de.timesnake.game.microgames.server;
 import de.timesnake.basic.game.util.GameServer;
 import de.timesnake.game.microgames.game.MicroGame;
 import de.timesnake.game.microgames.user.TablistManager;
+import net.kyori.adventure.text.Component;
 
 import java.util.Collection;
 
 public class MicroGamesServer extends GameServer {
-
-    private static final MicroGamesServerManager server = MicroGamesServerManager.getInstance();
 
     public static void nextGame() {
         server.nextGame();
@@ -22,7 +21,7 @@ public class MicroGamesServer extends GameServer {
         return server.getCurrentGame();
     }
 
-    public static void broadcastMicroGamesMessage(String message) {
+    public static void broadcastMicroGamesMessage(Component message) {
         server.broadcastMicroGamesMessage(message);
     }
 
@@ -45,4 +44,6 @@ public class MicroGamesServer extends GameServer {
     public static void skipGame() {
         server.skipGame();
     }
+
+    private static final MicroGamesServerManager server = MicroGamesServerManager.getInstance();
 }

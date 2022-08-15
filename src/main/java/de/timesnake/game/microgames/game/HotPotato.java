@@ -12,6 +12,8 @@ import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.server.MicroGamesServer;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Status;
+import de.timesnake.library.basic.util.chat.ExTextColor;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Instrument;
 import org.bukkit.Material;
 import org.bukkit.Note;
@@ -25,21 +27,15 @@ import java.util.*;
 
 public class HotPotato extends MicroGame implements Listener {
 
+    protected static final ExItemStack HOT_POTATO = new ExItemStack(Material.POTATO, "§cHot Potato");
     private static final Integer START_LOCATION_INDEX = 0;
     private static final Integer SPEC_LOCATION_INDEX = 1;
     private static final Integer SPAWN_LOCATION_INDEX = 2;
-
     private static final Integer TIME = 180;
-
-    private Integer time = TIME;
-
-    private BukkitTask task;
-
     private final Set<User> holders = new HashSet<>();
-
     private final HashMap<MicroGamesUser, Integer> potatoTimesByUser = new HashMap<>();
-
-    protected static final ExItemStack HOT_POTATO = new ExItemStack(Material.POTATO, "§cHot Potato");
+    private Integer time = TIME;
+    private BukkitTask task;
 
 
     public HotPotato() {
@@ -91,7 +87,8 @@ public class HotPotato extends MicroGame implements Listener {
             user.fillHotBar(HOT_POTATO);
             user.playNote(Instrument.PIANO, Note.natural(0, Note.Tone.C));
             if (this.time.equals(TIME)) {
-                user.sendPluginMessage(Plugin.MICRO_GAMES, "§6You have the §chot potato");
+                user.sendPluginMessage(Plugin.MICRO_GAMES, Component.text("You have the", ExTextColor.PERSONAL)
+                        .append(Component.text("hot potato", ExTextColor.WARNING)));
             }
         } else {
             user.playNote(Instrument.PIANO, Note.natural(1, Note.Tone.C));
@@ -140,8 +137,9 @@ public class HotPotato extends MicroGame implements Listener {
 
             if (this.time <= TIME / 2) {
                 if (this.time == TIME / 2) {
-                    MicroGamesServer.broadcastMicroGamesMessage("§6The best Player is now §cglowing!");
-                    Server.broadcastTitle("§cHalftime", "Glowing activated!", Duration.ofSeconds(3));
+                    MicroGamesServer.broadcastMicroGamesMessage(Component.text("The best Player is now §cglowing!", ExTextColor.GOLD));
+                    Server.broadcastTitle(Component.text("Halftime", ExTextColor.WARNING),
+                            Component.text("Glowing activated!"), Duration.ofSeconds(3));
                 }
 
                 List<Map.Entry<MicroGamesUser, Integer>> entries = new ArrayList<>(this.potatoTimesByUser.entrySet());

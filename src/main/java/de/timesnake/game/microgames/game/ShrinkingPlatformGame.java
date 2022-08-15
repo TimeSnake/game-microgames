@@ -3,6 +3,8 @@ package de.timesnake.game.microgames.game;
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.game.microgames.main.GameMicroGames;
+import de.timesnake.library.basic.util.chat.ExTextColor;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Instrument;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -41,7 +43,8 @@ public abstract class ShrinkingPlatformGame extends FallOutGame {
             if (delay <= 3) {
                 Server.broadcastNote(Instrument.PLING, Note.natural(0, Note.Tone.C));
                 if (delay == 3) {
-                    Server.broadcastTitle("§c!", "The platform becomes smaller", Duration.ofSeconds(3));
+                    Server.broadcastTitle(Component.text("!", ExTextColor.WARNING),
+                            Component.text("The platform becomes smaller"), Duration.ofSeconds(3));
                 }
             }
 

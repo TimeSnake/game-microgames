@@ -2,12 +2,11 @@ package de.timesnake.game.microgames.user;
 
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.chat.ChatColor;
-import de.timesnake.basic.bukkit.util.permission.Group;
+import de.timesnake.basic.bukkit.util.chat.DisplayGroup;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.scoreboard.*;
 import de.timesnake.library.basic.util.Status;
 
-import java.util.LinkedList;
 import java.util.List;
 
 public class TablistManager {
@@ -21,11 +20,6 @@ public class TablistManager {
         // tablist
 
         this.gameTeam = new TablistableGroup() {
-            @Override
-            public TablistGroupType getTeamType() {
-                return TablistGroupType.DUMMY;
-            }
-
             @Override
             public String getTablistRank() {
                 return "0";
@@ -74,12 +68,10 @@ public class TablistManager {
             }
         };
 
-        LinkedList<TablistGroupType> types = new LinkedList<>();
-        types.add(Group.getTablistType());
 
         this.tablist = Server.getScoreboardManager().registerNewTeamTablist("lounge_side", Tablist.Type.DUMMY,
-                TeamTablist.ColorType.WHITE, List.of(this.gameTeam), this.gameTeam.getTeamType(), types,
-                this.spectatorTeam, types, (e, tablist) -> {
+                TeamTablist.ColorType.WHITE, List.of(this.gameTeam), TablistGroupType.DUMMY, DisplayGroup.MAIN_TABLIST_GROUPS,
+                this.spectatorTeam, DisplayGroup.MAIN_TABLIST_GROUPS, (e, tablist) -> {
                     User user = e.getUser();
                     Status.User status = user.getStatus();
 
