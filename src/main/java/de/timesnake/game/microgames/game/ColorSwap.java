@@ -1,7 +1,6 @@
 package de.timesnake.game.microgames.game;
 
 import de.timesnake.basic.bukkit.util.Server;
-import de.timesnake.basic.bukkit.util.chat.ChatColor;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.event.UserMoveEvent;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
@@ -10,6 +9,8 @@ import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.server.MicroGamesServer;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Status;
+import de.timesnake.library.basic.util.chat.ExTextColor;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Instrument;
 import org.bukkit.Material;
 import org.bukkit.Note;
@@ -47,20 +48,15 @@ public class ColorSwap extends FallOutGame implements Listener {
     private final Random random = new Random();
 
     private final HashMap<Integer, Level> levels = new HashMap<>();
-
+    int beginX;
+    int beginZ;
+    int endX;
+    int endZ;
     private Integer currentLevel = 1;
-
     private BukkitTask waitingTask;
     private BukkitTask countdownTask;
     private BukkitTask countdownTask1;
-
     private Integer ticks = 0;
-
-    int beginX;
-    int beginZ;
-
-    int endX;
-    int endZ;
 
     public ColorSwap() {
         super("colorswap", "ColorSwap", Material.WHITE_WOOL, "Try to stand on the color, which is shown in your " +
@@ -154,7 +150,7 @@ public class ColorSwap extends FallOutGame implements Listener {
                             user.fillHotBar(new ItemStack(Material.AIR));
                         }
                         if (this.currentLevel.equals(MAX_LEVEL)) {
-                            MicroGamesServer.broadcastMicroGamesMessage(ChatColor.PUBLIC + "You completed all levels");
+                            MicroGamesServer.broadcastMicroGamesMessage(Component.text("You completed all levels", ExTextColor.GOLD));
                             this.stop();
                         } else {
                             this.currentLevel++;

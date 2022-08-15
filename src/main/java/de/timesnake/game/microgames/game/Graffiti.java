@@ -11,8 +11,9 @@ import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.server.MicroGamesServer;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Status;
-import de.timesnake.library.basic.util.chat.ChatColor;
+import de.timesnake.library.basic.util.chat.ExTextColor;
 import de.timesnake.library.extension.util.chat.Chat;
+import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -157,13 +158,13 @@ public class Graffiti extends MicroGame implements Listener, UserInventoryIntera
 
             if (this.blueTeam.size() < teamSize) {
                 this.blueTeam.add(user);
-                user.sendPluginMessage(Plugin.MICRO_GAMES, ChatColor.PERSONAL + "You joined" + ChatColor.VALUE + " " +
-                        "blue");
+                user.sendPluginMessage(Plugin.MICRO_GAMES, Component.text("You joined", ExTextColor.PERSONAL)
+                        .append(Component.text(" " + "blue", ExTextColor.VALUE)));
                 user.teleport(this.currentMap.getLocation(BLUE_SPAWN_LOCATION_INDEX));
             } else {
                 this.redTeam.add(user);
-                user.sendPluginMessage(Plugin.MICRO_GAMES, ChatColor.PERSONAL + "You joined" + ChatColor.VALUE + " " +
-                        "red");
+                user.sendPluginMessage(Plugin.MICRO_GAMES, Component.text("You joined", ExTextColor.PERSONAL)
+                        .append(Component.text(" " + "red", ExTextColor.VALUE)));
                 user.teleport(this.currentMap.getLocation(RED_SPAWN_LOCATION_INDEX));
             }
 
@@ -218,24 +219,36 @@ public class Graffiti extends MicroGame implements Listener, UserInventoryIntera
         MicroGamesServer.broadcastMicroGamesMessage(Chat.getLineSeparator());
 
         if (blueBlocks > redBlocks) {
-            MicroGamesServer.broadcastTitle(ChatColor.BLUE + "Blue" + ChatColor.GOLD + " wins",
-                    ChatColor.BLUE + blueBlocks + ChatColor.PUBLIC + " - " + ChatColor.RED + redBlocks,
+            MicroGamesServer.broadcastTitle(Component.text("Blue", ExTextColor.BLUE)
+                            .append(Component.text(" wins", ExTextColor.WHITE)),
+                    Component.text(blueBlocks, ExTextColor.BLUE)
+                            .append(Component.text(" - ", ExTextColor.PUBLIC))
+                            .append(Component.text(redBlocks, ExTextColor.RED)),
                     Duration.ofSeconds(3));
-            MicroGamesServer.broadcastMicroGamesMessage(ChatColor.BLUE + "Blue" + " §fwins!");
+            MicroGamesServer.broadcastMicroGamesMessage(Component.text("Blue", ExTextColor.BLUE)
+                    .append(Component.text(" wins!", ExTextColor.WHITE)));
         } else if (redBlocks > blueBlocks) {
-            MicroGamesServer.broadcastTitle(ChatColor.RED + "Red" + ChatColor.GOLD + " wins",
-                    ChatColor.BLUE + blueBlocks + ChatColor.PUBLIC + " - " + ChatColor.RED + redBlocks,
+            MicroGamesServer.broadcastTitle(Component.text("Red", ExTextColor.RED)
+                            .append(Component.text(" wins", ExTextColor.WHITE)),
+                    Component.text(blueBlocks, ExTextColor.BLUE)
+                            .append(Component.text(" - ", ExTextColor.PUBLIC))
+                            .append(Component.text(redBlocks, ExTextColor.RED)),
                     Duration.ofSeconds(3));
-            MicroGamesServer.broadcastMicroGamesMessage(ChatColor.RED + "Red" + " §fwins!");
+            MicroGamesServer.broadcastMicroGamesMessage(Component.text("Red", ExTextColor.RED)
+                    .append(Component.text(" wins!", ExTextColor.WHITE)));
         } else {
-            MicroGamesServer.broadcastTitle(ChatColor.WHITE + "Draw",
-                    ChatColor.BLUE + blueBlocks + ChatColor.PUBLIC + " - " + ChatColor.RED + redBlocks,
+            MicroGamesServer.broadcastTitle(Component.text("Draw", ExTextColor.WHITE),
+                    Component.text(blueBlocks, ExTextColor.BLUE)
+                            .append(Component.text(" - ", ExTextColor.PUBLIC))
+                            .append(Component.text(redBlocks, ExTextColor.RED)),
                     Duration.ofSeconds(3));
-            MicroGamesServer.broadcastMicroGamesMessage("§fDraw");
+            MicroGamesServer.broadcastMicroGamesMessage(Component.text("Draw", ExTextColor.WHITE));
         }
 
-        MicroGamesServer.broadcastMicroGamesMessage("§fBlocks: " + ChatColor.BLUE + blueBlocks + ChatColor.PUBLIC +
-                " - " + ChatColor.RED + redBlocks);
+        MicroGamesServer.broadcastMicroGamesMessage(Component.text("Blocks: ", ExTextColor.WHITE)
+                .append(Component.text(blueBlocks, ExTextColor.BLUE))
+                .append(Component.text(" - ", ExTextColor.PUBLIC))
+                .append(Component.text(redBlocks, ExTextColor.RED)));
         MicroGamesServer.broadcastMicroGamesMessage(Chat.getLineSeparator());
 
         if (this.task != null) {

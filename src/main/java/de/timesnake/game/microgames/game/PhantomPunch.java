@@ -10,9 +10,11 @@ import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.basic.util.Tuple;
+import de.timesnake.library.basic.util.chat.ExTextColor;
 import de.timesnake.library.entities.EntityManager;
 import de.timesnake.library.entities.entity.bukkit.ExPhantom;
 import de.timesnake.library.entities.pathfinder.custom.ExCustomPathfinderGoalPhantomTarget;
+import net.kyori.adventure.text.Component;
 import org.bukkit.GameRule;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -137,7 +139,7 @@ public class PhantomPunch extends ShrinkingPlatformGame implements Listener {
 
     @Override
     public void stop() {
-        Server.broadcastTitle("Game over", "", Duration.ofSeconds(3));
+        Server.broadcastTitle(Component.text("Game over", ExTextColor.WARNING), Component.empty(), Duration.ofSeconds(3));
 
         if (this.spawnTask != null) {
             this.spawnTask.cancel();

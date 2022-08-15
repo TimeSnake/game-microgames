@@ -1,13 +1,14 @@
 package de.timesnake.game.microgames.game;
 
 import de.timesnake.basic.bukkit.util.Server;
-import de.timesnake.basic.bukkit.util.chat.ChatColor;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.event.UserDamageEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserMoveEvent;
 import de.timesnake.game.microgames.server.MicroGamesServer;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Status;
+import de.timesnake.library.basic.util.chat.ExTextColor;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.event.EventHandler;
@@ -38,8 +39,9 @@ public abstract class FallOutGame extends MicroGame implements Listener {
         }
 
         if (e.getTo().getBlockY() < this.getDeathHeight()) {
-            user.sendTitle("§cYou lose!", "", Duration.ofSeconds(3));
-            MicroGamesServer.broadcastMicroGamesMessage(user.getChatName() + ChatColor.WARNING + this.getDeathMessage());
+            user.showTitle(Component.text("You lose!", ExTextColor.WARNING), Component.empty(), Duration.ofSeconds(3));
+            MicroGamesServer.broadcastMicroGamesMessage(user.getChatNameComponent()
+                    .append(Component.text(this.getDeathMessage(), ExTextColor.WARNING)));
             Server.broadcastSound(Sound.ENTITY_PLAYER_HURT, 2);
 
             this.addWinner(((MicroGamesUser) user), false);
