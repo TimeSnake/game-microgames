@@ -24,6 +24,7 @@ repositories {
 
 dependencies {
     implementation 'de.timesnake:basic-game:1.0-SNAPSHOT'
+    implementation 'de.timesnake:library-game:1.0-SNAPSHOT'
 
     compileOnly 'de.timesnake:basic-bukkit:1.0-SNAPSHOT'
 
@@ -33,7 +34,6 @@ dependencies {
     compileOnly 'de.timesnake:channel-bukkit:1.0-SNAPSHOT'
     compileOnly 'de.timesnake:channel-api:1.0-SNAPSHOT'
 
-    compileOnly 'de.timesnake:library-game:1.0-SNAPSHOT'
     compileOnly 'de.timesnake:library-packets:1.0-SNAPSHOT'
     compileOnly 'de.timesnake:library-entities:1.0-SNAPSHOT'
     compileOnly 'de.timesnake:library-reflection:1.0-SNAPSHOT'
