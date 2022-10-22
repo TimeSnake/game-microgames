@@ -139,7 +139,7 @@ public class PhantomPunch extends ShrinkingPlatformGame implements Listener {
 
     private void spawnPhantom() {
         Location loc = this.getSpawnLocation();
-        ExPhantom phantom = new ExPhantom(this.getSpawnLocation().getWorld(), true);
+        ExPhantom phantom = new ExPhantom(this.getSpawnLocation().getWorld(), true, true);
         phantom.setPosition(loc.getX(), loc.getY() + 30, loc.getZ());
         phantom.clearGoalTargets();
         phantom.addPathfinderGoal(1, new ExCustomPathfinderGoalPhantomTarget());

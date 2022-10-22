@@ -99,7 +99,7 @@ public class BoatRace extends LocationFinishGame implements Listener {
     protected void onUserMove(UserMoveEvent e) {
         MicroGamesUser user = (MicroGamesUser) e.getUser();
         if (this.getFinishLocation().distance(e.getTo()) < 2) {
-            super.addWinner(user, false);
+            super.addWinner(user, true);
         }
     }
 
