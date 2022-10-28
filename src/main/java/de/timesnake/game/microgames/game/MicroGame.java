@@ -108,8 +108,8 @@ public abstract class MicroGame {
         world.setGameRule(GameRule.RANDOM_TICK_SPEED, 0);
         world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
         world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
-        world.allowFoodChange(false);
-        world.allowFireSpread(false);
+        world.restrict(ExWorld.Restriction.FOOD_CHANGE, true);
+        world.restrict(ExWorld.Restriction.FIRE_SPREAD, true);
         world.setExceptService(true);
         world.setTime(1000);
         world.setAutoSave(false);
