@@ -79,14 +79,14 @@ public class Firefighter extends MicroGame implements Listener {
 
         ExWorld world = map.getWorld();
 
-        world.allowFirePunchOut(true);
-        world.allowFlintAndSteel(false);
-        world.allowBlockBurnUp(false);
-        world.allowPlayerDamage(false);
-        world.allowBlockBreak(false);
-        world.allowBlockPlace(false);
-        world.allowLightUpInteraction(false);
-        world.allowFireSpread(false);
+        world.restrict(ExWorld.Restriction.FIRE_PUNCH_OUT, false);
+        world.restrict(ExWorld.Restriction.FLINT_AND_STEEL, true);
+        world.restrict(ExWorld.Restriction.BLOCK_BURN_UP, true);
+        world.restrict(ExWorld.Restriction.PLAYER_DAMAGE, true);
+        world.restrict(ExWorld.Restriction.BLOCK_BREAK, true);
+        world.restrict(ExWorld.Restriction.BLOCK_PLACE, true);
+        world.restrict(ExWorld.Restriction.LIGHT_UP_INTERACTION, true);
+        world.restrict(ExWorld.Restriction.FIRE_SPREAD, true);
     }
 
     @Override
