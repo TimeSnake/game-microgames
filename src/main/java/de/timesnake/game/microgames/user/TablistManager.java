@@ -1,5 +1,5 @@
 /*
- * game-microgames.main
+ * timesnake.game-microgames.main
  * Copyright (C) 2022 timesnake
  *
  * This program is free software; you can redistribute it and/or
@@ -87,9 +87,13 @@ public class TablistManager {
         };
 
 
-        this.tablist = Server.getScoreboardManager().registerNewTeamTablist("lounge_side", Tablist.Type.DUMMY,
-                TeamTablist.ColorType.WHITE, List.of(this.gameTeam), TablistGroupType.DUMMY, DisplayGroup.MAIN_TABLIST_GROUPS,
-                this.spectatorTeam, DisplayGroup.MAIN_TABLIST_GROUPS, (e, tablist) -> {
+        this.tablist = Server.getScoreboardManager().registerTeamTablist(new TeamTablistBuilder("lounge_side")
+                .colorType(TeamTablist.ColorType.WHITE)
+                .teams(List.of(this.gameTeam))
+                .teamType(TablistGroupType.DUMMY)
+                .groupTypes(DisplayGroup.MAIN_TABLIST_GROUPS)
+                .remainTeam(this.spectatorTeam)
+                .userJoin((e, tablist) -> {
                     User user = e.getUser();
                     Status.User status = user.getStatus();
 
@@ -98,7 +102,8 @@ public class TablistManager {
                     } else {
                         tablist.addEntry(e.getUser());
                     }
-                }, (e, tablist) -> tablist.removeEntry(e.getUser()));
+                })
+                .userQuit((e, tablist) -> tablist.removeEntry(e.getUser())));
 
         this.tablist.setHeader("§6MicroGames");
 
