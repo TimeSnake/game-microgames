@@ -1,5 +1,5 @@
 /*
- * game-microgames.main
+ * timesnake.game-microgames.main
  * Copyright (C) 2022 timesnake
  *
  * This program is free software; you can redistribute it and/or
@@ -94,7 +94,7 @@ public abstract class MicroGame {
             }
         }
 
-        this.sideboard = Server.getScoreboardManager().registerNewSideboard(name, "§6§l" + displayName);
+        this.sideboard = Server.getScoreboardManager().registerSideboard(name, "§6§l" + displayName);
     }
 
     public void onMapLoad(Map map) {
