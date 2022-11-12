@@ -1,5 +1,5 @@
 /*
- * game-microgames.main
+ * workspace.game-microgames.main
  * Copyright (C) 2022 timesnake
  *
  * This program is free software; you can redistribute it and/or
@@ -79,14 +79,14 @@ public class Firefighter extends MicroGame implements Listener {
 
         ExWorld world = map.getWorld();
 
-        world.restrict(ExWorld.Restriction.FIRE_PUNCH_OUT, false);
-        world.restrict(ExWorld.Restriction.FLINT_AND_STEEL, true);
-        world.restrict(ExWorld.Restriction.BLOCK_BURN_UP, true);
-        world.restrict(ExWorld.Restriction.PLAYER_DAMAGE, true);
-        world.restrict(ExWorld.Restriction.BLOCK_BREAK, true);
-        world.restrict(ExWorld.Restriction.BLOCK_PLACE, true);
-        world.restrict(ExWorld.Restriction.LIGHT_UP_INTERACTION, true);
-        world.restrict(ExWorld.Restriction.FIRE_SPREAD, true);
+        //world.restrict(ExWorld.Restriction.FIRE_PUNCH_OUT, false);
+        //world.restrict(ExWorld.Restriction.FLINT_AND_STEEL, true);
+        //world.restrict(ExWorld.Restriction.BLOCK_BURN_UP, true);
+        //world.restrict(ExWorld.Restriction.PLAYER_DAMAGE, true);
+        //world.restrict(ExWorld.Restriction.BLOCK_BREAK, true);
+        //world.restrict(ExWorld.Restriction.BLOCK_PLACE, true);
+        //world.restrict(ExWorld.Restriction.LIGHT_UP_INTERACTION, true);
+        //world.restrict(ExWorld.Restriction.FIRE_SPREAD, true);
     }
 
     @Override
@@ -232,7 +232,11 @@ public class Firefighter extends MicroGame implements Listener {
     public void onPlayerInteract(PlayerInteractEvent e) {
         User user = Server.getUser(e.getPlayer());
 
-        if (user == null || !user.getStatus().equals(Status.User.IN_GAME) || !this.isGameRunning()) {
+        if (user == null || !this.isGameRunning()) {
+            return;
+        }
+
+        if (!user.getStatus().equals(Status.User.IN_GAME)) {
             e.setCancelled(true);
             return;
         }
