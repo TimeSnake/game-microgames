@@ -1,5 +1,5 @@
 /*
- * game-microgames.main
+ * workspace.game-microgames.main
  * Copyright (C) 2022 timesnake
  *
  * This program is free software; you can redistribute it and/or
@@ -45,6 +45,11 @@ public class PartyManager implements UserInventoryInteractListener {
     @Override
     public void onUserInventoryInteract(UserInventoryInteractEvent event) {
         User user = event.getUser();
+
+        if (!user.isSneaking()) {
+            user.sendPluginMessage(Plugin.MICRO_GAMES, Component.text("Click while sneaking to activate", ExTextColor.PERSONAL));
+            return;
+        }
 
         if (user.hasPermission(this.perm, Plugin.MICRO_GAMES)) {
             if (!MicroGamesServer.getCurrentGame().isGameRunning() && !MicroGamesServer.isPartyMode()) {
