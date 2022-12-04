@@ -1,5 +1,5 @@
 /*
- * game-microgames.main
+ * workspace.game-microgames.main
  * Copyright (C) 2022 timesnake
  *
  * This program is free software; you can redistribute it and/or
@@ -33,6 +33,7 @@ import de.timesnake.game.microgames.chat.Plugin;
 import de.timesnake.game.microgames.game.MicroGame;
 import de.timesnake.game.microgames.server.MicroGamesServer;
 import de.timesnake.library.basic.util.Status;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -123,7 +124,7 @@ public class MicroGamesUser extends User {
         private final HashMap<ExItemStack, MicroGame> gamesByItem = new HashMap<>();
 
         public VoteInventory(Collection<MicroGame> games) {
-            this.inv = Server.createExInventory(games.size(), "Voting", this);
+            this.inv = new ExInventory(games.size(), Component.text("Voting"), this);
 
             int i = 0;
             for (MicroGame game : games) {
