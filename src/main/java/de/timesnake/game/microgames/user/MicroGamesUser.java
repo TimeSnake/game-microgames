@@ -28,7 +28,7 @@ import de.timesnake.basic.bukkit.util.user.event.UserInventoryClickListener;
 import de.timesnake.basic.bukkit.util.user.event.UserInventoryInteractEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserInventoryInteractListener;
 import de.timesnake.basic.bukkit.util.user.scoreboard.TablistableGroup;
-import de.timesnake.basic.game.util.TablistGroupType;
+import de.timesnake.basic.game.util.game.TablistGroupType;
 import de.timesnake.game.microgames.chat.Plugin;
 import de.timesnake.game.microgames.game.MicroGame;
 import de.timesnake.game.microgames.server.MicroGamesServer;

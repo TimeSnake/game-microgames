@@ -1,5 +1,5 @@
 /*
- * game-microgames.main
+ * workspace.game-microgames.main
  * Copyright (C) 2022 timesnake
  *
  * This program is free software; you can redistribute it and/or
@@ -18,7 +18,7 @@
 
 package de.timesnake.game.microgames.server;
 
-import de.timesnake.basic.game.util.GameServer;
+import de.timesnake.basic.game.util.server.GameServer;
 import de.timesnake.game.microgames.game.MicroGame;
 import de.timesnake.game.microgames.user.TablistManager;
 import net.kyori.adventure.text.Component;
