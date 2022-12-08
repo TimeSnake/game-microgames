@@ -1,5 +1,5 @@
 /*
- * game-microgames.main
+ * workspace.game-microgames.main
  * Copyright (C) 2022 timesnake
  *
  * This program is free software; you can redistribute it and/or
@@ -157,7 +157,7 @@ public class Graffiti extends MicroGame implements Listener, UserInventoryIntera
     }
 
     @Override
-    public void onMapLoad(de.timesnake.basic.game.util.Map map) {
+    public void onMapLoad(de.timesnake.basic.game.util.game.Map map) {
         super.onMapLoad(map);
         map.getWorld().setGameRule(GameRule.NATURAL_REGENERATION, false);
     }

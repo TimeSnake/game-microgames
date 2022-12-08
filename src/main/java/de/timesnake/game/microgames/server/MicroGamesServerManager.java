@@ -1,5 +1,5 @@
 /*
- * game-microgames.main
+ * workspace.game-microgames.main
  * Copyright (C) 2022 timesnake
  *
  * This program is free software; you can redistribute it and/or
@@ -23,8 +23,8 @@ import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.ServerManager;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.event.*;
-import de.timesnake.basic.game.util.Game;
-import de.timesnake.basic.game.util.GameServerManager;
+import de.timesnake.basic.game.util.game.Game;
+import de.timesnake.basic.game.util.server.GameServerManager;
 import de.timesnake.database.util.game.DbGame;
 import de.timesnake.game.microgames.chat.Plugin;
 import de.timesnake.game.microgames.game.*;
