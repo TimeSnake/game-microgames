@@ -1,5 +1,5 @@
 /*
- * game-microgames.main
+ * workspace.game-microgames.main
  * Copyright (C) 2022 timesnake
  *
  * This program is free software; you can redistribute it and/or
@@ -42,14 +42,16 @@ public class TntRun extends FallOutGame implements Listener {
     protected static final Integer SPAWN_LOCATION_INDEX = 2;
     protected static final Integer DEATH_HEIGHT_LOCATION_INDEX = 3;
 
-    protected static final Integer REMOVE_DELAY = 20;
+    protected static final Integer REMOVE_DELAY = 19;
     protected static final Integer TNT_REMOVE_DELAY = 10;
 
     protected static final Double[][] NEAR_BLOCK_VECTORS = {{0.3, 0.0}, {0.0, 0.3}, {-0.3, 0.0}, {0.0, -0.3}, {0.3,
             0.3}, {0.3, -0.3}, {-0.3, 0.3}, {-0.3, -0.3}};
 
+    private final Set<Block> removedBlocks = new HashSet<>();
+
     public TntRun() {
-        super("tntrun", "TNT Run", Material.TNT, "Try to not fall", 1);
+        super("tntrun", "TNT Run", Material.TNT, "Try not to fall", 1);
 
         Server.registerListener(this, GameMicroGames.getPlugin());
     }
@@ -89,15 +91,23 @@ public class TntRun extends FallOutGame implements Listener {
 
         Set<Block> blocks = new HashSet<>();
 
-        if (!from.getBlock().getType().equals(Material.AIR)) {
+        if (!from.getBlock().equals(from.getBlock())
+                && !from.getBlock().getType().equals(Material.AIR)
+                && !from.getBlock().getType().equals(Material.TNT)
+                && !this.removedBlocks.contains(from.getBlock())) {
             from.getBlock().setType(Material.TNT);
             blocks.add(from.getBlock());
+            this.removedBlocks.add(from.getBlock());
         }
 
         for (Double[] vec : NEAR_BLOCK_VECTORS) {
             Location loc = from.clone().add(vec[0], 0, vec[1]);
-            if (!loc.getBlock().equals(from.getBlock()) && !loc.getBlock().getType().equals(Material.AIR) && !loc.getBlock().getType().equals(Material.TNT)) {
+            if (!loc.getBlock().equals(from.getBlock())
+                    && !loc.getBlock().getType().equals(Material.AIR)
+                    && !loc.getBlock().getType().equals(Material.TNT)
+                    && !this.removedBlocks.contains(loc.getBlock())) {
                 loc.getBlock().setType(Material.TNT);
+                this.removedBlocks.add(loc.getBlock());
                 blocks.add(loc.getBlock());
             }
         }
@@ -116,6 +126,7 @@ public class TntRun extends FallOutGame implements Listener {
     @Override
     public void reset() {
         super.reset();
+        this.removedBlocks.clear();
         if (this.previousMap != null) {
             Server.getWorldManager().reloadWorld(this.previousMap.getWorld());
         }

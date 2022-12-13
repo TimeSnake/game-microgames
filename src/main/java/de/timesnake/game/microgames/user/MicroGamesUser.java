@@ -29,6 +29,7 @@ import de.timesnake.basic.bukkit.util.user.event.UserInventoryInteractEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserInventoryInteractListener;
 import de.timesnake.basic.bukkit.util.user.scoreboard.TablistableGroup;
 import de.timesnake.basic.game.util.game.TablistGroupType;
+import de.timesnake.basic.game.util.user.SpectatorUser;
 import de.timesnake.game.microgames.chat.Plugin;
 import de.timesnake.game.microgames.game.MicroGame;
 import de.timesnake.game.microgames.server.MicroGamesServer;
@@ -42,7 +43,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class MicroGamesUser extends User {
+public class MicroGamesUser extends SpectatorUser {
 
     private final Set<MicroGame> votedGames = new HashSet<>();
 
@@ -55,25 +56,11 @@ public class MicroGamesUser extends User {
         this.voteInventory = new VoteInventory(MicroGamesServer.getGames());
     }
 
-    public void joinSpectator() {
-        this.setStatus(Status.User.OUT_GAME);
-        MicroGamesServer.getTablistManager().getTablist().addRemainEntry(this);
-        this.teleport(MicroGamesServer.getCurrentGame().getSpecLocation());
-        this.setDefault();
-        this.setAllowFlight(true);
-        this.setFlying(true);
-        this.setInvulnerable(true);
-        this.setCollitionWithEntites(false);
-        for (User user : Server.getUsers()) {
-            if (user.getStatus().equals(Status.User.OUT_GAME)) {
-                user.showUser(this);
-            } else {
-                user.hideUser(this);
-            }
-            this.showUser(user);
-        }
-        this.setItem(this.voteInventory.getItem());
-        this.setItem(PartyManager.ITEM);
+    @Override
+    public void setSpectatorInventory() {
+        super.setSpectatorInventory();
+        this.setItem(6, this.voteInventory.getItem());
+        this.setItem(7, PartyManager.ITEM);
     }
 
     public void joinGame() {

@@ -77,7 +77,8 @@ public abstract class MicroGame {
         for (Map map : MicroGamesServer.getGame().getMaps()) {
             if (map.getInfo().get(0).equalsIgnoreCase(this.name)) {
                 if (map.getWorld() == null) {
-                    Server.printWarning(Plugin.MICRO_GAMES, "Can not load map " + map.getName() + ", world not exists");
+                    Server.printWarning(Plugin.MICRO_GAMES, "Can not load map " + map.getName() +
+                            ", world not exists");
                     continue;
                 }
 
@@ -187,8 +188,8 @@ public abstract class MicroGame {
                 this.second = user;
                 MicroGamesServer.broadcastMicroGamesMessage(user.getChatNameComponent()
                         .append(Component.text(" finished #2", ExTextColor.WARNING)));
-                this.first =
-                        ((MicroGamesUser) Server.getInGameUsers().stream().filter((u) -> !u.equals(second)).iterator().next());
+                this.first = ((MicroGamesUser) Server.getInGameUsers().stream()
+                        .filter((u) -> !u.equals(second)).iterator().next());
             } else if (users == 0) {
                 this.first = user;
                 MicroGamesServer.broadcastMicroGamesMessage(user.getChatNameComponent()

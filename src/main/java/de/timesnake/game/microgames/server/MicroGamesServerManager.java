@@ -25,6 +25,7 @@ import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.event.*;
 import de.timesnake.basic.game.util.game.Game;
 import de.timesnake.basic.game.util.server.GameServerManager;
+import de.timesnake.basic.game.util.user.SpectatorManager;
 import de.timesnake.database.util.game.DbGame;
 import de.timesnake.game.microgames.chat.Plugin;
 import de.timesnake.game.microgames.game.*;
@@ -174,6 +175,11 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
         return super.loadGame(dbGame, true);
     }
 
+    @Override
+    protected SpectatorManager loadSpectatorManager() {
+        return new de.timesnake.game.microgames.user.SpectatorManager();
+    }
+
     public void pause() {
         this.paused = true;
     }
@@ -320,7 +326,7 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
 
         this.broadcastMicroGamesMessage(Component.text("Starting party mode!", ExTextColor.WARNING));
         this.broadcastMicroGamesMessage(Chat.getLineSeparator());
-        this.broadcastMicroGamesMessage(Component.text("Points Distribution:", ExTextColor.GOLD));
+        this.broadcastMicroGamesMessage(Component.text("Point Distribution:", ExTextColor.GOLD));
         this.broadcastMicroGamesMessage(Component.text("    1. Place: ", ExTextColor.PUBLIC)
                 .append(Component.text(MicroGame.FIRST_POINTS + " points", ExTextColor.VALUE)));
         this.broadcastMicroGamesMessage(Component.text("    2. Place: ", ExTextColor.PUBLIC)
@@ -447,6 +453,7 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
             this.nextGame();
         } else {
             if (!this.currentGame.onUserJoin(user)) {
+                user.setStatus(Status.User.SPECTATOR);
                 user.joinSpectator();
             }
         }
