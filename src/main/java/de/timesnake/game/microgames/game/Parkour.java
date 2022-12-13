@@ -1,5 +1,5 @@
 /*
- * game-microgames.main
+ * workspace.game-microgames.main
  * Copyright (C) 2022 timesnake
  *
  * This program is free software; you can redistribute it and/or
@@ -27,7 +27,8 @@ import org.bukkit.event.Listener;
 public class Parkour extends LocationFinishGame implements Listener {
 
     public Parkour() {
-        super("parkour", "Parkour", Material.GOLDEN_BOOTS, "Beat the parkour as fast you can", 1);
+        super("parkour", "Parkour", Material.GOLDEN_BOOTS,
+                "Beat the parkour as fast you can", 1);
     }
 
     @Override
