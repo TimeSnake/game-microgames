@@ -8,21 +8,48 @@ import com.google.common.collect.Lists;
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.ServerManager;
 import de.timesnake.basic.bukkit.util.user.User;
-import de.timesnake.basic.bukkit.util.user.event.*;
+import de.timesnake.basic.bukkit.util.user.event.EntityDamageByUserEvent;
+import de.timesnake.basic.bukkit.util.user.event.UserDamageEvent;
+import de.timesnake.basic.bukkit.util.user.event.UserJoinEvent;
+import de.timesnake.basic.bukkit.util.user.event.UserMoveEvent;
+import de.timesnake.basic.bukkit.util.user.event.UserQuitEvent;
 import de.timesnake.basic.game.util.game.Game;
 import de.timesnake.basic.game.util.server.GameServerManager;
 import de.timesnake.basic.game.util.user.SpectatorManager;
 import de.timesnake.database.util.game.DbGame;
 import de.timesnake.game.microgames.chat.Plugin;
-import de.timesnake.game.microgames.game.*;
+import de.timesnake.game.microgames.game.BlockJump;
+import de.timesnake.game.microgames.game.BoatRace;
+import de.timesnake.game.microgames.game.ColorSwap;
+import de.timesnake.game.microgames.game.Dropper;
+import de.timesnake.game.microgames.game.Firefighter;
+import de.timesnake.game.microgames.game.Graffiti;
+import de.timesnake.game.microgames.game.HotPotato;
+import de.timesnake.game.microgames.game.KnockOut;
+import de.timesnake.game.microgames.game.LadderKing;
+import de.timesnake.game.microgames.game.MicroGame;
+import de.timesnake.game.microgames.game.Parkour;
+import de.timesnake.game.microgames.game.TntRun;
 import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.game.microgames.user.PartyManager;
 import de.timesnake.game.microgames.user.TablistManager;
+import de.timesnake.library.basic.util.RandomCollection;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.basic.util.chat.ExTextColor;
 import de.timesnake.library.extension.util.chat.Chat;
 import de.timesnake.library.game.NonTmpGameInfo;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Random;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Instrument;
@@ -33,16 +60,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
-import java.time.Duration;
-import java.util.*;
-
-public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameInfo>> implements Listener {
+public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameInfo>> implements
+        Listener {
 
     public static MicroGamesServerManager getInstance() {
         return (MicroGamesServerManager) ServerManager.getInstance();
     }
 
-    private static final Integer NEXT_GAME_DELAY = 10;
+    private static final Integer NEXT_GAME_DELAY = 15;
     private final Map<String, MicroGame> microGamesByName = new HashMap<>();
     private final Map<Integer, List<MicroGame>> microGamesByMinPlayers = new HashMap<>();
 
@@ -179,40 +204,25 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
 
         MicroGame votedGame;
 
-        // get voted games
-        List<MicroGame> votedGames = new ArrayList<>();
-        int voteSum = 0;
-        for (MicroGame microGame : this.microGamesByName.values()) {
-            if (microGame.getVotes() > 0 && Server.getGameNotServiceUsers().size() >= microGame.getMinPlayers()) {
-                votedGames.add(microGame);
-                voteSum += microGame.getVotes();
-            }
-        }
+        RandomCollection<MicroGame> votedGames = new RandomCollection<>(this.random);
 
-        if (voteSum == 0) {
+        votedGames.addAll(this.microGamesByName.values().stream()
+                        .filter(mg -> Server.getGameNotServiceUsers().size() >= mg.getMinPlayers()
+                                && (mg.getMaps().size() > 1 || !mg.equals(this.currentGame)))
+                        .toList(),
+                mg -> mg.getVotes().doubleValue());
+
+        if (votedGames.size() == 0) {
             votedGame = this.getRandomGame();
         } else {
-            int r = this.random.nextInt(voteSum);
-            Iterator<MicroGame> iterator = votedGames.listIterator();
-            do {
-                votedGame = iterator.next();
-                r -= votedGame.getVotes();
-            } while (r >= 0 && iterator.hasNext());
+            votedGame = votedGames.next();
         }
 
         if (votedGame == null) {
-            this.broadcastMicroGamesMessage(Component.text("No game found, waiting for more players", ExTextColor.WARNING));
+            this.broadcastMicroGamesMessage(
+                    Component.text("No game found, waiting for more players", ExTextColor.WARNING));
             this.paused = true;
             return;
-        }
-
-        while (votedGame.getMaps().size() == 1 && this.currentGame.equals(votedGame)) {
-            if (votedGames.size() > 1) {
-                this.nextGame();
-                return;
-            } else {
-                votedGame = this.getRandomGame();
-            }
         }
 
         this.paused = false;
@@ -270,10 +280,12 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
                     this.startTask.cancel();
                 } else if (start <= 5) {
                     Server.broadcastNote(Instrument.PLING, Note.natural(1, Note.Tone.A));
-                    MicroGamesServer.broadcastMicroGamesMessage(Component.text("The game starts in ", ExTextColor.PUBLIC)
-                            .append(Component.text(start, ExTextColor.VALUE))
-                            .append(Component.text(" s", ExTextColor.PUBLIC)));
-                    Server.broadcastTitle(Component.text(start, ExTextColor.WARNING), Component.empty(), Duration.ofSeconds(1));
+                    MicroGamesServer.broadcastMicroGamesMessage(
+                            Component.text("The game starts in ", ExTextColor.PUBLIC)
+                                    .append(Component.text(start, ExTextColor.VALUE))
+                                    .append(Component.text(" s", ExTextColor.PUBLIC)));
+                    Server.broadcastTitle(Component.text(start, ExTextColor.WARNING),
+                            Component.empty(), Duration.ofSeconds(1));
                 }
                 start--;
             }, 0, 20, GameMicroGames.getPlugin());
@@ -310,7 +322,8 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
             this.delayTask.cancel();
         }
 
-        this.broadcastMicroGamesMessage(Component.text("Starting party mode!", ExTextColor.WARNING));
+        this.broadcastMicroGamesMessage(
+                Component.text("Starting party mode!", ExTextColor.WARNING));
         this.broadcastMicroGamesMessage(Chat.getLineSeparator());
         this.broadcastMicroGamesMessage(Component.text("Point Distribution:", ExTextColor.GOLD));
         this.broadcastMicroGamesMessage(Component.text("    1. Place: ", ExTextColor.PUBLIC)
@@ -373,7 +386,8 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
 
             this.broadcastMicroGamesMessage(Component.empty());
             this.broadcastMicroGamesMessage(Component.empty());
-            this.broadcastMicroGamesMessage(Component.text("The party has ended", ExTextColor.WARNING));
+            this.broadcastMicroGamesMessage(
+                    Component.text("The party has ended", ExTextColor.WARNING));
             this.broadcastMicroGamesMessage(Chat.getLineSeparator());
 
             Server.broadcastTitle(users.get(0).getChatNameComponent()
@@ -383,12 +397,14 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
 
             int i = 1;
             for (User user : users) {
-                this.broadcastMicroGamesMessage(Component.text(" " + i + ".  ", ExTextColor.GOLD, TextDecoration.BOLD)
-                        .append(user.getChatNameComponent()));
+                this.broadcastMicroGamesMessage(
+                        Component.text(" " + i + ".  ", ExTextColor.GOLD, TextDecoration.BOLD)
+                                .append(user.getChatNameComponent()));
                 i++;
 
                 ((MicroGamesUser) user).resetPoints();
-                this.getTablistManager().getTablist().updateEntryValue(user, ((MicroGamesUser) user).getPoints());
+                this.getTablistManager().getTablist()
+                        .updateEntryValue(user, ((MicroGamesUser) user).getPoints());
             }
             this.broadcastMicroGamesMessage(Chat.getLineSeparator());
 
@@ -462,7 +478,8 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
     @EventHandler
     public void onUserMove(UserMoveEvent e) {
         User user = e.getUser();
-        if (!user.getStatus().equals(Status.User.IN_GAME) && e.getTo().getY() < user.getWorld().getMinHeight() - 10) {
+        if (!user.getStatus().equals(Status.User.IN_GAME)
+                && e.getTo().getY() < user.getWorld().getMinHeight() - 10) {
             user.getPlayer().setVelocity(new Vector());
             user.teleport(this.currentGame.getStartLocation());
         }
