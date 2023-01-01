@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 timesnake
+ * Copyright (C) 2023 timesnake
  */
 
 package de.timesnake.game.microgames.game;
@@ -18,6 +18,9 @@ import de.timesnake.library.basic.util.chat.ExTextColor;
 import de.timesnake.library.entities.EntityManager;
 import de.timesnake.library.entities.entity.bukkit.ExPhantom;
 import de.timesnake.library.entities.pathfinder.custom.ExCustomPathfinderGoalPhantomTarget;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 import net.kyori.adventure.text.Component;
 import org.bukkit.GameRule;
 import org.bukkit.Location;
@@ -32,10 +35,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
-
 public class PhantomPunch extends ShrinkingPlatformGame implements Listener {
 
     public static final Integer SPAWN_LOCATION_INDEX = 2;
@@ -45,14 +44,16 @@ public class PhantomPunch extends ShrinkingPlatformGame implements Listener {
     public static final Integer SPAWN_DELAY = 11;
     public static final Integer START_PHANTOMS = 6;
     public static final ExItemStack BOW =
-            new ExItemStack(Material.BOW).unbreakable().addEnchantments(new Tuple<>(Enchantment.ARROW_INFINITE, 1));
+            new ExItemStack(Material.BOW).unbreakable()
+                    .addEnchantments(new Tuple<>(Enchantment.ARROW_INFINITE, 1));
     protected static final Integer SPEC_LOCATION_INDEX = 0;
     protected static final Integer START_LOCATION_INDEX = 1;
     private final List<ExPhantom> phantoms = new ArrayList<>();
     private BukkitTask spawnTask;
 
     public PhantomPunch() {
-        super("phantompunch", "PhantomPunch", Material.PHANTOM_MEMBRANE, "Try to defend the phantoms, as a team", 1);
+        super("phantompunch", "PhantomPunch", Material.PHANTOM_MEMBRANE,
+                "Try to defend the phantoms, as a team", 1);
 
         Server.registerListener(this, GameMicroGames.getPlugin());
     }
@@ -143,7 +144,8 @@ public class PhantomPunch extends ShrinkingPlatformGame implements Listener {
 
     @Override
     public void stop() {
-        Server.broadcastTitle(Component.text("Game over", ExTextColor.WARNING), Component.empty(), Duration.ofSeconds(3));
+        Server.broadcastTitle(Component.text("Game over", ExTextColor.WARNING), Component.empty(),
+                Duration.ofSeconds(3));
 
         if (this.spawnTask != null) {
             this.spawnTask.cancel();

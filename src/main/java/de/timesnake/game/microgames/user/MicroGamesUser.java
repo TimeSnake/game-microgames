@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 timesnake
+ * Copyright (C) 2023 timesnake
  */
 
 package de.timesnake.game.microgames.user;
@@ -20,14 +20,17 @@ import de.timesnake.game.microgames.chat.Plugin;
 import de.timesnake.game.microgames.game.MicroGame;
 import de.timesnake.game.microgames.server.MicroGamesServer;
 import de.timesnake.library.basic.util.Status;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.*;
 
 public class MicroGamesUser extends SpectatorUser {
 
@@ -67,7 +70,8 @@ public class MicroGamesUser extends SpectatorUser {
     }
 
     @Override
-    public TablistableGroup getTablistGroup(de.timesnake.basic.bukkit.util.user.scoreboard.TablistGroupType type) {
+    public TablistableGroup getTablistGroup(
+            de.timesnake.basic.bukkit.util.user.scoreboard.TablistGroupType type) {
         if (type.equals(TablistGroupType.DUMMY)) {
             return MicroGamesServer.getTablistManager().getGameTeam();
         }
@@ -90,9 +94,11 @@ public class MicroGamesUser extends SpectatorUser {
         this.points += points;
     }
 
-    public class VoteInventory implements InventoryHolder, UserInventoryInteractListener, UserInventoryClickListener {
+    public class VoteInventory implements InventoryHolder, UserInventoryInteractListener,
+            UserInventoryClickListener {
 
-        private final ExItemStack item = new ExItemStack(Material.NETHER_STAR, ChatColor.GOLD + "Voting");
+        private final ExItemStack item = new ExItemStack(Material.NETHER_STAR,
+                ChatColor.GOLD + "Voting");
         private final ExInventory inv;
         private final HashMap<ExItemStack, MicroGame> gamesByItem = new HashMap<>();
 
@@ -101,7 +107,8 @@ public class MicroGamesUser extends SpectatorUser {
 
             int i = 0;
             for (MicroGame game : games) {
-                ExItemStack item = new ExItemStack(i, game.getMaterial(), ChatColor.GOLD + game.getDisplayName(),
+                ExItemStack item = new ExItemStack(i, game.getMaterial(),
+                        ChatColor.GOLD + game.getDisplayName(),
                         List.of(ChatColor.WHITE + game.getDescription()));
                 item.hideAll();
                 this.inv.setItemStack(item);
@@ -140,7 +147,8 @@ public class MicroGamesUser extends SpectatorUser {
                     item.setLore(ChatColor.WHITE + microGame.getDescription());
 
                     Server.printText(Plugin.MICRO_GAMES,
-                            MicroGamesUser.this.getName() + " devoted " + microGame.getName(), "Voting");
+                            MicroGamesUser.this.getName() + " devoted " + microGame.getName(),
+                            "Voting");
                 } else {
                     MicroGamesUser.this.votedGames.add(microGame);
                     microGame.addVote();
@@ -149,7 +157,8 @@ public class MicroGamesUser extends SpectatorUser {
                     item.setLore(ChatColor.WHITE + microGame.getDescription(), "", "§aVoted");
 
                     Server.printText(Plugin.MICRO_GAMES,
-                            MicroGamesUser.this.getName() + " voted for " + microGame.getName(), "Voting");
+                            MicroGamesUser.this.getName() + " voted for " + microGame.getName(),
+                            "Voting");
                 }
 
                 this.gamesByItem.put(item, microGame);

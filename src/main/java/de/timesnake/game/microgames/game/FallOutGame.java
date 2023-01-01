@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 timesnake
+ * Copyright (C) 2023 timesnake
  */
 
 package de.timesnake.game.microgames.game;
@@ -12,17 +12,17 @@ import de.timesnake.game.microgames.server.MicroGamesServer;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.basic.util.chat.ExTextColor;
+import java.time.Duration;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import java.time.Duration;
-
 public abstract class FallOutGame extends MicroGame implements Listener {
 
-    public FallOutGame(String name, String displayName, Material material, String description, Integer minPlayers) {
+    public FallOutGame(String name, String displayName, Material material, String description,
+            Integer minPlayers) {
         super(name, displayName, material, description, minPlayers);
     }
 
@@ -43,7 +43,8 @@ public abstract class FallOutGame extends MicroGame implements Listener {
         }
 
         if (e.getTo().getBlockY() < this.getDeathHeight()) {
-            user.showTitle(Component.text("You lose!", ExTextColor.WARNING), Component.empty(), Duration.ofSeconds(3));
+            user.showTitle(Component.text("You lose!", ExTextColor.WARNING), Component.empty(),
+                    Duration.ofSeconds(3));
             MicroGamesServer.broadcastMicroGamesMessage(user.getChatNameComponent()
                     .append(Component.text(this.getDeathMessage(), ExTextColor.WARNING)));
             Server.broadcastSound(Sound.ENTITY_PLAYER_HURT, 2);

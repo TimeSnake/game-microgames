@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 timesnake
+ * Copyright (C) 2023 timesnake
  */
 
 package de.timesnake.game.microgames.game;
@@ -18,17 +18,16 @@ import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.basic.util.Tuple;
 import de.timesnake.library.basic.util.chat.ExTextColor;
 import de.timesnake.library.extension.util.chat.Chat;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.GameRule;
-import org.bukkit.Material;
-import org.bukkit.Sound;
-
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
+import org.bukkit.GameRule;
+import org.bukkit.Material;
+import org.bukkit.Sound;
 
 public abstract class MicroGame {
 
@@ -53,7 +52,8 @@ public abstract class MicroGame {
     private boolean isGameRunning = false;
     private Integer votes = 0;
 
-    public MicroGame(String name, String displayName, Material material, String description, Integer minPlayers) {
+    public MicroGame(String name, String displayName, Material material, String description,
+            Integer minPlayers) {
         this.name = name;
         this.displayName = displayName;
         this.material = material;
@@ -69,19 +69,22 @@ public abstract class MicroGame {
                 }
 
                 if (map.getLocations().size() < this.getLocationAmount()) {
-                    Server.printWarning(Plugin.MICRO_GAMES, "Can not load map " + map.getName() + ", too few " +
-                            "locations");
+                    Server.printWarning(Plugin.MICRO_GAMES,
+                            "Can not load map " + map.getName() + ", too few " +
+                                    "locations");
                     continue;
                 }
 
                 this.maps.add(map);
                 this.onMapLoad(map);
 
-                Server.printText(Plugin.MICRO_GAMES, "Added map " + map.getName(), this.displayName);
+                Server.printText(Plugin.MICRO_GAMES, "Added map " + map.getName(),
+                        this.displayName);
             }
         }
 
-        this.sideboard = Server.getScoreboardManager().registerSideboard(name, "§6§l" + displayName);
+        this.sideboard = Server.getScoreboardManager()
+                .registerSideboard(name, "§6§l" + displayName);
     }
 
     public void onMapLoad(Map map) {
@@ -123,7 +126,8 @@ public abstract class MicroGame {
                 user.setSideboard(this.sideboard);
             }
         }
-        Server.broadcastTitle(Component.text(this.displayName, ExTextColor.GOLD, TextDecoration.BOLD),
+        Server.broadcastTitle(
+                Component.text(this.displayName, ExTextColor.GOLD, TextDecoration.BOLD),
                 Component.text(this.description), Duration.ofSeconds(5));
 
         Server.runTaskLaterSynchrony(this::loadDelayed, 5 * 20, GameMicroGames.getPlugin());
@@ -137,7 +141,8 @@ public abstract class MicroGame {
         }
 
         this.isGameRunning = true;
-        MicroGamesServer.broadcastMicroGamesMessage(Component.text("Game started", ExTextColor.WARNING));
+        MicroGamesServer.broadcastMicroGamesMessage(
+                Component.text("Game started", ExTextColor.WARNING));
     }
 
     protected void addWinner(MicroGamesUser user, boolean first) {
@@ -190,9 +195,12 @@ public abstract class MicroGame {
     }
 
     protected void calcPlaces(Function<MicroGamesUser, Integer> usersToValue, boolean highest) {
-        Tuple<MicroGamesUser, Integer> first = highest ? new Tuple<>(null, -1) : new Tuple<>(null, Integer.MAX_VALUE);
-        Tuple<MicroGamesUser, Integer> second = highest ? new Tuple<>(null, -1) : new Tuple<>(null, Integer.MAX_VALUE);
-        Tuple<MicroGamesUser, Integer> third = highest ? new Tuple<>(null, -1) : new Tuple<>(null, Integer.MAX_VALUE);
+        Tuple<MicroGamesUser, Integer> first =
+                highest ? new Tuple<>(null, -1) : new Tuple<>(null, Integer.MAX_VALUE);
+        Tuple<MicroGamesUser, Integer> second =
+                highest ? new Tuple<>(null, -1) : new Tuple<>(null, Integer.MAX_VALUE);
+        Tuple<MicroGamesUser, Integer> third =
+                highest ? new Tuple<>(null, -1) : new Tuple<>(null, Integer.MAX_VALUE);
 
         for (User user : MicroGamesServer.getGameNotServiceUsers()) {
             Integer value = usersToValue.apply(((MicroGamesUser) user));
@@ -225,7 +233,8 @@ public abstract class MicroGame {
 
             if (MicroGamesServer.isPartyMode()) {
                 this.first.addPoints(FIRST_POINTS);
-                MicroGamesServer.getTablistManager().getTablist().updateEntryValue(this.first, this.first.getPoints());
+                MicroGamesServer.getTablistManager().getTablist()
+                        .updateEntryValue(this.first, this.first.getPoints());
             }
 
             if (this.second == null) {
@@ -241,10 +250,12 @@ public abstract class MicroGame {
                             this.second.getPoints());
                 }
 
-                MicroGamesServer.broadcastMicroGamesMessage(Component.text("1.  ", ExTextColor.GOLD, TextDecoration.BOLD)
-                        .append(this.first.getChatNameComponent()));
-                MicroGamesServer.broadcastMicroGamesMessage(Component.text("2.  ", ExTextColor.GOLD, TextDecoration.BOLD)
-                        .append(this.second.getChatNameComponent()));
+                MicroGamesServer.broadcastMicroGamesMessage(
+                        Component.text("1.  ", ExTextColor.GOLD, TextDecoration.BOLD)
+                                .append(this.first.getChatNameComponent()));
+                MicroGamesServer.broadcastMicroGamesMessage(
+                        Component.text("2.  ", ExTextColor.GOLD, TextDecoration.BOLD)
+                                .append(this.second.getChatNameComponent()));
 
                 if (this.third == null) {
                     Server.broadcastTitle(first.getChatNameComponent()
@@ -254,16 +265,20 @@ public abstract class MicroGame {
                 } else {
                     if (MicroGamesServer.isPartyMode()) {
                         this.third.addPoints(THIRD_POINTS);
-                        MicroGamesServer.getTablistManager().getTablist().updateEntryValue(this.third,
-                                this.third.getPoints());
+                        MicroGamesServer.getTablistManager().getTablist()
+                                .updateEntryValue(this.third,
+                                        this.third.getPoints());
                     }
 
-                    MicroGamesServer.broadcastMicroGamesMessage(Component.text("3.  ", ExTextColor.GOLD, TextDecoration.BOLD)
-                            .append(this.third.getChatNameComponent()));
-                    Server.broadcastTitle(first.getChatNameComponent().append(Component.text(" wins", ExTextColor.WHITE)),
+                    MicroGamesServer.broadcastMicroGamesMessage(
+                            Component.text("3.  ", ExTextColor.GOLD, TextDecoration.BOLD)
+                                    .append(this.third.getChatNameComponent()));
+                    Server.broadcastTitle(first.getChatNameComponent()
+                                    .append(Component.text(" wins", ExTextColor.WHITE)),
                             Component.text("2. ").append(this.second.getChatNameComponent())
                                     .append(Component.text("    3. ", ExTextColor.WHITE))
-                                    .append(this.third.getChatNameComponent()), Duration.ofSeconds(3));
+                                    .append(this.third.getChatNameComponent()),
+                            Duration.ofSeconds(3));
                 }
             }
 

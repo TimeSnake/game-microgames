@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 timesnake
+ * Copyright (C) 2023 timesnake
  */
 
 package de.timesnake.game.microgames.user;
@@ -12,7 +12,6 @@ import de.timesnake.library.extension.util.chat.Code;
 import de.timesnake.library.extension.util.chat.Plugin;
 import de.timesnake.library.extension.util.cmd.Arguments;
 import de.timesnake.library.extension.util.cmd.ExCommand;
-
 import java.util.List;
 
 public class SkipGameCmd implements CommandListener {
@@ -20,7 +19,8 @@ public class SkipGameCmd implements CommandListener {
     private Code.Permission perm;
 
     @Override
-    public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd, Arguments<Argument> args) {
+    public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd,
+            Arguments<Argument> args) {
         if (!args.isLengthEquals(1, true)) {
             return;
         }
@@ -30,14 +30,16 @@ public class SkipGameCmd implements CommandListener {
                 return;
             }
 
-            if (MicroGamesServer.getCurrentGame() != null && MicroGamesServer.getCurrentGame().isGameRunning()) {
+            if (MicroGamesServer.getCurrentGame() != null && MicroGamesServer.getCurrentGame()
+                    .isGameRunning()) {
                 MicroGamesServer.skipGame();
             }
         }
     }
 
     @Override
-    public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd, Arguments<Argument> args) {
+    public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd,
+            Arguments<Argument> args) {
         return List.of("skip");
     }
 

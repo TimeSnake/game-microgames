@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 timesnake
+ * Copyright (C) 2023 timesnake
  */
 
 package de.timesnake.game.microgames.game;
@@ -11,15 +11,14 @@ import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Status;
+import java.util.HashSet;
+import java.util.Set;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-
-import java.util.HashSet;
-import java.util.Set;
 
 public class TntRun extends FallOutGame implements Listener {
 
@@ -31,7 +30,8 @@ public class TntRun extends FallOutGame implements Listener {
     protected static final Integer REMOVE_DELAY = 19;
     protected static final Integer TNT_REMOVE_DELAY = 10;
 
-    protected static final Double[][] NEAR_BLOCK_VECTORS = {{0.3, 0.0}, {0.0, 0.3}, {-0.3, 0.0}, {0.0, -0.3}, {0.3,
+    protected static final Double[][] NEAR_BLOCK_VECTORS = {{0.3, 0.0}, {0.0, 0.3}, {-0.3, 0.0},
+            {0.0, -0.3}, {0.3,
             0.3}, {0.3, -0.3}, {-0.3, 0.3}, {-0.3, -0.3}};
 
     private final Set<Block> removedBlocks = new HashSet<>();
@@ -69,7 +69,8 @@ public class TntRun extends FallOutGame implements Listener {
 
             Location from = user.getLocation().add(0, -1, 0);
 
-            Server.runTaskLaterSynchrony(() -> this.removeBlocks(from), 40 - REMOVE_DELAY, GameMicroGames.getPlugin());
+            Server.runTaskLaterSynchrony(() -> this.removeBlocks(from), 40 - REMOVE_DELAY,
+                    GameMicroGames.getPlugin());
         }
     }
 
@@ -103,7 +104,8 @@ public class TntRun extends FallOutGame implements Listener {
                 Location loc = block.getLocation().add(0.5, 0, 0.5);
                 loc.getBlock().setType(Material.AIR);
                 TNTPrimed tnt = loc.getWorld().spawn(loc, TNTPrimed.class);
-                Server.runTaskLaterSynchrony(tnt::remove, TNT_REMOVE_DELAY, GameMicroGames.getPlugin());
+                Server.runTaskLaterSynchrony(tnt::remove, TNT_REMOVE_DELAY,
+                        GameMicroGames.getPlugin());
             }
         }, REMOVE_DELAY, GameMicroGames.getPlugin());
 
