@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 timesnake
+ * Copyright (C) 2023 timesnake
  */
 
 package de.timesnake.game.microgames.server;
@@ -68,6 +68,7 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
     }
 
     private static final Integer NEXT_GAME_DELAY = 15;
+    private static final Integer START_DELAY = 7;
     private final Map<String, MicroGame> microGamesByName = new HashMap<>();
     private final Map<Integer, List<MicroGame>> microGamesByMinPlayers = new HashMap<>();
 
@@ -265,7 +266,7 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
                 return;
             }
 
-            this.start = NEXT_GAME_DELAY;
+            this.start = START_DELAY;
 
             this.startTask = Server.runTaskTimerSynchrony(() -> {
                 if (start == 0) {
