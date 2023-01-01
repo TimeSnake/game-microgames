@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 timesnake
+ * Copyright (C) 2023 timesnake
  */
 
 package de.timesnake.game.microgames.game;
@@ -14,6 +14,8 @@ import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.basic.util.Tuple;
 import de.timesnake.library.extension.util.chat.Chat;
+import java.util.HashMap;
+import java.util.List;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -26,9 +28,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
-import java.util.HashMap;
-import java.util.List;
-
 public class Firefighter extends MicroGame implements Listener {
 
     protected static final Integer SPEC_LOCATION_INDEX = 0;
@@ -39,9 +38,12 @@ public class Firefighter extends MicroGame implements Listener {
     private static final Integer DURATION = 30;
     private static final double FIRE_CHANCE = 0.2;
 
-    private static final List<Tuple<Vector, BlockFace>> NEAR_BLOCKS = List.of(new Tuple<>(new Vector(1, 0, 0),
-                    BlockFace.WEST), new Tuple<>(new Vector(-1, 0, 0), BlockFace.EAST), new Tuple<>(new Vector(0, 1, 0),
-                    null), new Tuple<>(new Vector(0, -1, 0), BlockFace.UP), new Tuple<>(new Vector(0, 0, 1),
+    private static final List<Tuple<Vector, BlockFace>> NEAR_BLOCKS = List.of(
+            new Tuple<>(new Vector(1, 0, 0),
+                    BlockFace.WEST), new Tuple<>(new Vector(-1, 0, 0), BlockFace.EAST),
+            new Tuple<>(new Vector(0, 1, 0),
+                    null), new Tuple<>(new Vector(0, -1, 0), BlockFace.UP),
+            new Tuple<>(new Vector(0, 0, 1),
                     BlockFace.NORTH)
             , new Tuple<>(new Vector(0, 0, -1), BlockFace.SOUTH));
 

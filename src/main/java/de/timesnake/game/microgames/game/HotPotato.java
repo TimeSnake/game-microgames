@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 timesnake
+ * Copyright (C) 2023 timesnake
  */
 
 package de.timesnake.game.microgames.game;
@@ -17,6 +17,14 @@ import de.timesnake.game.microgames.server.MicroGamesServer;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.basic.util.chat.ExTextColor;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Instrument;
 import org.bukkit.Material;
@@ -26,12 +34,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.time.Duration;
-import java.util.*;
-
 public class HotPotato extends MicroGame implements Listener {
 
-    protected static final ExItemStack HOT_POTATO = new ExItemStack(Material.POTATO, "§cHot Potato");
+    protected static final ExItemStack HOT_POTATO = new ExItemStack(Material.POTATO,
+            "§cHot Potato");
     private static final Integer START_LOCATION_INDEX = 0;
     private static final Integer SPEC_LOCATION_INDEX = 1;
     private static final Integer SPAWN_LOCATION_INDEX = 2;
@@ -91,8 +97,9 @@ public class HotPotato extends MicroGame implements Listener {
             user.fillHotBar(HOT_POTATO);
             user.playNote(Instrument.PIANO, Note.natural(0, Note.Tone.C));
             if (this.time.equals(TIME)) {
-                user.sendPluginMessage(Plugin.MICRO_GAMES, Component.text("You have the", ExTextColor.PERSONAL)
-                        .append(Component.text("hot potato", ExTextColor.WARNING)));
+                user.sendPluginMessage(Plugin.MICRO_GAMES,
+                        Component.text("You have the", ExTextColor.PERSONAL)
+                                .append(Component.text("hot potato", ExTextColor.WARNING)));
             }
         } else {
             user.playNote(Instrument.PIANO, Note.natural(1, Note.Tone.C));
@@ -141,12 +148,14 @@ public class HotPotato extends MicroGame implements Listener {
 
             if (this.time <= TIME / 2) {
                 if (this.time == TIME / 2) {
-                    MicroGamesServer.broadcastMicroGamesMessage(Component.text("The best Player is now §cglowing!", ExTextColor.GOLD));
+                    MicroGamesServer.broadcastMicroGamesMessage(
+                            Component.text("The best Player is now §cglowing!", ExTextColor.GOLD));
                     Server.broadcastTitle(Component.text("Halftime", ExTextColor.WARNING),
                             Component.text("Glowing activated!"), Duration.ofSeconds(3));
                 }
 
-                List<Map.Entry<MicroGamesUser, Integer>> entries = new ArrayList<>(this.potatoTimesByUser.entrySet());
+                List<Map.Entry<MicroGamesUser, Integer>> entries = new ArrayList<>(
+                        this.potatoTimesByUser.entrySet());
                 entries.sort(Comparator.comparingInt(Map.Entry::getValue));
                 entries.get(0).getKey().addPotionEffect(PotionEffectType.GLOWING, 22, 1);
             }

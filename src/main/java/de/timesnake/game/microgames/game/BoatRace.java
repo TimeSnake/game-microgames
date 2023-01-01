@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 timesnake
+ * Copyright (C) 2023 timesnake
  */
 
 package de.timesnake.game.microgames.game;
@@ -10,6 +10,9 @@ import de.timesnake.basic.bukkit.util.user.event.UserDamageEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserDeathEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserMoveEvent;
 import de.timesnake.game.microgames.user.MicroGamesUser;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import org.bukkit.Material;
 import org.bukkit.entity.Boat;
 import org.bukkit.entity.Entity;
@@ -20,10 +23,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.vehicle.VehicleExitEvent;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
 public class BoatRace extends LocationFinishGame implements Listener {
 
@@ -90,7 +89,8 @@ public class BoatRace extends LocationFinishGame implements Listener {
     }
 
     private void setUserInBoat(User user) {
-        Boat boat = (Boat) this.getStartLocation().getWorld().spawnEntity(this.getStartLocation(), EntityType.BOAT);
+        Boat boat = (Boat) this.getStartLocation().getWorld()
+                .spawnEntity(this.getStartLocation(), EntityType.BOAT);
         boat.setInvulnerable(true);
         boat.setRotation(this.getStartLocation().getYaw(), 0);
 
@@ -115,11 +115,13 @@ public class BoatRace extends LocationFinishGame implements Listener {
             return;
         }
 
-        if (this.currentMap == null || !this.currentMap.getWorld().getBukkitWorld().equals(e.getFrom().getWorld())) {
+        if (this.currentMap == null || !this.currentMap.getWorld().getBukkitWorld()
+                .equals(e.getFrom().getWorld())) {
             return;
         }
 
-        if (e.getFrom().getBlockX() == e.getTo().getBlockX() && e.getFrom().getBlockZ() == e.getTo().getBlockZ()) {
+        if (e.getFrom().getBlockX() == e.getTo().getBlockX() && e.getFrom().getBlockZ() == e.getTo()
+                .getBlockZ()) {
             return;
         }
 
@@ -132,7 +134,6 @@ public class BoatRace extends LocationFinishGame implements Listener {
         if (!(entity instanceof Player)) {
             return;
         }
-
 
         User user = Server.getUser(((Player) entity));
 

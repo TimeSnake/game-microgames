@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 timesnake
+ * Copyright (C) 2023 timesnake
  */
 
 package de.timesnake.game.microgames.game;
@@ -8,7 +8,13 @@ import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.user.ExItemStack;
 import de.timesnake.basic.bukkit.util.user.User;
-import de.timesnake.basic.bukkit.util.user.event.*;
+import de.timesnake.basic.bukkit.util.user.event.UserDamageByUserEvent;
+import de.timesnake.basic.bukkit.util.user.event.UserDamageEvent;
+import de.timesnake.basic.bukkit.util.user.event.UserDeathEvent;
+import de.timesnake.basic.bukkit.util.user.event.UserDropItemEvent;
+import de.timesnake.basic.bukkit.util.user.event.UserInventoryInteractEvent;
+import de.timesnake.basic.bukkit.util.user.event.UserInventoryInteractListener;
+import de.timesnake.basic.bukkit.util.user.event.UserRespawnEvent;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.game.microgames.chat.Plugin;
 import de.timesnake.game.microgames.main.GameMicroGames;
@@ -17,8 +23,21 @@ import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.basic.util.chat.ExTextColor;
 import de.timesnake.library.extension.util.chat.Chat;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import net.kyori.adventure.text.Component;
-import org.bukkit.*;
+import org.bukkit.Color;
+import org.bukkit.FluidCollisionMode;
+import org.bukkit.GameRule;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.EntityType;
@@ -33,9 +52,6 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
-
-import java.time.Duration;
-import java.util.*;
 
 public class Graffiti extends MicroGame implements Listener, UserInventoryInteractListener {
 
@@ -57,10 +73,12 @@ public class Graffiti extends MicroGame implements Listener, UserInventoryIntera
     private static final HashMap<Material, Material> BLUE_PAINT_MAP = new HashMap<>();
     private static final HashMap<Material, Material> RED_PAINT_MAP = new HashMap<>();
 
-    private static final List<BlockFace> BLOCK_FACES = List.of(BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH,
+    private static final List<BlockFace> BLOCK_FACES = List.of(BlockFace.NORTH, BlockFace.EAST,
+            BlockFace.SOUTH,
             BlockFace.WEST, BlockFace.UP, BlockFace.DOWN);
 
-    private static final List<BlockFace> JUMP_BLOCK_FACES = List.of(BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH,
+    private static final List<BlockFace> JUMP_BLOCK_FACES = List.of(BlockFace.NORTH, BlockFace.EAST,
+            BlockFace.SOUTH,
             BlockFace.WEST);
     private static final List<Material> JUMP_BLOCK_TYPES = List.of(Material.WHITE_STAINED_GLASS,
             Material.BLUE_STAINED_GLASS,
@@ -162,13 +180,15 @@ public class Graffiti extends MicroGame implements Listener, UserInventoryIntera
 
             if (this.blueTeam.size() < teamSize) {
                 this.blueTeam.add(user);
-                user.sendPluginMessage(Plugin.MICRO_GAMES, Component.text("You joined", ExTextColor.PERSONAL)
-                        .append(Component.text(" " + "blue", ExTextColor.VALUE)));
+                user.sendPluginMessage(Plugin.MICRO_GAMES,
+                        Component.text("You joined", ExTextColor.PERSONAL)
+                                .append(Component.text(" " + "blue", ExTextColor.VALUE)));
                 user.teleport(this.currentMap.getLocation(BLUE_SPAWN_LOCATION_INDEX));
             } else {
                 this.redTeam.add(user);
-                user.sendPluginMessage(Plugin.MICRO_GAMES, Component.text("You joined", ExTextColor.PERSONAL)
-                        .append(Component.text(" " + "red", ExTextColor.VALUE)));
+                user.sendPluginMessage(Plugin.MICRO_GAMES,
+                        Component.text("You joined", ExTextColor.PERSONAL)
+                                .append(Component.text(" " + "red", ExTextColor.VALUE)));
                 user.teleport(this.currentMap.getLocation(RED_SPAWN_LOCATION_INDEX));
             }
 
@@ -425,11 +445,13 @@ public class Graffiti extends MicroGame implements Listener, UserInventoryIntera
 
         this.cooldownUsers.add(user);
 
-        Snowball paintball = user.getWorld().spawn(user.getEyeLocation().add(0, -0.5, 0), Snowball.class);
+        Snowball paintball = user.getWorld()
+                .spawn(user.getEyeLocation().add(0, -0.5, 0), Snowball.class);
         paintball.setShooter(user.getPlayer());
         paintball.setVelocity(user.getLocation().getDirection().normalize().multiply(1.5));
 
-        Server.runTaskLaterSynchrony(() -> this.cooldownUsers.remove(user), COOLDOWN, GameMicroGames.getPlugin());
+        Server.runTaskLaterSynchrony(() -> this.cooldownUsers.remove(user), COOLDOWN,
+                GameMicroGames.getPlugin());
     }
 
     @EventHandler
@@ -456,7 +478,8 @@ public class Graffiti extends MicroGame implements Listener, UserInventoryIntera
 
                 Location middle = hitBlock.getLocation().add(0.5, 0.5, 0.5);
 
-                Map<Material, Material> paintMap = this.blueTeam.contains(user) ? BLUE_PAINT_MAP : RED_PAINT_MAP;
+                Map<Material, Material> paintMap =
+                        this.blueTeam.contains(user) ? BLUE_PAINT_MAP : RED_PAINT_MAP;
 
                 Projectile projectile = e.getEntity();
 
@@ -478,9 +501,11 @@ public class Graffiti extends MicroGame implements Listener, UserInventoryIntera
                             }
 
                             for (BlockFace face : BLOCK_FACES) {
-                                RayTraceResult res = origin.getBlock().getWorld().rayTraceBlocks(origin,
-                                        blockMiddle.add(face.getDirection().multiply(0.5)).toVector().subtract(origin.toVector()), 32,
-                                        FluidCollisionMode.NEVER, true);
+                                RayTraceResult res = origin.getBlock().getWorld()
+                                        .rayTraceBlocks(origin,
+                                                blockMiddle.add(face.getDirection().multiply(0.5))
+                                                        .toVector().subtract(origin.toVector()), 32,
+                                                FluidCollisionMode.NEVER, true);
 
                                 if (res == null) {
                                     continue;
@@ -521,15 +546,23 @@ public class Graffiti extends MicroGame implements Listener, UserInventoryIntera
         user.setItem(PAINT_GUN);
 
         if (this.blueTeam.contains(user)) {
-            user.setItem(EquipmentSlot.HEAD, ExItemStack.getLeatherArmor(Material.LEATHER_HELMET, Color.BLUE));
-            user.setItem(EquipmentSlot.CHEST, ExItemStack.getLeatherArmor(Material.LEATHER_CHESTPLATE, Color.BLUE));
-            user.setItem(EquipmentSlot.LEGS, ExItemStack.getLeatherArmor(Material.LEATHER_LEGGINGS, Color.BLUE));
-            user.setItem(EquipmentSlot.FEET, ExItemStack.getLeatherArmor(Material.LEATHER_BOOTS, Color.BLUE));
+            user.setItem(EquipmentSlot.HEAD,
+                    ExItemStack.getLeatherArmor(Material.LEATHER_HELMET, Color.BLUE));
+            user.setItem(EquipmentSlot.CHEST,
+                    ExItemStack.getLeatherArmor(Material.LEATHER_CHESTPLATE, Color.BLUE));
+            user.setItem(EquipmentSlot.LEGS,
+                    ExItemStack.getLeatherArmor(Material.LEATHER_LEGGINGS, Color.BLUE));
+            user.setItem(EquipmentSlot.FEET,
+                    ExItemStack.getLeatherArmor(Material.LEATHER_BOOTS, Color.BLUE));
         } else {
-            user.setItem(EquipmentSlot.HEAD, ExItemStack.getLeatherArmor(Material.LEATHER_HELMET, Color.RED));
-            user.setItem(EquipmentSlot.CHEST, ExItemStack.getLeatherArmor(Material.LEATHER_CHESTPLATE, Color.RED));
-            user.setItem(EquipmentSlot.LEGS, ExItemStack.getLeatherArmor(Material.LEATHER_LEGGINGS, Color.RED));
-            user.setItem(EquipmentSlot.FEET, ExItemStack.getLeatherArmor(Material.LEATHER_BOOTS, Color.RED));
+            user.setItem(EquipmentSlot.HEAD,
+                    ExItemStack.getLeatherArmor(Material.LEATHER_HELMET, Color.RED));
+            user.setItem(EquipmentSlot.CHEST,
+                    ExItemStack.getLeatherArmor(Material.LEATHER_CHESTPLATE, Color.RED));
+            user.setItem(EquipmentSlot.LEGS,
+                    ExItemStack.getLeatherArmor(Material.LEATHER_LEGGINGS, Color.RED));
+            user.setItem(EquipmentSlot.FEET,
+                    ExItemStack.getLeatherArmor(Material.LEATHER_BOOTS, Color.RED));
         }
     }
 }

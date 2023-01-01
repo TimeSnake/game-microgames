@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 timesnake
+ * Copyright (C) 2023 timesnake
  */
 
 package de.timesnake.game.microgames.game;
@@ -8,6 +8,7 @@ import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.library.basic.util.chat.ExTextColor;
+import java.time.Duration;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Instrument;
 import org.bukkit.Location;
@@ -15,16 +16,15 @@ import org.bukkit.Material;
 import org.bukkit.Note;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.time.Duration;
-
 public abstract class ShrinkingPlatformGame extends FallOutGame {
 
     private BukkitTask decreaseTask;
     private Integer delay;
     private Integer radius;
 
-    public ShrinkingPlatformGame(String name, String displayName, Material material, String description,
-                                 Integer minPlayers) {
+    public ShrinkingPlatformGame(String name, String displayName, Material material,
+            String description,
+            Integer minPlayers) {
         super(name, displayName, material, description, minPlayers);
     }
 

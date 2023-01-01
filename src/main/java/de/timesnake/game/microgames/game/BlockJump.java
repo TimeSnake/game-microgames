@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 timesnake
+ * Copyright (C) 2023 timesnake
  */
 
 package de.timesnake.game.microgames.game;
@@ -12,12 +12,11 @@ import de.timesnake.basic.bukkit.util.user.event.UserDeathEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserMoveEvent;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
 import de.timesnake.game.microgames.user.MicroGamesUser;
+import java.util.Random;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.potion.PotionEffectType;
-
-import java.util.Random;
 
 public class BlockJump extends LocationFinishGame implements Listener {
 
@@ -74,8 +73,12 @@ public class BlockJump extends LocationFinishGame implements Listener {
 
     private double randomBM() {
         double u = 0, v = 0;
-        while (u == 0) u = Math.random(); //Converting [0,1) to (0,1)
-        while (v == 0) v = Math.random();
+        while (u == 0) {
+            u = Math.random(); //Converting [0,1) to (0,1)
+        }
+        while (v == 0) {
+            v = Math.random();
+        }
 
         double num = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
         num = num / 10.0 + 0.5; // Translate to 0 -> 1

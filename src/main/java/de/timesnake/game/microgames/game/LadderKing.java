@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 timesnake
+ * Copyright (C) 2023 timesnake
  */
 
 package de.timesnake.game.microgames.game;
@@ -13,14 +13,13 @@ import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.server.MicroGamesServer;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Status;
+import java.util.HashMap;
+import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitTask;
-
-import java.util.HashMap;
-import java.util.List;
 
 public class LadderKing extends MicroGame implements Listener {
 
@@ -38,7 +37,8 @@ public class LadderKing extends MicroGame implements Listener {
     private final HashMap<MicroGamesUser, Integer> ladderTimesByUser = new HashMap<>();
 
     public LadderKing() {
-        super("ladderking", "King of the Ladder", Material.LADDER, "Try stand the longest time on top of the ladder",
+        super("ladderking", "King of the Ladder", Material.LADDER,
+                "Try stand the longest time on top of the ladder",
                 2);
         Server.registerListener(this, GameMicroGames.getPlugin());
     }
