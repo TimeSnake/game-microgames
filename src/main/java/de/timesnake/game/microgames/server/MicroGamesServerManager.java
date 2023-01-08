@@ -68,7 +68,7 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
     }
 
     private static final Integer NEXT_GAME_DELAY = 15;
-    private static final Integer START_DELAY = 7;
+    private static final Integer START_DELAY = 10;
     private final Map<String, MicroGame> microGamesByName = new HashMap<>();
     private final Map<Integer, List<MicroGame>> microGamesByMinPlayers = new HashMap<>();
 
