@@ -217,14 +217,9 @@ public class ColorSwap extends FallOutGame implements Listener {
         ExWorld world = this.currentMap.getWorld();
         int y = this.getFirstCorner().getBlockY() - 1;
 
-        for (int x = this.beginX; x <= this.endX; x += PATTERN_SIZE) {
-            for (int z = this.beginZ; z <= this.endZ; z += PATTERN_SIZE) {
-                for (int patternX = 0; patternX < PATTERN_SIZE; patternX++) {
-                    for (int patternZ = 0; patternZ < PATTERN_SIZE; patternZ++) {
-                        world.getBlockAt(x + patternX, y, z + patternZ)
-                                .setType(Material.WHITE_WOOL);
-                    }
-                }
+        for (int x = this.beginX; x <= this.endX; x++) {
+            for (int z = this.beginZ; z <= this.endZ; z++) {
+                world.getBlockAt(x, y, z).setType(Material.WHITE_WOOL);
             }
         }
     }
