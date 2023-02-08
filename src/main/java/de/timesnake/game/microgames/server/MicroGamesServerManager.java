@@ -23,12 +23,12 @@ import de.timesnake.game.microgames.game.BoatRace;
 import de.timesnake.game.microgames.game.ColorSwap;
 import de.timesnake.game.microgames.game.Dropper;
 import de.timesnake.game.microgames.game.Firefighter;
-import de.timesnake.game.microgames.game.Graffiti;
 import de.timesnake.game.microgames.game.HotPotato;
 import de.timesnake.game.microgames.game.KnockOut;
 import de.timesnake.game.microgames.game.LadderKing;
 import de.timesnake.game.microgames.game.MicroGame;
 import de.timesnake.game.microgames.game.Parkour;
+import de.timesnake.game.microgames.game.Spleef;
 import de.timesnake.game.microgames.game.TntRun;
 import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.user.MicroGamesUser;
@@ -104,14 +104,11 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
         if (colorSwap.getMaps().size() > 0) {
             games.add(colorSwap);
         }
-
-        /*
-        PhantomPunch phantomPunch = new PhantomPunch();
-        if (phantomPunch.getMaps().size() > 0) {
-            games.add(phantomPunch);
-        }
-
-         */
+        
+        //PhantomPunch phantomPunch = new PhantomPunch();
+        //if (phantomPunch.getMaps().size() > 0) {
+        //    games.add(phantomPunch);
+        //}
 
         Parkour parkour = new Parkour();
         if (parkour.getMaps().size() > 0) {
@@ -153,9 +150,14 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
             games.add(firefighter);
         }
 
-        Graffiti graffiti = new Graffiti();
-        if (graffiti.getMaps().size() > 0) {
-            games.add(graffiti);
+        //Graffiti graffiti = new Graffiti();
+        //if (graffiti.getMaps().size() > 0) {
+        //    games.add(graffiti);
+        //}
+
+        Spleef spleef = new Spleef();
+        if (spleef.getMaps().size() > 0) {
+            games.add(spleef);
         }
 
         this.partyManager = new PartyManager();

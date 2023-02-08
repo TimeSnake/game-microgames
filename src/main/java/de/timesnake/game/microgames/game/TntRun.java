@@ -175,6 +175,7 @@ public class TntRun extends FallOutGame implements Listener {
 
         super.onUserMove(e);
 
+        e.getFrom().getBlock().setType(Material.AIR);
         Location from = e.getFrom().add(0, -1, 0);
         this.removeBlocks(from);
     }
