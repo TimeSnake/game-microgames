@@ -20,12 +20,12 @@ public class PartyManager implements UserInventoryInteractListener {
 
     public static final ExItemStack ITEM = new ExItemStack(Material.PLAYER_HEAD, "§6Party");
 
-    private Code.Permission perm;
+    private Code perm;
 
     public PartyManager() {
         Server.getInventoryEventManager().addInteractListener(this, ITEM);
 
-        this.perm = Plugin.MICRO_GAMES.createPermssionCode("mgp", "microgames.party");
+        this.perm = Plugin.MICRO_GAMES.createPermssionCode("microgames.party");
     }
 
     @Override
@@ -33,16 +33,20 @@ public class PartyManager implements UserInventoryInteractListener {
         User user = event.getUser();
 
         if (!user.isSneaking()) {
-            user.sendPluginMessage(Plugin.MICRO_GAMES, Component.text("Click while sneaking to activate", ExTextColor.PERSONAL));
+            user.sendPluginMessage(Plugin.MICRO_GAMES,
+                    Component.text("Click while sneaking to activate", ExTextColor.PERSONAL));
             return;
         }
 
         if (user.hasPermission(this.perm, Plugin.MICRO_GAMES)) {
-            if (!MicroGamesServer.getCurrentGame().isGameRunning() && !MicroGamesServer.isPartyMode()) {
-                user.sendPluginMessage(Plugin.MICRO_GAMES, Component.text("Initiating party mode", ExTextColor.PERSONAL));
+            if (!MicroGamesServer.getCurrentGame().isGameRunning()
+                    && !MicroGamesServer.isPartyMode()) {
+                user.sendPluginMessage(Plugin.MICRO_GAMES,
+                        Component.text("Initiating party mode", ExTextColor.PERSONAL));
                 MicroGamesServer.startParty();
             } else {
-                user.sendPluginMessage(Plugin.MICRO_GAMES, Component.text("Party Mode currently not available", ExTextColor.PERSONAL));
+                user.sendPluginMessage(Plugin.MICRO_GAMES,
+                        Component.text("Party Mode currently not available", ExTextColor.PERSONAL));
             }
         }
     }
