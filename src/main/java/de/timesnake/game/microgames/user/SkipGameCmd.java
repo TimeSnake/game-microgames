@@ -16,7 +16,7 @@ import java.util.List;
 
 public class SkipGameCmd implements CommandListener {
 
-    private Code.Permission perm;
+    private Code perm;
 
     @Override
     public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd,
@@ -45,6 +45,6 @@ public class SkipGameCmd implements CommandListener {
 
     @Override
     public void loadCodes(Plugin plugin) {
-        this.perm = plugin.createPermssionCode("mgs", "microgames.skip");
+        this.perm = plugin.createPermssionCode("microgames.skip");
     }
 }
