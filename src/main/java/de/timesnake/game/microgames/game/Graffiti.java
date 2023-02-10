@@ -6,14 +6,14 @@ package de.timesnake.game.microgames.game;
 
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import de.timesnake.basic.bukkit.util.Server;
-import de.timesnake.basic.bukkit.util.user.ExItemStack;
+import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.event.UserDamageByUserEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserDamageEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserDeathEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserDropItemEvent;
-import de.timesnake.basic.bukkit.util.user.event.UserInventoryInteractEvent;
-import de.timesnake.basic.bukkit.util.user.event.UserInventoryInteractListener;
+import de.timesnake.basic.bukkit.util.user.inventory.UserInventoryInteractEvent;
+import de.timesnake.basic.bukkit.util.user.inventory.UserInventoryInteractListener;
 import de.timesnake.basic.bukkit.util.user.event.UserRespawnEvent;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.game.microgames.chat.Plugin;
