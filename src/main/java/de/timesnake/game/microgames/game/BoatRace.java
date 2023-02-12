@@ -58,6 +58,8 @@ public class BoatRace extends LocationFinishGame implements Listener {
 
     @Override
     public void reset() {
+        super.reset();
+
         for (Boat boat : this.boatByUser.values()) {
             boat.remove();
         }
