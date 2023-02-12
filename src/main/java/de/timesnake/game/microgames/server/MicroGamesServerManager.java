@@ -36,7 +36,7 @@ import de.timesnake.game.microgames.user.PartyManager;
 import de.timesnake.game.microgames.user.TablistManager;
 import de.timesnake.library.basic.util.RandomCollection;
 import de.timesnake.library.basic.util.Status;
-import de.timesnake.library.basic.util.chat.ExTextColor;
+import de.timesnake.library.chat.ExTextColor;
 import de.timesnake.library.extension.util.chat.Chat;
 import de.timesnake.library.game.NonTmpGameInfo;
 import java.time.Duration;
