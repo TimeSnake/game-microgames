@@ -7,6 +7,7 @@ package de.timesnake.game.microgames.game;
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.scoreboard.Sideboard;
+import de.timesnake.basic.bukkit.util.user.scoreboard.SideboardBuilder;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
 import de.timesnake.basic.game.util.game.Map;
@@ -84,7 +85,9 @@ public abstract class MicroGame {
         }
 
         this.sideboard = Server.getScoreboardManager()
-                .registerSideboard(name, "§6§l" + displayName);
+                .registerSideboard(new SideboardBuilder()
+                        .name(name)
+                        .title("§6§l" + displayName));
     }
 
     public void onMapLoad(Map map) {
