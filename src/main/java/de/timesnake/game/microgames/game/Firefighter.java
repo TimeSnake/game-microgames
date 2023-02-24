@@ -16,6 +16,7 @@ import de.timesnake.library.basic.util.Tuple;
 import de.timesnake.library.extension.util.chat.Chat;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -35,8 +36,11 @@ public class Firefighter extends MicroGame implements Listener {
     protected static final Integer FIRST_CORNER_INDEX = 2;
     protected static final Integer SECOND_CORNER_INDEX = 3;
 
-    private static final Integer DURATION = 30;
+    private static final Integer DURATION = 45;
     private static final double FIRE_CHANCE = 0.2;
+
+    private static final Set<Material> EXCLUDED_MATERIALS = Set.of(Material.GRASS,
+            Material.TALL_GRASS);
 
     private static final List<Tuple<Vector, BlockFace>> NEAR_BLOCKS = List.of(
             new Tuple<>(new Vector(1, 0, 0),
@@ -67,14 +71,15 @@ public class Firefighter extends MicroGame implements Listener {
 
         ExWorld world = map.getWorld();
 
-        //world.restrict(ExWorld.Restriction.FIRE_PUNCH_OUT, false);
-        //world.restrict(ExWorld.Restriction.FLINT_AND_STEEL, true);
-        //world.restrict(ExWorld.Restriction.BLOCK_BURN_UP, true);
-        //world.restrict(ExWorld.Restriction.PLAYER_DAMAGE, true);
-        //world.restrict(ExWorld.Restriction.BLOCK_BREAK, true);
-        //world.restrict(ExWorld.Restriction.BLOCK_PLACE, true);
-        //world.restrict(ExWorld.Restriction.LIGHT_UP_INTERACTION, true);
-        //world.restrict(ExWorld.Restriction.FIRE_SPREAD, true);
+        world.restrict(ExWorld.Restriction.FIRE_PUNCH_OUT, false);
+        world.restrict(ExWorld.Restriction.FLINT_AND_STEEL, true);
+        world.restrict(ExWorld.Restriction.BLOCK_BURN_UP, false);
+        world.restrict(ExWorld.Restriction.PLAYER_DAMAGE, false);
+        world.restrict(ExWorld.Restriction.BLOCK_BREAK, true);
+        world.restrict(ExWorld.Restriction.BLOCK_PLACE, true);
+        world.restrict(ExWorld.Restriction.LIGHT_UP_INTERACTION, false);
+        world.restrict(ExWorld.Restriction.FIRE_SPREAD, true);
+        world.setPVP(false);
     }
 
     @Override
@@ -82,7 +87,7 @@ public class Firefighter extends MicroGame implements Listener {
         super.load();
 
         super.sideboard.setScore(4, "§9§lTime");
-        super.sideboard.setScore(3, "§f0s");
+        super.sideboard.setScore(3, "§f" + DURATION + "s");
         super.sideboard.setScore(2, "§f-------------------");
         super.sideboard.setScore(1, "§c§lPunched out fires");
         super.sideboard.setScore(0, "§f0");
@@ -102,42 +107,32 @@ public class Firefighter extends MicroGame implements Listener {
         ExLocation first = this.getFirstCorner();
         ExLocation second = this.getSecondCorner();
 
-        for (int x = first.getBlockX(); x < second.getBlockX(); x++) {
-            for (int y = first.getBlockY(); y < second.getBlockY(); y++) {
-                for (int z = first.getBlockZ(); z < second.getBlockZ(); z++) {
-                    Block block = world.getBlockAt(x, y, z);
+        for (Block block : world.getBlocksWithinCubic(first, second)) {
+            if (!block.isBurnable() || EXCLUDED_MATERIALS.contains(block.getType())) {
+                continue;
+            }
 
-                    if (block.getType().equals(Material.FIRE)) {
-                        block.setType(Material.AIR);
-                    }
+            for (Tuple<Vector, BlockFace> tuple : NEAR_BLOCKS) {
+                Vector vec = tuple.getA();
+                BlockFace blockFace = tuple.getB();
 
-                    if (!block.isBurnable()) {
-                        continue;
-                    }
+                Block nearBlock = block.getLocation().add(vec).getBlock();
 
-                    for (Tuple<Vector, BlockFace> tuple : NEAR_BLOCKS) {
-                        Vector vec = tuple.getA();
-                        BlockFace blockFace = tuple.getB();
+                if (!nearBlock.isEmpty()) {
+                    continue;
+                }
 
-                        Block nearBlock = block.getLocation().add(vec).getBlock();
-
-                        if (!nearBlock.isEmpty()) {
-                            continue;
+                if (this.random.nextDouble() < FIRE_CHANCE) {
+                    nearBlock.setType(Material.FIRE);
+                    if (blockFace != null) {
+                        BlockData blockData = nearBlock.getBlockData();
+                        if (blockData instanceof Fire) {
+                            ((Fire) blockData).setFace(blockFace, true);
+                            nearBlock.setBlockData(blockData);
                         }
 
-                        if (this.random.nextDouble() < FIRE_CHANCE) {
-                            nearBlock.setType(Material.FIRE);
-                            if (blockFace != null) {
-                                BlockData blockData = nearBlock.getBlockData();
-                                if (blockData instanceof Fire) {
-                                    ((Fire) blockData).setFace(blockFace, true);
-                                    nearBlock.setBlockData(blockData);
-                                }
-
-                            }
-
-                        }
                     }
+
                 }
             }
         }

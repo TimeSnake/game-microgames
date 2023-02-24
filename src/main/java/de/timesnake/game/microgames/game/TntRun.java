@@ -67,9 +67,12 @@ public class TntRun extends FallOutGame implements Listener {
         for (User user : Server.getInGameUsers()) {
             user.getPlayer().setInvulnerable(true);
 
-            Location from = user.getLocation().add(0, -1, 0);
+            Location from = user.getLocation();
 
-            Server.runTaskLaterSynchrony(() -> this.removeBlocks(from), 40 - REMOVE_DELAY,
+            Server.runTaskLaterSynchrony(() -> {
+                        this.removeBlocks(from.clone().add(0, -1, 0));
+                        this.removeBlocks(from.clone().add(0, -2, 0));
+                    }, 40 - REMOVE_DELAY,
                     GameMicroGames.getPlugin());
         }
     }
@@ -78,10 +81,7 @@ public class TntRun extends FallOutGame implements Listener {
 
         Set<Block> blocks = new HashSet<>();
 
-        if (!from.getBlock().equals(from.getBlock())
-                && !from.getBlock().getType().equals(Material.AIR)
-                && !from.getBlock().getType().equals(Material.TNT)
-                && !this.removedBlocks.contains(from.getBlock())) {
+        if (this.isBlockRemoveable(from.getBlock())) {
             from.getBlock().setType(Material.TNT);
             blocks.add(from.getBlock());
             this.removedBlocks.add(from.getBlock());
@@ -89,10 +89,7 @@ public class TntRun extends FallOutGame implements Listener {
 
         for (Double[] vec : NEAR_BLOCK_VECTORS) {
             Location loc = from.clone().add(vec[0], 0, vec[1]);
-            if (!loc.getBlock().equals(from.getBlock())
-                    && !loc.getBlock().getType().equals(Material.AIR)
-                    && !loc.getBlock().getType().equals(Material.TNT)
-                    && !this.removedBlocks.contains(loc.getBlock())) {
+            if (this.isBlockRemoveable(loc.getBlock())) {
                 loc.getBlock().setType(Material.TNT);
                 this.removedBlocks.add(loc.getBlock());
                 blocks.add(loc.getBlock());
@@ -109,6 +106,12 @@ public class TntRun extends FallOutGame implements Listener {
             }
         }, REMOVE_DELAY, GameMicroGames.getPlugin());
 
+    }
+
+    private boolean isBlockRemoveable(Block block) {
+        return !block.getType().equals(Material.AIR)
+                && !block.getType().equals(Material.TNT)
+                && !this.removedBlocks.contains(block);
     }
 
     @Override
@@ -176,8 +179,8 @@ public class TntRun extends FallOutGame implements Listener {
         super.onUserMove(e);
 
         e.getFrom().getBlock().setType(Material.AIR);
-        Location from = e.getFrom().add(0, -1, 0);
-        this.removeBlocks(from);
+        this.removeBlocks(e.getFrom().clone().add(0, -1, 0));
+        this.removeBlocks(e.getFrom().clone().add(0, -2, 0));
     }
 
     @Override

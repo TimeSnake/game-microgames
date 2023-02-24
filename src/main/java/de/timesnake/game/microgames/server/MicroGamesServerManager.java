@@ -13,6 +13,8 @@ import de.timesnake.basic.bukkit.util.user.event.UserDamageEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserJoinEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserMoveEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserQuitEvent;
+import de.timesnake.basic.bukkit.util.user.scoreboard.Sideboard;
+import de.timesnake.basic.bukkit.util.user.scoreboard.Tablist;
 import de.timesnake.basic.game.util.game.Game;
 import de.timesnake.basic.game.util.server.GameServerManager;
 import de.timesnake.basic.game.util.user.SpectatorManager;
@@ -104,7 +106,7 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
         if (colorSwap.getMaps().size() > 0) {
             games.add(colorSwap);
         }
-        
+
         //PhantomPunch phantomPunch = new PhantomPunch();
         //if (phantomPunch.getMaps().size() > 0) {
         //    games.add(phantomPunch);
@@ -182,6 +184,16 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
     @Override
     public User loadUser(Player player) {
         return new MicroGamesUser(player);
+    }
+
+    @Override
+    public Sideboard getGameSideboard() {
+        return MicroGamesServer.getCurrentGame().getSideboard();
+    }
+
+    @Override
+    public Tablist getGameTablist() {
+        return MicroGamesServer.getTablistManager().getTablist();
     }
 
     @Override
