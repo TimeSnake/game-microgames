@@ -39,7 +39,7 @@ public class LadderKing extends MicroGame implements Listener {
     public LadderKing() {
         super("ladderking", "King of the Ladder", Material.LADDER,
                 "Try stand the longest time on top of the ladder",
-                2);
+                2, -1);
         Server.registerListener(this, GameMicroGames.getPlugin());
     }
 

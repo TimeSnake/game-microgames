@@ -5,9 +5,9 @@
 package de.timesnake.game.microgames.game;
 
 import de.timesnake.basic.bukkit.util.Server;
-import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.event.UserDamageEvent;
+import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.user.MicroGamesUser;
@@ -24,11 +24,13 @@ public class KnockOut extends ShrinkingPlatformGame implements Listener {
     protected static final Integer SPEC_LOCATION_INDEX = 0;
     protected static final Integer START_LOCATION_INDEX = 1;
     protected static final Integer SPAWN_LOCATION_INDEX = 2;
-    protected static final ExItemStack STICK = new ExItemStack(Material.STICK).addExEnchantment(Enchantment.KNOCKBACK, 2);
+    protected static final ExItemStack STICK = new ExItemStack(Material.STICK).addExEnchantment(
+            Enchantment.KNOCKBACK, 2);
 
 
     public KnockOut() {
-        super("knockout", "KnockOut", Material.STICK, "Knock all players from the platform", 2);
+        super("knockout", "KnockOut", Material.STICK,
+                "Knock all players from the platform", 2, 120);
         Server.registerListener(this, GameMicroGames.getPlugin());
     }
 

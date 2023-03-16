@@ -441,6 +441,10 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
         Server.broadcastMessage(Plugin.MICRO_GAMES, message);
     }
 
+    public void broadcastMicroGamesTDMessage(String message) {
+        Server.broadcastTDMessage(Plugin.MICRO_GAMES, message);
+    }
+
     public boolean isPaused() {
         return paused;
     }
@@ -493,8 +497,7 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
     @EventHandler
     public void onUserMove(UserMoveEvent e) {
         User user = e.getUser();
-        if (!user.getStatus().equals(Status.User.IN_GAME)
-                && e.getTo().getY() < user.getWorld().getMinHeight() - 10) {
+        if (e.getTo().getY() < user.getWorld().getMinHeight() - 10) {
             user.getPlayer().setVelocity(new Vector());
             user.teleport(this.currentGame.getStartLocation());
         }

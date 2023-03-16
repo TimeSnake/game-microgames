@@ -15,7 +15,8 @@ import org.bukkit.event.Listener;
 public class Dropper extends LocationFinishGame implements Listener {
 
     public Dropper() {
-        super("dropper", "Dropper", Material.ANVIL, "Try to reach the ground without hitting any block", 1);
+        super("dropper", "Dropper", Material.ANVIL,
+                "Try to reach the ground without hitting any block", 1, 180);
     }
 
     @Override

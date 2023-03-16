@@ -28,6 +28,10 @@ public class MicroGamesServer extends GameServer {
         server.broadcastMicroGamesMessage(message);
     }
 
+    public static void broadcastMicroGamesTDMessage(String message) {
+        server.broadcastMicroGamesTDMessage(message);
+    }
+
     public static Collection<MicroGame> getGames() {
         return server.getGames();
     }

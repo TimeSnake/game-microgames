@@ -31,13 +31,13 @@ public class TntRun extends FallOutGame implements Listener {
     protected static final Integer TNT_REMOVE_DELAY = 10;
 
     protected static final Double[][] NEAR_BLOCK_VECTORS = {{0.3, 0.0}, {0.0, 0.3}, {-0.3, 0.0},
-            {0.0, -0.3}, {0.3,
-            0.3}, {0.3, -0.3}, {-0.3, 0.3}, {-0.3, -0.3}};
+            {0.0, -0.3}, {0.3, 0.3}, {0.3, -0.3}, {-0.3, 0.3}, {-0.3, -0.3}};
 
     private final Set<Block> removedBlocks = new HashSet<>();
 
     public TntRun() {
-        super("tntrun", "TNT Run", Material.TNT, "Try not to fall", 1);
+        super("tntrun", "TNT Run", Material.TNT, "Try not to fall",
+                1, 300);
 
         Server.registerListener(this, GameMicroGames.getPlugin());
     }

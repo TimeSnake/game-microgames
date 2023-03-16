@@ -6,15 +6,15 @@ package de.timesnake.game.microgames.game;
 
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import de.timesnake.basic.bukkit.util.Server;
-import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.event.UserDamageByUserEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserDamageEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserDeathEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserDropItemEvent;
+import de.timesnake.basic.bukkit.util.user.event.UserRespawnEvent;
+import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.bukkit.util.user.inventory.UserInventoryInteractEvent;
 import de.timesnake.basic.bukkit.util.user.inventory.UserInventoryInteractListener;
-import de.timesnake.basic.bukkit.util.user.event.UserRespawnEvent;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.game.microgames.chat.Plugin;
 import de.timesnake.game.microgames.main.GameMicroGames;
@@ -143,7 +143,8 @@ public class Graffiti extends MicroGame implements Listener, UserInventoryIntera
     private BukkitTask task;
 
     public Graffiti() {
-        super("graffiti", "Graffiti", Material.SEA_PICKLE, "Paint the most walls", 2);
+        super("graffiti", "Graffiti", Material.SEA_PICKLE,
+                "Paint the most walls", 2, -1);
 
         Server.registerListener(this, GameMicroGames.getPlugin());
         Server.getInventoryEventManager().addInteractListener(this, PAINT_GUN);

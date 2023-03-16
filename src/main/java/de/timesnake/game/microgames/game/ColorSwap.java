@@ -71,7 +71,7 @@ public class ColorSwap extends FallOutGame implements Listener {
     public ColorSwap() {
         super("colorswap", "ColorSwap", Material.WHITE_WOOL,
                 "Try to stand on the color, which is shown in your " +
-                        "hotbar", 1);
+                        "hotbar", 1, -1);
 
         Server.registerListener(this, GameMicroGames.getPlugin());
     }

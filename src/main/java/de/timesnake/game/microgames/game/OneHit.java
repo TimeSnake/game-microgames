@@ -11,8 +11,9 @@ import org.bukkit.Material;
 public class OneHit extends MicroGame {
 
 
-    public OneHit(String name, String displayName, Material material, String description, Integer minPlayers) {
-        super(name, displayName, material, description, minPlayers);
+    public OneHit(String name, String displayName, Material material, String description,
+            Integer minPlayers) {
+        super(name, displayName, material, description, minPlayers, 180);
     }
 
     @Override

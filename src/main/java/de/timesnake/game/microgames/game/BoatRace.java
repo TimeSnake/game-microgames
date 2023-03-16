@@ -32,7 +32,7 @@ public class BoatRace extends LocationFinishGame implements Listener {
 
     public BoatRace() {
         super("boatrace", "Boat Race", Material.OAK_BOAT,
-                "Try to be the first at the finish", 1);
+                "Try to be the first at the finish", 1, 180);
     }
 
     @Override
