@@ -28,7 +28,8 @@ public class BlockJump extends LocationFinishGame implements Listener {
     private final Random random = new Random();
 
     public BlockJump() {
-        super("blockjump", "BlockJump", Material.GREEN_TERRACOTTA, "Try to reach the top", 1);
+        super("blockjump", "BlockJump", Material.GREEN_TERRACOTTA,
+                "Try to reach the top", 1, 180);
     }
 
     @Override

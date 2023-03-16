@@ -22,8 +22,8 @@ import org.bukkit.event.Listener;
 public abstract class FallOutGame extends MicroGame implements Listener {
 
     public FallOutGame(String name, String displayName, Material material, String description,
-            Integer minPlayers) {
-        super(name, displayName, material, description, minPlayers);
+            Integer minPlayers, int maxTimeSec) {
+        super(name, displayName, material, description, minPlayers, maxTimeSec);
     }
 
     public abstract Integer getDeathHeight();

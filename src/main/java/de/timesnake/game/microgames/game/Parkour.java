@@ -14,7 +14,7 @@ public class Parkour extends LocationFinishGame implements Listener {
 
     public Parkour() {
         super("parkour", "Parkour", Material.GOLDEN_BOOTS,
-                "Beat the parkour as fast you can", 1);
+                "Beat the parkour as fast you can", 1, 180);
     }
 
     @Override

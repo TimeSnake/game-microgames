@@ -5,9 +5,9 @@
 package de.timesnake.game.microgames.game;
 
 import de.timesnake.basic.bukkit.util.Server;
-import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.event.UserBlockBreakEvent;
+import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.basic.bukkit.util.world.ExWorld.Restriction;
 import de.timesnake.game.microgames.main.GameMicroGames;
@@ -38,7 +38,7 @@ public class Spleef extends FallOutGame {
 
     public Spleef() {
         super("spleef", "Spleef", Material.SNOWBALL,
-                "Spleef other players", 2);
+                "Spleef other players", 2, 180);
         Server.registerListener(this, GameMicroGames.getPlugin());
     }
 
@@ -51,7 +51,7 @@ public class Spleef extends FallOutGame {
     public void prepare() {
         super.prepare();
         super.currentMap.getWorld().setPVP(true);
-        super.currentMap.getWorld().restrict(Restriction.PLAYER_DAMAGE, false);
+        super.currentMap.getWorld().restrict(Restriction.NO_PLAYER_DAMAGE, false);
     }
 
     @Override

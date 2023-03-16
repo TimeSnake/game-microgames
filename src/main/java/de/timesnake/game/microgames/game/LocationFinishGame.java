@@ -25,9 +25,10 @@ public abstract class LocationFinishGame extends MicroGame implements Listener {
     protected static final Integer SPAWN_LOCATION_INDEX = 2;
     protected static final Integer FINISH_LOCATION_INDEX = 3;
 
-    public LocationFinishGame(String name, String displayName, Material material, String description,
-                              Integer minPlayers) {
-        super(name, displayName, material, description, minPlayers);
+    public LocationFinishGame(String name, String displayName, Material material,
+            String description,
+            Integer minPlayers, int maxTimeSec) {
+        super(name, displayName, material, description, minPlayers, maxTimeSec);
         Server.registerListener(this, GameMicroGames.getPlugin());
     }
 

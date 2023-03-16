@@ -10,6 +10,7 @@ import de.timesnake.basic.bukkit.util.user.scoreboard.Sideboard;
 import de.timesnake.basic.bukkit.util.user.scoreboard.SideboardBuilder;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
+import de.timesnake.basic.bukkit.util.world.ExWorld.Restriction;
 import de.timesnake.basic.game.util.game.Map;
 import de.timesnake.game.microgames.chat.Plugin;
 import de.timesnake.game.microgames.main.GameMicroGames;
@@ -29,6 +30,10 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.GameRule;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
+import org.bukkit.scheduler.BukkitTask;
 
 public abstract class MicroGame {
 
@@ -40,6 +45,7 @@ public abstract class MicroGame {
     protected final String displayName;
     protected final Material material;
     protected final String description;
+    private final int maxTimeSec;
 
     protected final Integer minPlayers;
     protected final List<Map> maps = new ArrayList<>();
@@ -53,13 +59,20 @@ public abstract class MicroGame {
     private boolean isGameRunning = false;
     private Integer votes = 0;
 
+    private BukkitTask timeTask;
+    private final BossBar timeBar;
+    private int timeSec;
+
     public MicroGame(String name, String displayName, Material material, String description,
-            Integer minPlayers) {
+            Integer minPlayers, int maxTimeSec) {
         this.name = name;
         this.displayName = displayName;
         this.material = material;
         this.description = description;
         this.minPlayers = minPlayers;
+        this.maxTimeSec = maxTimeSec;
+        this.timeBar = Server.createBossBar("Time left: §c§l" + Chat.getTimeString(timeSec),
+                BarColor.WHITE, BarStyle.SOLID);
 
         for (Map map : MicroGamesServer.getGame().getMaps()) {
             if (map.getInfo().get(0).equalsIgnoreCase(this.name)) {
@@ -103,6 +116,7 @@ public abstract class MicroGame {
         world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
         world.restrict(ExWorld.Restriction.FOOD_CHANGE, true);
         world.restrict(ExWorld.Restriction.FIRE_SPREAD, true);
+        world.restrict(Restriction.ENTITY_BLOCK_BREAK, true);
         world.setExceptService(true);
         world.setTime(1000);
         world.setAutoSave(false);
@@ -123,12 +137,18 @@ public abstract class MicroGame {
     }
 
     public void load() {
+        this.timeSec = this.maxTimeSec;
+        this.timeBar.setTitle("Time left: §c§l" + Chat.getTimeString(this.timeSec));
+        this.timeBar.setProgress(1);
+
         for (User user : Server.getPreGameUsers()) {
             user.teleport(this.getStartLocation());
             if (this.sideboard != null) {
                 user.setSideboard(this.sideboard);
             }
+            user.setBossBar(this.timeBar);
         }
+
         Server.broadcastTitle(
                 Component.text(this.displayName, ExTextColor.GOLD, TextDecoration.BOLD),
                 Component.text(this.description), Duration.ofSeconds(5));
@@ -146,6 +166,14 @@ public abstract class MicroGame {
         this.isGameRunning = true;
         MicroGamesServer.broadcastMicroGamesMessage(
                 Component.text("Game started", ExTextColor.WARNING));
+
+        this.timeTask = Server.runTaskTimerSynchrony(time -> {
+            this.timeBar.setTitle("Time left: §c§l" + Chat.getTimeString(time));
+            this.timeBar.setProgress(time / ((double) this.maxTimeSec));
+            if (time == 0) {
+                this.stop();
+            }
+        }, this.timeSec, true, 0, 20, GameMicroGames.getPlugin());
     }
 
     protected void addWinner(MicroGamesUser user, boolean first) {
@@ -231,8 +259,13 @@ public abstract class MicroGame {
     public void stop() {
         this.isGameRunning = false;
 
+        if (this.timeTask != null) {
+            this.timeTask.cancel();
+        }
+
+        MicroGamesServer.broadcastMicroGamesMessage(Chat.getLineSeparator());
+
         if (this.first != null) {
-            MicroGamesServer.broadcastMicroGamesMessage(Chat.getLineSeparator());
 
             if (MicroGamesServer.isPartyMode()) {
                 this.first.addPoints(FIRST_POINTS);
@@ -284,9 +317,13 @@ public abstract class MicroGame {
                             Duration.ofSeconds(3));
                 }
             }
-
-            MicroGamesServer.broadcastMicroGamesMessage(Chat.getLineSeparator());
+        } else {
+            MicroGamesServer.broadcastMicroGamesTDMessage("Game ended");
+            Server.broadcastTitle(Component.text("Game ended", ExTextColor.WHITE),
+                    Component.empty(), Duration.ofSeconds(3));
         }
+
+        MicroGamesServer.broadcastMicroGamesMessage(Chat.getLineSeparator());
 
         this.previousMap = this.currentMap;
 

@@ -5,10 +5,10 @@
 package de.timesnake.game.microgames.game;
 
 import de.timesnake.basic.bukkit.util.Server;
-import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.event.UserDamageEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserMoveEvent;
+import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.user.MicroGamesUser;
@@ -53,7 +53,7 @@ public class PhantomPunch extends ShrinkingPlatformGame implements Listener {
 
     public PhantomPunch() {
         super("phantompunch", "PhantomPunch", Material.PHANTOM_MEMBRANE,
-                "Try to defend the phantoms, as a team", 1);
+                "Try to defend the phantoms, as a team", 1, 300);
 
         Server.registerListener(this, GameMicroGames.getPlugin());
     }

@@ -8,6 +8,7 @@ import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
+import de.timesnake.basic.bukkit.util.world.ExWorld.Restriction;
 import de.timesnake.basic.game.util.game.Map;
 import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.user.MicroGamesUser;
@@ -55,7 +56,8 @@ public class Firefighter extends MicroGame implements Listener {
     private BukkitTask timeTask;
 
     public Firefighter() {
-        super("firefighter", "Firefighter", Material.BLAZE_POWDER, "Punch out the fire", 1);
+        super("firefighter", "Firefighter", Material.BLAZE_POWDER,
+                "Punch out the fire", 1, -1);
 
         Server.registerListener(this, GameMicroGames.getPlugin());
     }
@@ -71,14 +73,16 @@ public class Firefighter extends MicroGame implements Listener {
 
         ExWorld world = map.getWorld();
 
-        world.restrict(ExWorld.Restriction.FIRE_PUNCH_OUT, false);
-        world.restrict(ExWorld.Restriction.FLINT_AND_STEEL, true);
-        world.restrict(ExWorld.Restriction.BLOCK_BURN_UP, false);
-        world.restrict(ExWorld.Restriction.PLAYER_DAMAGE, false);
-        world.restrict(ExWorld.Restriction.BLOCK_BREAK, true);
-        world.restrict(ExWorld.Restriction.BLOCK_PLACE, true);
-        world.restrict(ExWorld.Restriction.LIGHT_UP_INTERACTION, false);
-        world.restrict(ExWorld.Restriction.FIRE_SPREAD, true);
+        world.restrict(Restriction.FIRE_PUNCH_OUT, false);
+        world.restrict(Restriction.FLINT_AND_STEEL, true);
+        world.restrict(Restriction.BLOCK_BURN_UP, false);
+        world.restrict(Restriction.NO_PLAYER_DAMAGE, true);
+        world.restrict(Restriction.BLOCK_BREAK, true);
+        world.restrict(Restriction.BLOCK_PLACE, true);
+        world.restrict(Restriction.LIGHT_UP_INTERACTION, false);
+        world.restrict(Restriction.FIRE_SPREAD, true);
+        world.restrict(Restriction.NO_PLAYER_DAMAGE, true);
+        world.restrict(Restriction.DROP_PICK_ITEM, true);
         world.setPVP(false);
     }
 
