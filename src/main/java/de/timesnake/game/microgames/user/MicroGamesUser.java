@@ -6,9 +6,9 @@ package de.timesnake.game.microgames.user;
 
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.chat.ChatColor;
+import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.inventory.ExInventory;
 import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
-import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.inventory.UserInventoryClickEvent;
 import de.timesnake.basic.bukkit.util.user.inventory.UserInventoryClickListener;
 import de.timesnake.basic.bukkit.util.user.inventory.UserInventoryInteractEvent;
@@ -16,9 +16,9 @@ import de.timesnake.basic.bukkit.util.user.inventory.UserInventoryInteractListen
 import de.timesnake.basic.bukkit.util.user.scoreboard.TablistableGroup;
 import de.timesnake.basic.game.util.game.TablistGroupType;
 import de.timesnake.basic.game.util.user.SpectatorUser;
-import de.timesnake.game.microgames.chat.Plugin;
 import de.timesnake.game.microgames.game.MicroGame;
 import de.timesnake.game.microgames.server.MicroGamesServer;
+import de.timesnake.library.basic.util.Loggers;
 import de.timesnake.library.basic.util.Status;
 import java.util.Collection;
 import java.util.HashMap;
@@ -146,9 +146,8 @@ public class MicroGamesUser extends SpectatorUser {
                     item.disenchant();
                     item.setLore(ChatColor.WHITE + microGame.getDescription());
 
-                    Server.printText(Plugin.MICRO_GAMES,
-                            MicroGamesUser.this.getName() + " devoted " + microGame.getName(),
-                            "Voting");
+                    Loggers.GAME.info(
+                            MicroGamesUser.this.getName() + " devoted " + microGame.getName());
                 } else {
                     MicroGamesUser.this.votedGames.add(microGame);
                     microGame.addVote();
@@ -156,9 +155,8 @@ public class MicroGamesUser extends SpectatorUser {
                     item.enchant();
                     item.setLore(ChatColor.WHITE + microGame.getDescription(), "", "§aVoted");
 
-                    Server.printText(Plugin.MICRO_GAMES,
-                            MicroGamesUser.this.getName() + " voted for " + microGame.getName(),
-                            "Voting");
+                    Loggers.GAME.info(
+                            MicroGamesUser.this.getName() + " voted for " + microGame.getName());
                 }
 
                 this.gamesByItem.put(item, microGame);

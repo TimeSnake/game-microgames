@@ -98,9 +98,7 @@ public class HotPotato extends MicroGame implements Listener {
             user.fillHotBar(HOT_POTATO);
             user.playNote(Instrument.PIANO, Note.natural(0, Note.Tone.C));
             if (this.time.equals(TIME)) {
-                user.sendPluginMessage(Plugin.MICRO_GAMES,
-                        Component.text("You have the", ExTextColor.PERSONAL)
-                                .append(Component.text("hot potato", ExTextColor.WARNING)));
+                user.sendPluginTDMessage(Plugin.MICRO_GAMES, "§sYou have the §chot potato");
             }
         } else {
             user.playNote(Instrument.PIANO, Note.natural(1, Note.Tone.C));
@@ -149,8 +147,8 @@ public class HotPotato extends MicroGame implements Listener {
 
             if (this.time <= TIME / 2) {
                 if (this.time == TIME / 2) {
-                    MicroGamesServer.broadcastMicroGamesMessage(
-                            Component.text("The best Player is now §cglowing!", ExTextColor.GOLD));
+                    MicroGamesServer.broadcastMicroGamesTDMessage(
+                            "§pThe best Player is now §cglowing!");
                     Server.broadcastTitle(Component.text("Halftime", ExTextColor.WARNING),
                             Component.text("Glowing activated!"), Duration.ofSeconds(3));
                 }
