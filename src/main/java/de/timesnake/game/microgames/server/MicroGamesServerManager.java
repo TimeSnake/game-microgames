@@ -36,6 +36,7 @@ import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.game.microgames.user.PartyManager;
 import de.timesnake.game.microgames.user.TablistManager;
+import de.timesnake.library.basic.util.Loggers;
 import de.timesnake.library.basic.util.RandomCollection;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.chat.ExTextColor;
@@ -169,7 +170,7 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
             List<MicroGame> list = this.microGamesByMinPlayers.computeIfAbsent(game.getMinPlayers(),
                     k -> new ArrayList<>());
             list.add(game);
-            Server.printText(Plugin.MICRO_GAMES, "Loaded game " + game.getDisplayName());
+            Loggers.GAME.info("Loaded game " + game.getDisplayName());
         }
 
         this.tablistManager = new TablistManager();
@@ -276,7 +277,7 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
 
             if (Server.getPreGameUsers().size() == 0 || this.paused) {
                 this.paused = true;
-                Server.printText(Plugin.MICRO_GAMES, "Paused game loop");
+                Loggers.GAME.info("Paused game loop");
                 return;
             }
 
@@ -286,7 +287,7 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
                 if (start == 0) {
                     if (Server.getPreGameUsers().size() == 0 || this.paused) {
                         this.paused = true;
-                        Server.printText(Plugin.MICRO_GAMES, "Paused game loop");
+                        Loggers.GAME.info("Paused game loop");
                         this.startTask.cancel();
                         return;
                     }
@@ -470,7 +471,7 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
         MicroGamesUser user = (MicroGamesUser) e.getUser();
         if (this.paused) {
             user.joinSpectator();
-            Server.printText(Plugin.MICRO_GAMES, "Resumed game loop");
+            Loggers.GAME.info("Resumed game loop");
             this.nextGame();
         } else {
             if (!this.currentGame.onUserJoin(user)) {
@@ -488,7 +489,7 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
         } else if (Server.getGameNotServiceUsers().size() == 0) {
             this.startTask.cancel();
             this.paused = true;
-            Server.printText(Plugin.MICRO_GAMES, "Paused game loop");
+            Loggers.GAME.info("Paused game loop");
         }
 
         user.clearVotes();

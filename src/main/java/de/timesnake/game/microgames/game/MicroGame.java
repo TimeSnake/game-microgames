@@ -12,10 +12,10 @@ import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
 import de.timesnake.basic.bukkit.util.world.ExWorld.Restriction;
 import de.timesnake.basic.game.util.game.Map;
-import de.timesnake.game.microgames.chat.Plugin;
 import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.server.MicroGamesServer;
 import de.timesnake.game.microgames.user.MicroGamesUser;
+import de.timesnake.library.basic.util.Loggers;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.basic.util.Tuple;
 import de.timesnake.library.chat.ExTextColor;
@@ -77,23 +77,21 @@ public abstract class MicroGame {
         for (Map map : MicroGamesServer.getGame().getMaps()) {
             if (map.getInfo().get(0).equalsIgnoreCase(this.name)) {
                 if (map.getWorld() == null) {
-                    Server.printWarning(Plugin.MICRO_GAMES, "Can not load map " + map.getName() +
+                    Loggers.GAME.warning("Can not load map " + map.getName() +
                             ", world not exists");
                     continue;
                 }
 
                 if (map.getLocations().size() < this.getLocationAmount()) {
-                    Server.printWarning(Plugin.MICRO_GAMES,
-                            "Can not load map " + map.getName() + ", too few " +
-                                    "locations");
+                    Loggers.GAME.warning("Can not load map " + map.getName() + ", too few " +
+                            "locations");
                     continue;
                 }
 
                 this.maps.add(map);
                 this.onMapLoad(map);
 
-                Server.printText(Plugin.MICRO_GAMES, "Added map " + map.getName(),
-                        this.displayName);
+                Loggers.GAME.info("Added map " + map.getName() + " to game " + this.displayName);
             }
         }
 
@@ -146,7 +144,10 @@ public abstract class MicroGame {
             if (this.sideboard != null) {
                 user.setSideboard(this.sideboard);
             }
-            user.setBossBar(this.timeBar);
+
+            if (this.maxTimeSec >= 0) {
+                user.setBossBar(this.timeBar);
+            }
         }
 
         Server.broadcastTitle(
@@ -167,13 +168,15 @@ public abstract class MicroGame {
         MicroGamesServer.broadcastMicroGamesMessage(
                 Component.text("Game started", ExTextColor.WARNING));
 
-        this.timeTask = Server.runTaskTimerSynchrony(time -> {
-            this.timeBar.setTitle("Time left: §c§l" + Chat.getTimeString(time));
-            this.timeBar.setProgress(time / ((double) this.maxTimeSec));
-            if (time == 0) {
-                this.stop();
-            }
-        }, this.timeSec, true, 0, 20, GameMicroGames.getPlugin());
+        if (this.maxTimeSec >= 0) {
+            this.timeTask = Server.runTaskTimerSynchrony(time -> {
+                this.timeBar.setTitle("Time left: §c§l" + Chat.getTimeString(time));
+                this.timeBar.setProgress(time / ((double) this.maxTimeSec));
+                if (time == 0) {
+                    this.stop();
+                }
+            }, this.timeSec, true, 0, 20, GameMicroGames.getPlugin());
+        }
     }
 
     protected void addWinner(MicroGamesUser user, boolean first) {
