@@ -203,7 +203,7 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
     }
 
     @Override
-    protected SpectatorManager loadSpectatorManager() {
+    protected SpectatorManager initSpectatorManager() {
         return new de.timesnake.game.microgames.user.SpectatorManager();
     }
 
