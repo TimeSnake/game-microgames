@@ -9,6 +9,7 @@ import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.event.UserDamageEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserDeathEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserMoveEvent;
+import de.timesnake.game.microgames.game.basis.LocationFinishGame;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import java.util.HashMap;
 import java.util.HashSet;

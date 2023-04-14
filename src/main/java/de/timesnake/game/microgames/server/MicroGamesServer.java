@@ -5,7 +5,7 @@
 package de.timesnake.game.microgames.server;
 
 import de.timesnake.basic.game.util.server.GameServer;
-import de.timesnake.game.microgames.game.MicroGame;
+import de.timesnake.game.microgames.game.basis.MicroGame;
 import de.timesnake.game.microgames.user.TablistManager;
 import java.util.Collection;
 import net.kyori.adventure.text.Component;

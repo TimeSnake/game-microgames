@@ -10,6 +10,7 @@ import de.timesnake.basic.bukkit.util.user.event.UserDamageEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserMoveEvent;
 import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
+import de.timesnake.game.microgames.game.basis.ShrinkingPlatformGame;
 import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Status;
@@ -265,8 +266,4 @@ public class PhantomPunch extends ShrinkingPlatformGame implements Listener {
         }
     }
 
-    @Override
-    public String getDeathMessage() {
-        return " was punched out!";
-    }
 }

@@ -2,7 +2,7 @@
  * Copyright (C) 2023 timesnake
  */
 
-package de.timesnake.game.microgames.game;
+package de.timesnake.game.microgames.game.basis;
 
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.user.User;
@@ -17,14 +17,13 @@ import de.timesnake.game.microgames.server.MicroGamesServer;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Loggers;
 import de.timesnake.library.basic.util.Status;
-import de.timesnake.library.basic.util.Tuple;
 import de.timesnake.library.chat.ExTextColor;
 import de.timesnake.library.extension.util.chat.Chat;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-import java.util.function.Function;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.GameRule;
@@ -53,9 +52,10 @@ public abstract class MicroGame {
     protected Map currentMap;
     protected Map previousMap;
     protected Sideboard sideboard;
-    protected MicroGamesUser first;
-    protected MicroGamesUser second;
-    protected MicroGamesUser third;
+
+
+    protected LinkedList<MicroGamesUser> placement = new LinkedList<>();
+
     private boolean isGameRunning = false;
     private Integer votes = 0;
 
@@ -145,6 +145,7 @@ public abstract class MicroGame {
                 user.setSideboard(this.sideboard);
             }
 
+            user.clearBossBars();
             if (this.maxTimeSec >= 0) {
                 user.setBossBar(this.timeBar);
             }
@@ -186,39 +187,31 @@ public abstract class MicroGame {
 
         int users = Server.getInGameUsers().size();
 
-        if (user.equals(this.first) || user.equals(this.second) || user.equals(this.third)) {
+        if (this.placement.contains(user)) {
             return;
         }
 
         if (first) {
-            if (this.first == null) {
-                this.first = user;
-                MicroGamesServer.broadcastMicroGamesMessage(user.getChatNameComponent()
-                        .append(Component.text(" finished #1", ExTextColor.WARNING)));
-            } else if (this.second == null) {
-                this.second = user;
-                MicroGamesServer.broadcastMicroGamesMessage(user.getChatNameComponent()
-                        .append(Component.text(" finished #2", ExTextColor.WARNING)));
-            } else if (this.third == null) {
-                this.third = user;
-                MicroGamesServer.broadcastMicroGamesMessage(user.getChatNameComponent()
-                        .append(Component.text(" finished #3", ExTextColor.WARNING)));
-                this.stop();
-                return;
-            }
+            this.placement.addLast(user);
+            MicroGamesServer.broadcastMicroGamesTDMessage(user.getTDChatName() + "§w finished #"
+                    + this.placement.size());
         } else {
-            if (users == 2) {
-                this.third = user;
-            } else if (users == 1) {
-                this.second = user;
-                MicroGamesServer.broadcastMicroGamesMessage(user.getChatNameComponent()
-                        .append(Component.text(" finished #2", ExTextColor.WARNING)));
-                this.first = ((MicroGamesUser) Server.getInGameUsers().stream()
-                        .filter((u) -> !u.equals(second)).iterator().next());
-            } else if (users == 0) {
-                this.first = user;
-                MicroGamesServer.broadcastMicroGamesMessage(user.getChatNameComponent()
-                        .append(Component.text(" finished #1", ExTextColor.WARNING)));
+            this.placement.addFirst(user);
+            MicroGamesServer.broadcastMicroGamesTDMessage(user.getTDChatName() + "§w finished #"
+                    + (users + 1));
+        }
+
+        if (users == 1) {
+            MicroGamesUser lastUser = (MicroGamesUser) Server.getInGameUsers().iterator().next();
+
+            if (first) {
+                this.placement.addLast(lastUser);
+            } else {
+                this.placement.addFirst(lastUser);
+            }
+
+            if (!lastUser.getStatus().equals(Status.User.OUT_GAME)) {
+                lastUser.joinSpectator();
             }
         }
 
@@ -228,38 +221,11 @@ public abstract class MicroGame {
 
     }
 
-    protected void calcPlaces(Function<MicroGamesUser, Integer> usersToValue, boolean highest) {
-        Tuple<MicroGamesUser, Integer> first =
-                highest ? new Tuple<>(null, -1) : new Tuple<>(null, Integer.MAX_VALUE);
-        Tuple<MicroGamesUser, Integer> second =
-                highest ? new Tuple<>(null, -1) : new Tuple<>(null, Integer.MAX_VALUE);
-        Tuple<MicroGamesUser, Integer> third =
-                highest ? new Tuple<>(null, -1) : new Tuple<>(null, Integer.MAX_VALUE);
-
-        for (User user : MicroGamesServer.getGameNotServiceUsers()) {
-            Integer value = usersToValue.apply(((MicroGamesUser) user));
-
-            if (value == null) {
-                continue;
-            }
-
-            if ((highest && value > first.getB()) || (!highest && value < first.getB())) {
-                second = first;
-                first = new Tuple<>(((MicroGamesUser) user), value);
-            } else if ((highest && value > second.getB()) || (!highest && value < second.getB())) {
-                third = second;
-                second = new Tuple<>(((MicroGamesUser) user), value);
-            } else if ((highest && value > third.getB()) || (!highest && value < third.getB())) {
-                third = new Tuple<>(((MicroGamesUser) user), value);
-            }
+    public void stop() {
+        if (!this.isGameRunning) {
+            return;
         }
 
-        this.first = first.getA();
-        this.second = second.getA();
-        this.third = third.getA();
-    }
-
-    public void stop() {
         this.isGameRunning = false;
 
         if (this.timeTask != null) {
@@ -268,58 +234,37 @@ public abstract class MicroGame {
 
         MicroGamesServer.broadcastMicroGamesMessage(Chat.getLineSeparator());
 
-        if (this.first != null) {
+        int place = 1;
+        String title = null;
+        StringBuilder subTitle = new StringBuilder();
 
-            if (MicroGamesServer.isPartyMode()) {
-                this.first.addPoints(FIRST_POINTS);
-                MicroGamesServer.getTablistManager().getTablist()
-                        .updateEntryValue(this.first, this.first.getPoints());
-            }
-
-            if (this.second == null) {
-                MicroGamesServer.broadcastMicroGamesMessage(this.first.getChatNameComponent()
-                        .append(Component.text(" wins!", ExTextColor.WHITE)));
-                Server.broadcastTitle(first.getChatNameComponent()
-                                .append(Component.text(" wins", ExTextColor.WHITE)),
-                        Component.empty(), Duration.ofSeconds(3));
-            } else {
+        for (MicroGamesUser user : this.placement) {
+            if (place == 1) {
                 if (MicroGamesServer.isPartyMode()) {
-                    this.second.addPoints(SECOND_POINTS);
-                    MicroGamesServer.getTablistManager().getTablist().updateEntryValue(this.second,
-                            this.second.getPoints());
+                    user.addPoints(FIRST_POINTS);
                 }
-
-                MicroGamesServer.broadcastMicroGamesMessage(
-                        Component.text("1.  ", ExTextColor.GOLD, TextDecoration.BOLD)
-                                .append(this.first.getChatNameComponent()));
-                MicroGamesServer.broadcastMicroGamesMessage(
-                        Component.text("2.  ", ExTextColor.GOLD, TextDecoration.BOLD)
-                                .append(this.second.getChatNameComponent()));
-
-                if (this.third == null) {
-                    Server.broadcastTitle(first.getChatNameComponent()
-                                    .append(Component.text(" §fwins", ExTextColor.WHITE)),
-                            Component.text("2. ").append(this.second.getChatNameComponent()),
-                            Duration.ofSeconds(3));
-                } else {
-                    if (MicroGamesServer.isPartyMode()) {
-                        this.third.addPoints(THIRD_POINTS);
-                        MicroGamesServer.getTablistManager().getTablist()
-                                .updateEntryValue(this.third,
-                                        this.third.getPoints());
-                    }
-
-                    MicroGamesServer.broadcastMicroGamesMessage(
-                            Component.text("3.  ", ExTextColor.GOLD, TextDecoration.BOLD)
-                                    .append(this.third.getChatNameComponent()));
-                    Server.broadcastTitle(first.getChatNameComponent()
-                                    .append(Component.text(" wins", ExTextColor.WHITE)),
-                            Component.text("2. ").append(this.second.getChatNameComponent())
-                                    .append(Component.text("    3. ", ExTextColor.WHITE))
-                                    .append(this.third.getChatNameComponent()),
-                            Duration.ofSeconds(3));
+                title = user.getTDChatName() + "§f wins";
+            } else if (place == 2) {
+                if (MicroGamesServer.isPartyMode()) {
+                    user.addPoints(SECOND_POINTS);
                 }
+                subTitle.append("2. ").append(user.getTDChatName());
+            } else if (place == 3) {
+                if (MicroGamesServer.isPartyMode()) {
+                    user.addPoints(THIRD_POINTS);
+                }
+                subTitle.append("§f    3. ").append(user.getTDChatName());
             }
+
+            MicroGamesServer.getTablistManager().getTablist()
+                    .updateEntryValue(user, user.getPoints());
+
+            MicroGamesServer.broadcastMicroGamesTDMessage(this.getWinMessage(user, place));
+            place++;
+        }
+
+        if (title != null) {
+            Server.broadcastTDTitle(title, subTitle.toString(), Duration.ofSeconds(3));
         } else {
             MicroGamesServer.broadcastMicroGamesTDMessage("Game ended");
             Server.broadcastTitle(Component.text("Game ended", ExTextColor.WHITE),
@@ -335,10 +280,12 @@ public abstract class MicroGame {
         MicroGamesServer.nextGame();
     }
 
+    protected String getWinMessage(MicroGamesUser user, int place) {
+        return "§6§l" + place + ". " + user.getTDChatName();
+    }
+
     public void reset() {
-        this.first = null;
-        this.second = null;
-        this.third = null;
+        this.placement.clear();
     }
 
     public abstract boolean hasSideboard();

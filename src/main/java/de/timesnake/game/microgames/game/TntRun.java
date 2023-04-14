@@ -8,6 +8,7 @@ import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.event.UserMoveEvent;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
+import de.timesnake.game.microgames.game.basis.FallOutGame;
 import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Status;
@@ -183,8 +184,4 @@ public class TntRun extends FallOutGame implements Listener {
         this.removeBlocks(e.getFrom().clone().add(0, -2, 0));
     }
 
-    @Override
-    public String getDeathMessage() {
-        return " failed!";
-    }
 }

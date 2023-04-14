@@ -16,7 +16,7 @@ import de.timesnake.basic.bukkit.util.user.inventory.UserInventoryInteractListen
 import de.timesnake.basic.bukkit.util.user.scoreboard.TablistableGroup;
 import de.timesnake.basic.game.util.game.TablistGroupType;
 import de.timesnake.basic.game.util.user.SpectatorUser;
-import de.timesnake.game.microgames.game.MicroGame;
+import de.timesnake.game.microgames.game.basis.MicroGame;
 import de.timesnake.game.microgames.server.MicroGamesServer;
 import de.timesnake.library.basic.util.Loggers;
 import de.timesnake.library.basic.util.Status;
