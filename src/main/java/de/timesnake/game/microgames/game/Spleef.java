@@ -10,6 +10,7 @@ import de.timesnake.basic.bukkit.util.user.event.UserBlockBreakEvent;
 import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.basic.bukkit.util.world.ExWorld.Restriction;
+import de.timesnake.game.microgames.game.basis.FallOutGame;
 import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Status;
@@ -119,11 +120,6 @@ public class Spleef extends FallOutGame {
     @Override
     public Integer getDeathHeight() {
         return this.getDeathLocation().getBlockY();
-    }
-
-    @Override
-    public String getDeathMessage() {
-        return " failed!";
     }
 
     @EventHandler

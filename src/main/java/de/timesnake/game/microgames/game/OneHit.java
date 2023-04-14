@@ -5,6 +5,7 @@
 package de.timesnake.game.microgames.game;
 
 import de.timesnake.basic.bukkit.util.world.ExLocation;
+import de.timesnake.game.microgames.game.basis.MicroGame;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import org.bukkit.Material;
 

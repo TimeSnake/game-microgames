@@ -9,11 +9,11 @@ import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.event.UserDamageByUserEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserDamageEvent;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
+import de.timesnake.game.microgames.game.basis.ScoreGame;
 import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.server.MicroGamesServer;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Status;
-import java.util.HashMap;
 import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -21,7 +21,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitTask;
 
-public class LadderKing extends MicroGame implements Listener {
+public class LadderKing extends ScoreGame<Integer> implements Listener {
 
     private static final Integer START_LOCATION_INDEX = 0;
     private static final Integer SPEC_LOCATION_INDEX = 1;
@@ -33,8 +33,6 @@ public class LadderKing extends MicroGame implements Listener {
     private Integer time = TIME;
 
     private BukkitTask task;
-
-    private final HashMap<MicroGamesUser, Integer> ladderTimesByUser = new HashMap<>();
 
     public LadderKing() {
         super("ladderking", "King of the Ladder", Material.LADDER,
@@ -74,7 +72,7 @@ public class LadderKing extends MicroGame implements Listener {
         List<ExLocation> spawnLocations = super.currentMap.getLocations(3);
         for (User user : Server.getPreGameUsers()) {
             user.teleport(spawnLocations.get(super.random.nextInt(spawnLocations.size())));
-            user.lockLocation(true);
+            user.lockLocation();
         }
     }
 
@@ -91,8 +89,7 @@ public class LadderKing extends MicroGame implements Listener {
         super.start();
 
         for (User user : MicroGamesServer.getInGameUsers()) {
-            this.ladderTimesByUser.put(((MicroGamesUser) user), 0);
-            user.lockLocation(false);
+            user.unlockLocation();
         }
 
         this.task = Server.runTaskTimerSynchrony(() -> {
@@ -101,12 +98,8 @@ public class LadderKing extends MicroGame implements Listener {
 
             for (User user : Server.getInGameUsers()) {
                 if (this.isOnTop(user)) {
-                    Integer ladderTime = this.ladderTimesByUser.get(((MicroGamesUser) user));
-                    if (ladderTime != null) {
-                        ladderTime++;
-                        this.ladderTimesByUser.put(((MicroGamesUser) user), ladderTime);
-                        user.setSideboardScore(0, "" + ladderTime);
-                    }
+                    int time = this.scores.compute(((MicroGamesUser) user), (u, v) -> v + 1);
+                    user.setSideboardScore(0, "" + time);
                 }
             }
 
@@ -127,7 +120,7 @@ public class LadderKing extends MicroGame implements Listener {
 
     @Override
     public void stop() {
-        super.calcPlaces(this.ladderTimesByUser::get, true);
+        super.calcPlaces(true);
 
         if (this.task != null) {
             this.task.cancel();
@@ -141,7 +134,11 @@ public class LadderKing extends MicroGame implements Listener {
         super.reset();
         this.time = TIME;
         super.sideboard.setScore(3, this.getTimeString());
-        this.ladderTimesByUser.clear();
+    }
+
+    @Override
+    public Integer getDefaultScore() {
+        return 0;
     }
 
     @Override

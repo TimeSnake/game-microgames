@@ -2,13 +2,12 @@
  * Copyright (C) 2023 timesnake
  */
 
-package de.timesnake.game.microgames.game;
+package de.timesnake.game.microgames.game.basis;
 
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.event.UserDamageEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserMoveEvent;
-import de.timesnake.game.microgames.server.MicroGamesServer;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.chat.ExTextColor;
@@ -28,8 +27,6 @@ public abstract class FallOutGame extends MicroGame implements Listener {
 
     public abstract Integer getDeathHeight();
 
-    public abstract String getDeathMessage();
-
     @EventHandler
     public void onUserMove(UserMoveEvent e) {
         User user = e.getUser();
@@ -45,8 +42,6 @@ public abstract class FallOutGame extends MicroGame implements Listener {
         if (e.getTo().getBlockY() < this.getDeathHeight()) {
             user.showTitle(Component.text("You lose!", ExTextColor.WARNING), Component.empty(),
                     Duration.ofSeconds(3));
-            MicroGamesServer.broadcastMicroGamesMessage(user.getChatNameComponent()
-                    .append(Component.text(this.getDeathMessage(), ExTextColor.WARNING)));
             Server.broadcastSound(Sound.ENTITY_PLAYER_HURT, 2);
 
             this.addWinner(((MicroGamesUser) user), false);

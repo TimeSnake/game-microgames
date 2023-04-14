@@ -10,12 +10,12 @@ import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
 import de.timesnake.basic.bukkit.util.world.ExWorld.Restriction;
 import de.timesnake.basic.game.util.game.Map;
+import de.timesnake.game.microgames.game.basis.ScoreGame;
 import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.basic.util.Tuple;
 import de.timesnake.library.extension.util.chat.Chat;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import org.bukkit.GameMode;
@@ -30,7 +30,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
-public class Firefighter extends MicroGame implements Listener {
+public class Firefighter extends ScoreGame<Integer> implements Listener {
 
     protected static final Integer SPEC_LOCATION_INDEX = 0;
     protected static final Integer START_LOCATION_INDEX = 1;
@@ -52,7 +52,6 @@ public class Firefighter extends MicroGame implements Listener {
                     BlockFace.NORTH)
             , new Tuple<>(new Vector(0, 0, -1), BlockFace.SOUTH));
 
-    private final HashMap<User, Integer> punchedOutNumberByUser = new HashMap<>();
     private BukkitTask timeTask;
 
     public Firefighter() {
@@ -165,7 +164,7 @@ public class Firefighter extends MicroGame implements Listener {
             this.timeTask.cancel();
         }
 
-        super.calcPlaces(this.punchedOutNumberByUser::get, true);
+        super.calcPlaces(true);
         super.stop();
     }
 
@@ -176,8 +175,11 @@ public class Firefighter extends MicroGame implements Listener {
         if (this.previousMap != null) {
             Server.getWorldManager().reloadWorld(this.previousMap.getWorld());
         }
+    }
 
-        this.punchedOutNumberByUser.clear();
+    @Override
+    public Integer getDefaultScore() {
+        return 0;
     }
 
     @Override
@@ -217,7 +219,7 @@ public class Firefighter extends MicroGame implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent e) {
-        User user = Server.getUser(e.getPlayer());
+        MicroGamesUser user = (MicroGamesUser) Server.getUser(e.getPlayer());
 
         if (user == null || !this.isGameRunning()) {
             return;
@@ -232,9 +234,8 @@ public class Firefighter extends MicroGame implements Listener {
             return;
         }
 
-        int number = this.punchedOutNumberByUser.compute(user, (u, v) -> v == null ? 1 : v + 1);
+        int number = this.scores.compute(user, (u, v) -> v == null ? 1 : v + 1);
         user.setSideboardScore(0, "§f" + number);
-
     }
 
 

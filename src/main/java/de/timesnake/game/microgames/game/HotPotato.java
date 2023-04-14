@@ -12,20 +12,19 @@ import de.timesnake.basic.bukkit.util.user.event.UserDropItemEvent;
 import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.game.microgames.chat.Plugin;
+import de.timesnake.game.microgames.game.basis.ScoreGame;
 import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.server.MicroGamesServer;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Status;
-import de.timesnake.library.chat.ExTextColor;
+import de.timesnake.library.extension.util.chat.Chat;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Instrument;
 import org.bukkit.Material;
 import org.bukkit.Note;
@@ -34,16 +33,17 @@ import org.bukkit.event.Listener;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
 
-public class HotPotato extends MicroGame implements Listener {
+public class HotPotato extends ScoreGame<Integer> implements Listener {
 
-    protected static final ExItemStack HOT_POTATO = new ExItemStack(Material.POTATO,
-            "§cHot Potato");
+    protected static final ExItemStack HOT_POTATO = new ExItemStack(Material.POTATO)
+            .setDisplayName("§cHot Potato");
     private static final Integer START_LOCATION_INDEX = 0;
     private static final Integer SPEC_LOCATION_INDEX = 1;
     private static final Integer SPAWN_LOCATION_INDEX = 2;
     private static final Integer TIME = 180;
+
     private final Set<User> holders = new HashSet<>();
-    private final HashMap<MicroGamesUser, Integer> potatoTimesByUser = new HashMap<>();
+
     private Integer time = TIME;
     private BukkitTask task;
 
@@ -65,7 +65,7 @@ public class HotPotato extends MicroGame implements Listener {
         super.load();
 
         super.sideboard.setScore(6, "§9§lTime left");
-        super.sideboard.setScore(5, this.getTimeString(this.time));
+        super.sideboard.setScore(5, Chat.getTimeString(this.time));
         super.sideboard.setScore(4, "§f---------------");
         super.sideboard.setScore(3, "§c§lPotato Time");
         super.sideboard.setScore(2, "0s");
@@ -78,14 +78,6 @@ public class HotPotato extends MicroGame implements Listener {
             user.teleport(this.currentMap.getLocation(SPAWN_LOCATION_INDEX));
             user.lockInventoryItemMove();
             user.lockInventory();
-        }
-    }
-
-    private String getTimeString(Integer time) {
-        if (time >= 60) {
-            return time / 60 + "min " + time % 60 + "s";
-        } else {
-            return time % 60 + "s";
         }
     }
 
@@ -126,35 +118,25 @@ public class HotPotato extends MicroGame implements Listener {
             this.chooseHolder();
         }
 
-        for (User user : MicroGamesServer.getInGameUsers()) {
-            this.potatoTimesByUser.put(((MicroGamesUser) user), 0);
-        }
-
         this.task = Server.runTaskTimerSynchrony(() -> {
             this.time--;
-            super.sideboard.setScore(5, this.getTimeString(time));
+            super.sideboard.setScore(5, Chat.getTimeString(time));
 
-            for (User user : Server.getInGameUsers()) {
-                if (this.holders.contains(user)) {
-                    Integer potatoTime = this.potatoTimesByUser.get(((MicroGamesUser) user));
-                    if (potatoTime != null) {
-                        potatoTime++;
-                        this.potatoTimesByUser.put(((MicroGamesUser) user), potatoTime);
-                        user.setSideboardScore(2, getTimeString(potatoTime));
-                    }
-                }
+            for (User user : this.holders) {
+                int time = this.scores.compute(((MicroGamesUser) user), (u, v) -> v + 1);
+                user.setSideboardScore(2, Chat.getTimeString(time));
             }
 
             if (this.time <= TIME / 2) {
                 if (this.time == TIME / 2) {
                     MicroGamesServer.broadcastMicroGamesTDMessage(
                             "§pThe best Player is now §cglowing!");
-                    Server.broadcastTitle(Component.text("Halftime", ExTextColor.WARNING),
-                            Component.text("Glowing activated!"), Duration.ofSeconds(3));
+                    Server.broadcastTDTitle("§fHalftime", "Glowing activated!",
+                            Duration.ofSeconds(3));
                 }
 
                 List<Map.Entry<MicroGamesUser, Integer>> entries = new ArrayList<>(
-                        this.potatoTimesByUser.entrySet());
+                        this.scores.entrySet());
                 entries.sort(Comparator.comparingInt(Map.Entry::getValue));
                 entries.get(0).getKey().addPotionEffect(PotionEffectType.GLOWING, 22, 1);
             }
@@ -167,7 +149,7 @@ public class HotPotato extends MicroGame implements Listener {
 
     @Override
     public void stop() {
-        super.calcPlaces(this.potatoTimesByUser::get, false);
+        super.calcPlaces(false);
 
         if (this.task != null) {
             this.task.cancel();
@@ -180,8 +162,12 @@ public class HotPotato extends MicroGame implements Listener {
     public void reset() {
         super.reset();
         this.time = TIME;
-        this.potatoTimesByUser.clear();
         this.holders.clear();
+    }
+
+    @Override
+    public Integer getDefaultScore() {
+        return 0;
     }
 
     @Override

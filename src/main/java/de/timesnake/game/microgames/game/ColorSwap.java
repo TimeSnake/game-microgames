@@ -9,6 +9,7 @@ import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.event.UserMoveEvent;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
+import de.timesnake.game.microgames.game.basis.FallOutGame;
 import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.server.MicroGamesServer;
 import de.timesnake.game.microgames.user.MicroGamesUser;
@@ -273,11 +274,6 @@ public class ColorSwap extends FallOutGame implements Listener {
                 super.sideboard.setScore(0, Server.getInGameUsers().size() + "");
             }
         }
-    }
-
-    @Override
-    public String getDeathMessage() {
-        return " failed!";
     }
 
     private class Level {
