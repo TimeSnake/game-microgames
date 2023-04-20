@@ -212,6 +212,7 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
     }
 
     public void nextGame() {
+        Server.getInGameUsers().forEach(u -> u.addCoins(MicroGamesServer.GAME_COINS, true));
 
         if (this.partyMode) {
             this.nextPartyGame();
