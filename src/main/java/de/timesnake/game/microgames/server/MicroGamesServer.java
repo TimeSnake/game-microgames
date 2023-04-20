@@ -12,6 +12,8 @@ import net.kyori.adventure.text.Component;
 
 public class MicroGamesServer extends GameServer {
 
+    public static final float GAME_COINS = 3;
+
     public static void nextGame() {
         server.nextGame();
     }
