@@ -42,7 +42,7 @@ public abstract class LocationFinishGame extends MicroGame implements Listener {
     protected void loadDelayed() {
         for (User user : Server.getPreGameUsers()) {
             user.teleport(this.getSpawnLocation());
-            user.lockLocation(true);
+            user.lockLocation();
         }
     }
 
@@ -50,7 +50,7 @@ public abstract class LocationFinishGame extends MicroGame implements Listener {
     public void start() {
         super.start();
         for (User user : Server.getInGameUsers()) {
-            user.lockLocation(false);
+            user.unlockLocation();
         }
     }
 

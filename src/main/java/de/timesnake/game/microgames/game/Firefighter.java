@@ -6,6 +6,7 @@ package de.timesnake.game.microgames.game;
 
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.user.User;
+import de.timesnake.basic.bukkit.util.world.ExBlock;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
 import de.timesnake.basic.bukkit.util.world.ExWorld.Restriction;
@@ -16,7 +17,6 @@ import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.basic.util.Tuple;
 import de.timesnake.library.extension.util.chat.Chat;
-import java.util.List;
 import java.util.Set;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -42,15 +42,6 @@ public class Firefighter extends ScoreGame<Integer> implements Listener {
 
     private static final Set<Material> EXCLUDED_MATERIALS = Set.of(Material.GRASS,
             Material.TALL_GRASS);
-
-    private static final List<Tuple<Vector, BlockFace>> NEAR_BLOCKS = List.of(
-            new Tuple<>(new Vector(1, 0, 0),
-                    BlockFace.WEST), new Tuple<>(new Vector(-1, 0, 0), BlockFace.EAST),
-            new Tuple<>(new Vector(0, 1, 0),
-                    null), new Tuple<>(new Vector(0, -1, 0), BlockFace.UP),
-            new Tuple<>(new Vector(0, 0, 1),
-                    BlockFace.NORTH)
-            , new Tuple<>(new Vector(0, 0, -1), BlockFace.SOUTH));
 
     private BukkitTask timeTask;
 
@@ -79,7 +70,7 @@ public class Firefighter extends ScoreGame<Integer> implements Listener {
         world.restrict(Restriction.BLOCK_BREAK, true);
         world.restrict(Restriction.BLOCK_PLACE, true);
         world.restrict(Restriction.LIGHT_UP_INTERACTION, false);
-        world.restrict(Restriction.FIRE_SPREAD, true);
+        world.restrict(Restriction.FIRE_SPREAD_SPEED, 0f);
         world.restrict(Restriction.NO_PLAYER_DAMAGE, true);
         world.restrict(Restriction.DROP_PICK_ITEM, true);
         world.setPVP(false);
@@ -115,7 +106,7 @@ public class Firefighter extends ScoreGame<Integer> implements Listener {
                 continue;
             }
 
-            for (Tuple<Vector, BlockFace> tuple : NEAR_BLOCKS) {
+            for (Tuple<Vector, BlockFace> tuple : ExBlock.NEAR_BLOCKS_WITH_FACING) {
                 Vector vec = tuple.getA();
                 BlockFace blockFace = tuple.getB();
 
@@ -125,9 +116,9 @@ public class Firefighter extends ScoreGame<Integer> implements Listener {
                     continue;
                 }
 
-                if (this.random.nextDouble() < FIRE_CHANCE) {
+                if (world.getRandom().nextFloat() < FIRE_CHANCE) {
                     nearBlock.setType(Material.FIRE);
-                    if (blockFace != null) {
+                    if (blockFace != BlockFace.DOWN) {
                         BlockData blockData = nearBlock.getBlockData();
                         if (blockData instanceof Fire) {
                             ((Fire) blockData).setFace(blockFace, true);
