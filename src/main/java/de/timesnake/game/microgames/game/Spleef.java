@@ -150,7 +150,7 @@ public class Spleef extends FallOutGame {
         }
 
         if (e.getHitEntity() != null && e.getHitEntity() instanceof Player) {
-            ((Player) e.getHitEntity()).damage(0.01);
+            ((Player) e.getHitEntity()).damage(0.01, e.getEntity());
             ((Player) e.getHitEntity()).setHealth(((Player) e.getHitEntity()).getAttribute(
                     Attribute.GENERIC_MAX_HEALTH).getBaseValue());
             e.getHitEntity().setVelocity(e.getEntity().getVelocity().normalize());

@@ -14,6 +14,7 @@ import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.server.MicroGamesServer;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Status;
+import de.timesnake.library.extension.util.chat.Chat;
 import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -29,10 +30,12 @@ public class LadderKing extends ScoreGame<Integer> implements Listener {
     // spawn locations all above 2
 
     private static final Integer TIME = 90;
+    private static final Integer SCORE_PERIOD = 10;
 
     private Integer time = TIME;
 
     private BukkitTask task;
+    private BukkitTask scoreTask;
 
     public LadderKing() {
         super("ladderking", "King of the Ladder", Material.LADDER,
@@ -61,7 +64,7 @@ public class LadderKing extends ScoreGame<Integer> implements Listener {
         super.load();
 
         super.sideboard.setScore(4, "§9§lTime");
-        super.sideboard.setScore(3, this.getTimeString());
+        super.sideboard.setScore(3, Chat.getTimeString(this.time));
         super.sideboard.setScore(2, "§f---------------");
         super.sideboard.setScore(1, "§c§lScore");
         super.sideboard.setScore(0, "0");
@@ -76,14 +79,6 @@ public class LadderKing extends ScoreGame<Integer> implements Listener {
         }
     }
 
-    private String getTimeString() {
-        if (this.time >= 60) {
-            return this.time / 60 + "min " + this.time % 60 + "s";
-        } else {
-            return this.time % 60 + "s";
-        }
-    }
-
     @Override
     public void start() {
         super.start();
@@ -94,19 +89,20 @@ public class LadderKing extends ScoreGame<Integer> implements Listener {
 
         this.task = Server.runTaskTimerSynchrony(() -> {
             this.time--;
-            super.sideboard.setScore(3, this.getTimeString());
-
-            for (User user : Server.getInGameUsers()) {
-                if (this.isOnTop(user)) {
-                    int time = this.scores.compute(((MicroGamesUser) user), (u, v) -> v + 1);
-                    user.setSideboardScore(0, "" + time);
-                }
-            }
-
+            super.sideboard.setScore(3, Chat.getTimeString(this.time));
             if (this.time == 0) {
                 this.stop();
             }
         }, 0, 20, GameMicroGames.getPlugin());
+
+        this.scoreTask = Server.runTaskTimerSynchrony(() -> {
+            for (User user : Server.getInGameUsers()) {
+                if (this.isOnTop(user)) {
+                    int score = this.scores.compute(((MicroGamesUser) user), (u, v) -> v + 1);
+                    user.setSideboardScore(0, String.valueOf(score));
+                }
+            }
+        }, 0, SCORE_PERIOD, GameMicroGames.getPlugin());
     }
 
     private boolean isOnTop(User user) {
@@ -126,6 +122,10 @@ public class LadderKing extends ScoreGame<Integer> implements Listener {
             this.task.cancel();
         }
 
+        if (this.scoreTask != null) {
+            this.scoreTask.cancel();
+        }
+
         super.stop();
     }
 
@@ -133,7 +133,7 @@ public class LadderKing extends ScoreGame<Integer> implements Listener {
     public void reset() {
         super.reset();
         this.time = TIME;
-        super.sideboard.setScore(3, this.getTimeString());
+        super.sideboard.setScore(3, Chat.getTimeString(this.time));
     }
 
     @Override
