@@ -13,26 +13,26 @@ import org.bukkit.event.Listener;
 
 public class Parkour extends LocationFinishGame implements Listener {
 
-    public Parkour() {
-        super("parkour", "Parkour", Material.GOLDEN_BOOTS,
-                "Beat the parkour as fast you can", 1, 180);
-    }
+  public Parkour() {
+    super("parkour", "Parkour", Material.GOLDEN_BOOTS,
+        "Beat the parkour as fast you can", 1, 180);
+  }
 
-    @Override
-    public boolean hasSideboard() {
-        return false;
-    }
+  @Override
+  public boolean hasSideboard() {
+    return false;
+  }
 
-    @Override
-    protected void onUserDeath(UserDeathEvent e) {
-        e.setAutoRespawn(true);
-    }
+  @Override
+  protected void onUserDeath(UserDeathEvent e) {
+    e.setAutoRespawn(true);
+  }
 
-    @Override
-    public void onUserMove(UserMoveEvent e) {
-        if (e.getUser().getLocation().getBlock().equals(this.getFinishLocation().getBlock())) {
-            super.addWinner(((MicroGamesUser) e.getUser()), true);
-        }
+  @Override
+  public void onUserMove(UserMoveEvent e) {
+    if (e.getUser().getLocation().getBlock().equals(this.getFinishLocation().getBlock())) {
+      super.addWinner(((MicroGamesUser) e.getUser()), true);
     }
+  }
 
 }

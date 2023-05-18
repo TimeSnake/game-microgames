@@ -16,35 +16,35 @@ import java.util.List;
 
 public class SkipGameCmd implements CommandListener {
 
-    private Code perm;
+  private Code perm;
 
-    @Override
-    public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd,
-            Arguments<Argument> args) {
-        if (!args.isLengthEquals(1, true)) {
-            return;
-        }
-
-        if (args.get(0).equalsIgnoreCase("skip")) {
-            if (!sender.hasPermission(this.perm)) {
-                return;
-            }
-
-            if (MicroGamesServer.getCurrentGame() != null && MicroGamesServer.getCurrentGame()
-                    .isGameRunning()) {
-                MicroGamesServer.skipGame();
-            }
-        }
+  @Override
+  public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd,
+      Arguments<Argument> args) {
+    if (!args.isLengthEquals(1, true)) {
+      return;
     }
 
-    @Override
-    public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd,
-            Arguments<Argument> args) {
-        return List.of("skip");
-    }
+    if (args.get(0).equalsIgnoreCase("skip")) {
+      if (!sender.hasPermission(this.perm)) {
+        return;
+      }
 
-    @Override
-    public void loadCodes(Plugin plugin) {
-        this.perm = plugin.createPermssionCode("microgames.skip");
+      if (MicroGamesServer.getCurrentGame() != null && MicroGamesServer.getCurrentGame()
+          .isGameRunning()) {
+        MicroGamesServer.skipGame();
+      }
     }
+  }
+
+  @Override
+  public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd,
+      Arguments<Argument> args) {
+    return List.of("skip");
+  }
+
+  @Override
+  public void loadCodes(Plugin plugin) {
+    this.perm = plugin.createPermssionCode("microgames.skip");
+  }
 }

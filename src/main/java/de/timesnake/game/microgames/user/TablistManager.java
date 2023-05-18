@@ -18,100 +18,100 @@ import java.util.List;
 
 public class TablistManager {
 
-    private final TeamTablist tablist;
-    private final TablistableGroup gameTeam;
-    private final TablistableRemainTeam spectatorTeam;
+  private final TeamTablist tablist;
+  private final TablistableGroup gameTeam;
+  private final TablistableRemainTeam spectatorTeam;
 
-    public TablistManager() {
+  public TablistManager() {
 
-        // tablist
+    // tablist
 
-        this.gameTeam = new TablistableGroup() {
-            @Override
-            public String getTablistRank() {
-                return "0";
-            }
+    this.gameTeam = new TablistableGroup() {
+      @Override
+      public String getTablistRank() {
+        return "0";
+      }
 
-            @Override
-            public String getTablistName() {
-                return "game";
-            }
+      @Override
+      public String getTablistName() {
+        return "game";
+      }
 
-            @Override
-            public String getTablistPrefix() {
-                return "";
-            }
+      @Override
+      public String getTablistPrefix() {
+        return "";
+      }
 
-            @Override
-            public org.bukkit.ChatColor getTablistPrefixChatColor() {
-                return ChatColor.WHITE;
-            }
+      @Override
+      public org.bukkit.ChatColor getTablistPrefixChatColor() {
+        return ChatColor.WHITE;
+      }
 
-            @Override
-            public org.bukkit.ChatColor getTablistChatColor() {
-                return ChatColor.WHITE;
-            }
-        };
+      @Override
+      public org.bukkit.ChatColor getTablistChatColor() {
+        return ChatColor.WHITE;
+      }
+    };
 
-        this.spectatorTeam = new TablistableRemainTeam() {
-            @Override
-            public String getTablistName() {
-                return "spec";
-            }
+    this.spectatorTeam = new TablistableRemainTeam() {
+      @Override
+      public String getTablistName() {
+        return "spec";
+      }
 
-            @Override
-            public String getTablistPrefix() {
-                return "";
-            }
+      @Override
+      public String getTablistPrefix() {
+        return "";
+      }
 
-            @Override
-            public org.bukkit.ChatColor getTablistPrefixChatColor() {
-                return ChatColor.WHITE;
-            }
+      @Override
+      public org.bukkit.ChatColor getTablistPrefixChatColor() {
+        return ChatColor.WHITE;
+      }
 
-            @Override
-            public org.bukkit.ChatColor getTablistChatColor() {
-                return ChatColor.GRAY;
-            }
-        };
+      @Override
+      public org.bukkit.ChatColor getTablistChatColor() {
+        return ChatColor.GRAY;
+      }
+    };
 
-        this.tablist = Server.getScoreboardManager()
-                .registerTeamTablist(new TeamTablistBuilder("lounge_side")
-                        .colorType(TeamTablist.ColorType.WHITE)
-                        .teams(List.of(this.gameTeam))
-                        .teamType(TablistGroupType.DUMMY)
-                        .groupTypes(DisplayGroup.MAIN_TABLIST_GROUPS)
-                        .remainTeam(this.spectatorTeam)
-                        .userJoin((e, tablist) -> {
-                            User user = e.getUser();
-                            Status.User status = user.getStatus();
+    this.tablist = Server.getScoreboardManager()
+        .registerTeamTablist(new TeamTablistBuilder("lounge_side")
+            .colorType(TeamTablist.ColorType.WHITE)
+            .teams(List.of(this.gameTeam))
+            .teamType(TablistGroupType.DUMMY)
+            .groupTypes(DisplayGroup.MAIN_TABLIST_GROUPS)
+            .remainTeam(this.spectatorTeam)
+            .userJoin((e, tablist) -> {
+              User user = e.getUser();
+              Status.User status = user.getStatus();
 
-                            if (status.equals(Status.User.OUT_GAME) || status.equals(
-                                    Status.User.SPECTATOR)) {
-                                ((TeamTablist) tablist).addRemainEntry(e.getUser());
-                            } else {
-                                tablist.addEntry(e.getUser());
-                            }
-                        })
-                        .userQuit((e, tablist) -> tablist.removeEntry(e.getUser())));
+              if (status.equals(Status.User.OUT_GAME) || status.equals(
+                  Status.User.SPECTATOR)) {
+                ((TeamTablist) tablist).addRemainEntry(e.getUser());
+              } else {
+                tablist.addEntry(e.getUser());
+              }
+            })
+            .userQuit((e, tablist) -> tablist.removeEntry(e.getUser())));
 
-        this.tablist.setHeader("§6MicroGames");
+    this.tablist.setHeader("§6MicroGames");
 
-        this.tablist.setFooter("§7Server: " + Server.getName() + "\n§cSupport: /ticket or \n"
-                + Server.SUPPORT_EMAIL);
+    this.tablist.setFooter("§7Server: " + Server.getName() + "\n§cSupport: /ticket or \n"
+        + Server.SUPPORT_EMAIL);
 
-        Server.getScoreboardManager().setActiveTablist(this.tablist);
-    }
+    Server.getScoreboardManager().setActiveTablist(this.tablist);
+  }
 
-    public TeamTablist getTablist() {
-        return tablist;
-    }
+  public TeamTablist getTablist() {
+    return tablist;
+  }
 
-    public TablistableGroup getGameTeam() {
-        return gameTeam;
-    }
+  public TablistableGroup getGameTeam() {
+    return gameTeam;
+  }
 
-    public TablistableRemainTeam getSpectatorTeam() {
-        return spectatorTeam;
-    }
+  public TablistableRemainTeam getSpectatorTeam() {
+    return spectatorTeam;
+  }
 }
