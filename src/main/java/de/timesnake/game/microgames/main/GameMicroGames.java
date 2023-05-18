@@ -16,27 +16,27 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class GameMicroGames extends JavaPlugin {
 
-    private static GameMicroGames plugin;
+  private static GameMicroGames plugin;
 
-    @Override
-    public void onLoad() {
-        ServerManager.setInstance(new MicroGamesServerManager());
-    }
+  @Override
+  public void onLoad() {
+    ServerManager.setInstance(new MicroGamesServerManager());
+  }
 
-    @Override
-    public void onEnable() {
-        GameMicroGames.plugin = this;
-        PluginManager pm = Bukkit.getPluginManager();
+  @Override
+  public void onEnable() {
+    GameMicroGames.plugin = this;
+    PluginManager pm = Bukkit.getPluginManager();
 
-        MicroGamesServerManager.getInstance().onMicroGamesEnable();
+    MicroGamesServerManager.getInstance().onMicroGamesEnable();
 
-        Server.getCommandManager().addCommand(this, "microgames", List.of("mg"), new SkipGameCmd(),
-                Plugin.MICRO_GAMES);
-    }
+    Server.getCommandManager().addCommand(this, "microgames", List.of("mg"), new SkipGameCmd(),
+        Plugin.MICRO_GAMES);
+  }
 
 
-    public static GameMicroGames getPlugin() {
-        return plugin;
-    }
+  public static GameMicroGames getPlugin() {
+    return plugin;
+  }
 
 }

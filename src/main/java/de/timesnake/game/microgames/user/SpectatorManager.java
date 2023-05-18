@@ -12,23 +12,23 @@ import org.jetbrains.annotations.Nullable;
 
 public class SpectatorManager extends de.timesnake.basic.game.util.user.SpectatorManager {
 
-    @Override
-    public @Nullable Sideboard getSpectatorSideboard() {
-        return null;
-    }
+  @Override
+  public @Nullable Sideboard getSpectatorSideboard() {
+    return null;
+  }
 
-    @Override
-    public @Nullable Chat getSpectatorChat() {
-        return null;
-    }
+  @Override
+  public @Nullable Chat getSpectatorChat() {
+    return null;
+  }
 
-    @Override
-    public ExLocation getSpectatorSpawn() {
-        return MicroGamesServer.getCurrentGame().getSpecLocation();
-    }
+  @Override
+  public ExLocation getSpectatorSpawn() {
+    return MicroGamesServer.getCurrentGame().getSpecLocation();
+  }
 
-    @Override
-    public boolean loadTools() {
-        return true;
-    }
+  @Override
+  public boolean loadTools() {
+    return true;
+  }
 }

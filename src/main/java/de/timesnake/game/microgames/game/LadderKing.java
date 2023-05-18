@@ -24,163 +24,163 @@ import org.bukkit.scheduler.BukkitTask;
 
 public class LadderKing extends ScoreGame<Integer> implements Listener {
 
-    private static final Integer START_LOCATION_INDEX = 0;
-    private static final Integer SPEC_LOCATION_INDEX = 1;
-    private static final Integer LADDER_LOCATION_INDEX = 2;
-    // spawn locations all above 2
+  private static final Integer START_LOCATION_INDEX = 0;
+  private static final Integer SPEC_LOCATION_INDEX = 1;
+  private static final Integer LADDER_LOCATION_INDEX = 2;
+  // spawn locations all above 2
 
-    private static final Integer TIME = 90;
-    private static final Integer SCORE_PERIOD = 10;
+  private static final Integer TIME = 90;
+  private static final Integer SCORE_PERIOD = 10;
 
-    private Integer time = TIME;
+  private Integer time = TIME;
 
-    private BukkitTask task;
-    private BukkitTask scoreTask;
+  private BukkitTask task;
+  private BukkitTask scoreTask;
 
-    public LadderKing() {
-        super("ladderking", "King of the Ladder", Material.LADDER,
-                "Try stand the longest time on top of the ladder",
-                2, -1);
-        Server.registerListener(this, GameMicroGames.getPlugin());
+  public LadderKing() {
+    super("ladderking", "King of the Ladder", Material.LADDER,
+        "Try stand the longest time on top of the ladder",
+        2, -1);
+    Server.registerListener(this, GameMicroGames.getPlugin());
+  }
+
+  @Override
+  public Integer getLocationAmount() {
+    return 3;
+  }
+
+  @Override
+  public boolean hasSideboard() {
+    return true;
+  }
+
+  @Override
+  public void prepare() {
+    super.prepare();
+  }
+
+  @Override
+  public void load() {
+    super.load();
+
+    super.sideboard.setScore(4, "§9§lTime");
+    super.sideboard.setScore(3, Chat.getTimeString(this.time));
+    super.sideboard.setScore(2, "§f---------------");
+    super.sideboard.setScore(1, "§c§lScore");
+    super.sideboard.setScore(0, "0");
+  }
+
+  @Override
+  protected void loadDelayed() {
+    List<ExLocation> spawnLocations = super.currentMap.getLocations(3);
+    for (User user : Server.getPreGameUsers()) {
+      user.teleport(spawnLocations.get(super.random.nextInt(spawnLocations.size())));
+      user.lockLocation();
+    }
+  }
+
+  @Override
+  public void start() {
+    super.start();
+
+    for (User user : MicroGamesServer.getInGameUsers()) {
+      user.unlockLocation();
     }
 
-    @Override
-    public Integer getLocationAmount() {
-        return 3;
-    }
+    this.task = Server.runTaskTimerSynchrony(() -> {
+      this.time--;
+      super.sideboard.setScore(3, Chat.getTimeString(this.time));
+      if (this.time == 0) {
+        this.stop();
+      }
+    }, 0, 20, GameMicroGames.getPlugin());
 
-    @Override
-    public boolean hasSideboard() {
-        return true;
-    }
-
-    @Override
-    public void prepare() {
-        super.prepare();
-    }
-
-    @Override
-    public void load() {
-        super.load();
-
-        super.sideboard.setScore(4, "§9§lTime");
-        super.sideboard.setScore(3, Chat.getTimeString(this.time));
-        super.sideboard.setScore(2, "§f---------------");
-        super.sideboard.setScore(1, "§c§lScore");
-        super.sideboard.setScore(0, "0");
-    }
-
-    @Override
-    protected void loadDelayed() {
-        List<ExLocation> spawnLocations = super.currentMap.getLocations(3);
-        for (User user : Server.getPreGameUsers()) {
-            user.teleport(spawnLocations.get(super.random.nextInt(spawnLocations.size())));
-            user.lockLocation();
+    this.scoreTask = Server.runTaskTimerSynchrony(() -> {
+      for (User user : Server.getInGameUsers()) {
+        if (this.isOnTop(user)) {
+          int score = this.scores.compute(((MicroGamesUser) user), (u, v) -> v + 1);
+          user.setSideboardScore(0, String.valueOf(score));
         }
+      }
+    }, 0, SCORE_PERIOD, GameMicroGames.getPlugin());
+  }
+
+  private boolean isOnTop(User user) {
+    Block userBlock = user.getLocation().getBlock();
+    Block topBlock = super.currentMap.getLocation(LADDER_LOCATION_INDEX).getBlock();
+    if (userBlock.getY() >= topBlock.getY()) {
+      return userBlock.getLocation().distanceSquared(topBlock.getLocation()) <= 1;
+    }
+    return false;
+  }
+
+  @Override
+  public void stop() {
+    super.calcPlaces(true);
+
+    if (this.task != null) {
+      this.task.cancel();
     }
 
-    @Override
-    public void start() {
-        super.start();
-
-        for (User user : MicroGamesServer.getInGameUsers()) {
-            user.unlockLocation();
-        }
-
-        this.task = Server.runTaskTimerSynchrony(() -> {
-            this.time--;
-            super.sideboard.setScore(3, Chat.getTimeString(this.time));
-            if (this.time == 0) {
-                this.stop();
-            }
-        }, 0, 20, GameMicroGames.getPlugin());
-
-        this.scoreTask = Server.runTaskTimerSynchrony(() -> {
-            for (User user : Server.getInGameUsers()) {
-                if (this.isOnTop(user)) {
-                    int score = this.scores.compute(((MicroGamesUser) user), (u, v) -> v + 1);
-                    user.setSideboardScore(0, String.valueOf(score));
-                }
-            }
-        }, 0, SCORE_PERIOD, GameMicroGames.getPlugin());
+    if (this.scoreTask != null) {
+      this.scoreTask.cancel();
     }
 
-    private boolean isOnTop(User user) {
-        Block userBlock = user.getLocation().getBlock();
-        Block topBlock = super.currentMap.getLocation(LADDER_LOCATION_INDEX).getBlock();
-        if (userBlock.getY() >= topBlock.getY()) {
-            return userBlock.getLocation().distanceSquared(topBlock.getLocation()) <= 1;
-        }
-        return false;
+    super.stop();
+  }
+
+  @Override
+  public void reset() {
+    super.reset();
+    this.time = TIME;
+    super.sideboard.setScore(3, Chat.getTimeString(this.time));
+  }
+
+  @Override
+  public Integer getDefaultScore() {
+    return 0;
+  }
+
+  @Override
+  public boolean onUserJoin(MicroGamesUser user) {
+    return false;
+  }
+
+  @Override
+  public void onUserQuit(MicroGamesUser user) {
+    if (Server.getInGameUsers().size() <= 1) {
+      this.stop();
+    }
+  }
+
+  @Override
+  public ExLocation getSpecLocation() {
+    return super.currentMap.getLocation(SPEC_LOCATION_INDEX);
+  }
+
+  @Override
+  public ExLocation getStartLocation() {
+    return super.currentMap.getLocation(START_LOCATION_INDEX);
+  }
+
+  @EventHandler
+  public void onUserDamage(UserDamageEvent e) {
+    if (!this.isGameRunning()) {
+      return;
+    }
+    e.setCancelDamage(true);
+  }
+
+  @EventHandler
+  public void onUserDamageByUser(UserDamageByUserEvent e) {
+    if (!this.isGameRunning()) {
+      return;
     }
 
-    @Override
-    public void stop() {
-        super.calcPlaces(true);
-
-        if (this.task != null) {
-            this.task.cancel();
-        }
-
-        if (this.scoreTask != null) {
-            this.scoreTask.cancel();
-        }
-
-        super.stop();
+    if (!e.getUserDamager().getStatus().equals(Status.User.IN_GAME)) {
+      e.setCancelDamage(true);
+      e.setCancelled(true);
     }
-
-    @Override
-    public void reset() {
-        super.reset();
-        this.time = TIME;
-        super.sideboard.setScore(3, Chat.getTimeString(this.time));
-    }
-
-    @Override
-    public Integer getDefaultScore() {
-        return 0;
-    }
-
-    @Override
-    public boolean onUserJoin(MicroGamesUser user) {
-        return false;
-    }
-
-    @Override
-    public void onUserQuit(MicroGamesUser user) {
-        if (Server.getInGameUsers().size() <= 1) {
-            this.stop();
-        }
-    }
-
-    @Override
-    public ExLocation getSpecLocation() {
-        return super.currentMap.getLocation(SPEC_LOCATION_INDEX);
-    }
-
-    @Override
-    public ExLocation getStartLocation() {
-        return super.currentMap.getLocation(START_LOCATION_INDEX);
-    }
-
-    @EventHandler
-    public void onUserDamage(UserDamageEvent e) {
-        if (!this.isGameRunning()) {
-            return;
-        }
-        e.setCancelDamage(true);
-    }
-
-    @EventHandler
-    public void onUserDamageByUser(UserDamageByUserEvent e) {
-        if (!this.isGameRunning()) {
-            return;
-        }
-
-        if (!e.getUserDamager().getStatus().equals(Status.User.IN_GAME)) {
-            e.setCancelDamage(true);
-            e.setCancelled(true);
-        }
-    }
+  }
 
 }

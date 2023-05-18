@@ -12,47 +12,47 @@ import net.kyori.adventure.text.Component;
 
 public class MicroGamesServer extends GameServer {
 
-    public static final float GAME_COINS = 3;
+  public static final float GAME_COINS = 3;
 
-    public static void nextGame() {
-        server.nextGame();
-    }
+  public static void nextGame() {
+    server.nextGame();
+  }
 
-    public static boolean isPaused() {
-        return server.isPaused();
-    }
+  public static boolean isPaused() {
+    return server.isPaused();
+  }
 
-    public static MicroGame getCurrentGame() {
-        return server.getCurrentGame();
-    }
+  public static MicroGame getCurrentGame() {
+    return server.getCurrentGame();
+  }
 
-    public static void broadcastMicroGamesMessage(Component message) {
-        server.broadcastMicroGamesMessage(message);
-    }
+  public static void broadcastMicroGamesMessage(Component message) {
+    server.broadcastMicroGamesMessage(message);
+  }
 
-    public static void broadcastMicroGamesTDMessage(String message) {
-        server.broadcastMicroGamesTDMessage(message);
-    }
+  public static void broadcastMicroGamesTDMessage(String message) {
+    server.broadcastMicroGamesTDMessage(message);
+  }
 
-    public static Collection<MicroGame> getGames() {
-        return server.getGames();
-    }
+  public static Collection<MicroGame> getGames() {
+    return server.getGames();
+  }
 
-    public static boolean isPartyMode() {
-        return server.isPartyMode();
-    }
+  public static boolean isPartyMode() {
+    return server.isPartyMode();
+  }
 
-    public static void startParty() {
-        server.startParty();
-    }
+  public static void startParty() {
+    server.startParty();
+  }
 
-    public static TablistManager getTablistManager() {
-        return server.getTablistManager();
-    }
+  public static TablistManager getTablistManager() {
+    return server.getTablistManager();
+  }
 
-    public static void skipGame() {
-        server.skipGame();
-    }
+  public static void skipGame() {
+    server.skipGame();
+  }
 
-    private static final MicroGamesServerManager server = MicroGamesServerManager.getInstance();
+  private static final MicroGamesServerManager server = MicroGamesServerManager.getInstance();
 }

@@ -26,134 +26,134 @@ import org.bukkit.inventory.ItemStack;
 
 public class Spleef extends FallOutGame {
 
-    private static final ExItemStack SHOVEL = new ExItemStack(Material.GOLDEN_SHOVEL)
-            .addExEnchantment(Enchantment.DIG_SPEED, 10)
-            .setUnbreakable(true).setDropable(false).setMoveable(false).immutable();
+  private static final ExItemStack SHOVEL = new ExItemStack(Material.GOLDEN_SHOVEL)
+      .addExEnchantment(Enchantment.DIG_SPEED, 10)
+      .setUnbreakable(true).setDropable(false).setMoveable(false).immutable();
 
-    protected static final Integer SPEC_LOCATION_INDEX = 0;
-    protected static final Integer START_LOCATION_INDEX = 1;
-    protected static final Integer SPAWN_LOCATION_INDEX = 2;
-    protected static final Integer DEATH_HEIGHT_LOCATION_INDEX = 3;
+  protected static final Integer SPEC_LOCATION_INDEX = 0;
+  protected static final Integer START_LOCATION_INDEX = 1;
+  protected static final Integer SPAWN_LOCATION_INDEX = 2;
+  protected static final Integer DEATH_HEIGHT_LOCATION_INDEX = 3;
 
-    private final Random random = new Random();
+  private final Random random = new Random();
 
-    public Spleef() {
-        super("spleef", "Spleef", Material.SNOWBALL,
-                "Spleef other players", 2, 180);
-        Server.registerListener(this, GameMicroGames.getPlugin());
+  public Spleef() {
+    super("spleef", "Spleef", Material.SNOWBALL,
+        "Spleef other players", 2, 180);
+    Server.registerListener(this, GameMicroGames.getPlugin());
+  }
+
+  @Override
+  public Integer getLocationAmount() {
+    return 4;
+  }
+
+  @Override
+  public void prepare() {
+    super.prepare();
+    super.currentMap.getWorld().setPVP(true);
+    super.currentMap.getWorld().restrict(Restriction.NO_PLAYER_DAMAGE, false);
+  }
+
+  @Override
+  protected void loadDelayed() {
+    for (User user : Server.getPreGameUsers()) {
+      user.teleport(this.getSpawnLocation());
+      user.addItem(SHOVEL);
+      user.setCooldown(Material.SNOWBALL, 2);
+    }
+  }
+
+  @Override
+  public void start() {
+    super.start();
+
+    for (User user : Server.getInGameUsers()) {
+      user.setInvulnerable(false);
+      user.setGameMode(GameMode.SURVIVAL);
+    }
+  }
+
+  @Override
+  public void reset() {
+    super.reset();
+    if (this.previousMap != null) {
+      Server.getWorldManager().reloadWorld(this.previousMap.getWorld());
+    }
+  }
+
+  @Override
+  public boolean hasSideboard() {
+    return false;
+  }
+
+  @Override
+  public boolean onUserJoin(MicroGamesUser user) {
+    return false;
+  }
+
+  @Override
+  public void onUserQuit(MicroGamesUser user) {
+    if (Server.getInGameUsers().size() <= 1) {
+      this.stop();
+    }
+  }
+
+  @Override
+  public ExLocation getSpecLocation() {
+    return super.currentMap.getLocation(SPEC_LOCATION_INDEX);
+  }
+
+  @Override
+  public ExLocation getStartLocation() {
+    return super.currentMap.getLocation(START_LOCATION_INDEX);
+  }
+
+  public ExLocation getSpawnLocation() {
+    return this.currentMap.getLocation(SPAWN_LOCATION_INDEX);
+  }
+
+  public ExLocation getDeathLocation() {
+    return super.currentMap.getLocation(DEATH_HEIGHT_LOCATION_INDEX);
+  }
+
+  @Override
+  public Integer getDeathHeight() {
+    return this.getDeathLocation().getBlockY();
+  }
+
+  @EventHandler
+  public void onBlockBreak(UserBlockBreakEvent e) {
+    if (!this.isGameRunning()) {
+      return;
     }
 
-    @Override
-    public Integer getLocationAmount() {
-        return 4;
+    User user = e.getUser();
+
+    if (user.getStatus().equals(Status.User.IN_GAME)) {
+      user.addItem(new ItemStack(Material.SNOWBALL, 2));
+      if (this.random.nextInt(4) == 0) {
+        user.addItem(new ItemStack(Material.SNOW_BLOCK, 1));
+      }
+      e.setDropItems(false);
+    }
+  }
+
+  @EventHandler
+  public void onProjectileHit(ProjectileHitEvent e) {
+    if (!this.isGameRunning()) {
+      return;
     }
 
-    @Override
-    public void prepare() {
-        super.prepare();
-        super.currentMap.getWorld().setPVP(true);
-        super.currentMap.getWorld().restrict(Restriction.NO_PLAYER_DAMAGE, false);
+    if (e.getHitBlock() != null) {
+      e.getHitBlock().setType(Material.VOID_AIR);
     }
 
-    @Override
-    protected void loadDelayed() {
-        for (User user : Server.getPreGameUsers()) {
-            user.teleport(this.getSpawnLocation());
-            user.addItem(SHOVEL);
-            user.setCooldown(Material.SNOWBALL, 2);
-        }
+    if (e.getHitEntity() != null && e.getHitEntity() instanceof Player) {
+      ((Player) e.getHitEntity()).damage(0.01, e.getEntity());
+      ((Player) e.getHitEntity()).setHealth(((Player) e.getHitEntity()).getAttribute(
+          Attribute.GENERIC_MAX_HEALTH).getBaseValue());
+      e.getHitEntity().setVelocity(e.getEntity().getVelocity().normalize());
     }
-
-    @Override
-    public void start() {
-        super.start();
-
-        for (User user : Server.getInGameUsers()) {
-            user.setInvulnerable(false);
-            user.setGameMode(GameMode.SURVIVAL);
-        }
-    }
-
-    @Override
-    public void reset() {
-        super.reset();
-        if (this.previousMap != null) {
-            Server.getWorldManager().reloadWorld(this.previousMap.getWorld());
-        }
-    }
-
-    @Override
-    public boolean hasSideboard() {
-        return false;
-    }
-
-    @Override
-    public boolean onUserJoin(MicroGamesUser user) {
-        return false;
-    }
-
-    @Override
-    public void onUserQuit(MicroGamesUser user) {
-        if (Server.getInGameUsers().size() <= 1) {
-            this.stop();
-        }
-    }
-
-    @Override
-    public ExLocation getSpecLocation() {
-        return super.currentMap.getLocation(SPEC_LOCATION_INDEX);
-    }
-
-    @Override
-    public ExLocation getStartLocation() {
-        return super.currentMap.getLocation(START_LOCATION_INDEX);
-    }
-
-    public ExLocation getSpawnLocation() {
-        return this.currentMap.getLocation(SPAWN_LOCATION_INDEX);
-    }
-
-    public ExLocation getDeathLocation() {
-        return super.currentMap.getLocation(DEATH_HEIGHT_LOCATION_INDEX);
-    }
-
-    @Override
-    public Integer getDeathHeight() {
-        return this.getDeathLocation().getBlockY();
-    }
-
-    @EventHandler
-    public void onBlockBreak(UserBlockBreakEvent e) {
-        if (!this.isGameRunning()) {
-            return;
-        }
-
-        User user = e.getUser();
-
-        if (user.getStatus().equals(Status.User.IN_GAME)) {
-            user.addItem(new ItemStack(Material.SNOWBALL, 2));
-            if (this.random.nextInt(4) == 0) {
-                user.addItem(new ItemStack(Material.SNOW_BLOCK, 1));
-            }
-            e.setDropItems(false);
-        }
-    }
-
-    @EventHandler
-    public void onProjectileHit(ProjectileHitEvent e) {
-        if (!this.isGameRunning()) {
-            return;
-        }
-
-        if (e.getHitBlock() != null) {
-            e.getHitBlock().setType(Material.VOID_AIR);
-        }
-
-        if (e.getHitEntity() != null && e.getHitEntity() instanceof Player) {
-            ((Player) e.getHitEntity()).damage(0.01, e.getEntity());
-            ((Player) e.getHitEntity()).setHealth(((Player) e.getHitEntity()).getAttribute(
-                    Attribute.GENERIC_MAX_HEALTH).getBaseValue());
-            e.getHitEntity().setVelocity(e.getEntity().getVelocity().normalize());
-        }
-    }
+  }
 }
