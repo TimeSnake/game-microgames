@@ -1,38 +1,38 @@
 repositories {
-    mavenLocal()
-    maven {
-        url = uri 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
-    }
-    maven {
-        url = uri 'https://papermc.io/repo/repository/maven-public/'
-    }
-    maven {
-        url = uri 'https://repo.maven.apache.org/maven2/'
-    }
+  mavenLocal()
+  maven {
+    url = uri 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+  }
+  maven {
+    url = uri 'https://papermc.io/repo/repository/maven-public/'
+  }
+  maven {
+    url = uri 'https://repo.maven.apache.org/maven2/'
+  }
 }
 
 dependencies {
-    implementation project(':basic-game')
-    implementation project(':library-game')
+  implementation project(':basic-game')
+  implementation project(':library-game')
 
-    compileOnly project(':basic-bukkit')
+  compileOnly project(':basic-bukkit')
 
-    compileOnly project(':database-bukkit')
-    compileOnly project(':database-api')
+  compileOnly project(':database-bukkit')
+  compileOnly project(':database-api')
 
-    compileOnly project(':channel-bukkit')
-    compileOnly project(':channel-api')
+  compileOnly project(':channel-bukkit')
+  compileOnly project(':channel-api')
 
-    compileOnly project(':library-packets')
-    compileOnly project(':library-entities')
-    compileOnly project(':library-reflection')
-    compileOnly project(':library-extension')
-    compileOnly project(':library-basic')
-    compileOnly project(':library-chat')
+  compileOnly project(':library-packets')
+  compileOnly project(':library-entities')
+  compileOnly project(':library-reflection')
+  compileOnly project(':library-extension')
+  compileOnly project(':library-basic')
+  compileOnly project(':library-chat')
 
-    compileOnly project.paper_api
-    compileOnly project.spigot_api
-    compileOnly project.spigot
+  compileOnly project.paper_api
+  compileOnly project.spigot_api
+  compileOnly project.spigot
 }
 
 group = project.group
@@ -40,22 +40,22 @@ version = '1.2-SNAPSHOT'
 archivesBaseName = 'game-microgames'
 
 task buildFatJar(type: Jar) {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    classifier = "all"
-    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
-    with jar
+  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+  classifier = "all"
+  from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+  with jar
 }
 
 task deleteOldPluginJar(type: Delete) {
-    delete fileTree(dir: "${project.plugins_dir}", include: "**/${archivesBaseName}-*.jar")
-    onlyIf {
-        !jar.state.upToDate
-    }
+  delete fileTree(dir: "${project.plugins_dir}", include: "**/${archivesBaseName}-*.jar")
+  onlyIf {
+    !jar.state.upToDate
+  }
 }
 
 task copyJarToPlugins(type: Copy) {
-    from "build/libs/" + archivesBaseName + "-" + version + "-all" + ".jar"
-    into project.plugins_dir
+  from "build/libs/" + archivesBaseName + "-" + version + "-all" + ".jar"
+  into project.plugins_dir
 }
 
 jar.finalizedBy(buildFatJar)
