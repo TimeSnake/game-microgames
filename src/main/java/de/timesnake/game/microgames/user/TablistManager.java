@@ -8,6 +8,7 @@ import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.chat.ChatColor;
 import de.timesnake.basic.bukkit.util.group.DisplayGroup;
 import de.timesnake.basic.bukkit.util.user.User;
+import de.timesnake.basic.bukkit.util.user.scoreboard.ScoreboardManager;
 import de.timesnake.basic.bukkit.util.user.scoreboard.TablistGroupType;
 import de.timesnake.basic.bukkit.util.user.scoreboard.TablistableGroup;
 import de.timesnake.basic.bukkit.util.user.scoreboard.TablistableRemainTeam;
@@ -97,8 +98,7 @@ public class TablistManager {
 
     this.tablist.setHeader("§6MicroGames");
 
-    this.tablist.setFooter("§7Server: " + Server.getName() + "\n§cSupport: /ticket or \n"
-        + Server.SUPPORT_EMAIL);
+    this.tablist.setFooter(ScoreboardManager.getDefaultFooter());
 
     Server.getScoreboardManager().setActiveTablist(this.tablist);
   }
