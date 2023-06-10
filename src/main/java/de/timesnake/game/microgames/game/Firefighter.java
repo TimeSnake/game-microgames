@@ -17,6 +17,7 @@ import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.basic.util.Tuple;
 import de.timesnake.library.extension.util.chat.Chat;
+import java.time.Duration;
 import java.util.Set;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -37,7 +38,7 @@ public class Firefighter extends ScoreGame<Integer> implements Listener {
   protected static final Integer FIRST_CORNER_INDEX = 2;
   protected static final Integer SECOND_CORNER_INDEX = 3;
 
-  private static final Integer DURATION = 45;
+  private static final Duration DURATION = Duration.ofSeconds(45);
   private static final double FIRE_CHANCE = 0.2;
 
   private static final Set<Material> EXCLUDED_MATERIALS = Set.of(Material.GRASS,
@@ -146,7 +147,7 @@ public class Firefighter extends ScoreGame<Integer> implements Listener {
       if (time == 0) {
         this.stop();
       }
-    }, DURATION, true, 0, 20, GameMicroGames.getPlugin());
+    }, ((int) DURATION.toSeconds()), true, 0, 20, GameMicroGames.getPlugin());
   }
 
   @Override

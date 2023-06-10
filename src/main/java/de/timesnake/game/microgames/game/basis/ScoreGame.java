@@ -7,6 +7,7 @@ package de.timesnake.game.microgames.game.basis;
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.game.microgames.user.MicroGamesUser;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import org.bukkit.Material;
@@ -15,9 +16,15 @@ public abstract class ScoreGame<Score extends Comparable<Score>> extends MicroGa
 
   protected HashMap<MicroGamesUser, Score> scores = new HashMap<>();
 
+  @Deprecated
   public ScoreGame(String name, String displayName, Material material, String description,
       Integer minPlayers, int maxTimeSec) {
     super(name, displayName, material, description, minPlayers, maxTimeSec);
+  }
+
+  public ScoreGame(String name, String displayName, Material material, String description,
+      Integer minPlayers, Duration maxTime) {
+    super(name, displayName, material, description, minPlayers, maxTime);
   }
 
   @Override
