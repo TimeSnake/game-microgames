@@ -63,14 +63,20 @@ public abstract class MicroGame {
   private final BossBar timeBar;
   private int timeSec;
 
+  @Deprecated
   public MicroGame(String name, String displayName, Material material, String description,
       Integer minPlayers, int maxTimeSec) {
+    this(name, displayName, material, description, minPlayers, Duration.ofSeconds(maxTimeSec));
+  }
+
+  public MicroGame(String name, String displayName, Material material, String description,
+      Integer minPlayers, Duration maxDuration) {
     this.name = name;
     this.displayName = displayName;
     this.material = material;
     this.description = description;
     this.minPlayers = minPlayers;
-    this.maxTimeSec = maxTimeSec;
+    this.maxTimeSec = ((int) maxDuration.toSeconds());
     this.timeBar = Server.createBossBar("Time left: §c§l" + Chat.getTimeString(timeSec),
         BarColor.WHITE, BarStyle.SOLID);
 
