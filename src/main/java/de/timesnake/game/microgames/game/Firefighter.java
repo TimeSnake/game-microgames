@@ -17,8 +17,6 @@ import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.basic.util.Tuple;
 import de.timesnake.library.extension.util.chat.Chat;
-import java.time.Duration;
-import java.util.Set;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -30,6 +28,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
+
+import java.time.Duration;
+import java.util.Set;
 
 public class Firefighter extends ScoreGame<Integer> implements Listener {
 
@@ -48,7 +49,7 @@ public class Firefighter extends ScoreGame<Integer> implements Listener {
 
   public Firefighter() {
     super("firefighter", "Firefighter", Material.BLAZE_POWDER,
-        "Punch out the fire", 1, -1);
+        "Punch out the fire", 1, null);
 
     Server.registerListener(this, GameMicroGames.getPlugin());
   }

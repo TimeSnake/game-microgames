@@ -14,7 +14,6 @@ import de.timesnake.game.microgames.game.basis.FallOutGame;
 import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Status;
-import java.util.Random;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -23,6 +22,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.ItemStack;
+
+import java.time.Duration;
+import java.util.Random;
 
 public class Spleef extends FallOutGame {
 
@@ -39,7 +41,7 @@ public class Spleef extends FallOutGame {
 
   public Spleef() {
     super("spleef", "Spleef", Material.SNOWBALL,
-        "Spleef other players", 2, 180);
+        "Spleef other players", 2, Duration.ofMinutes(3));
     Server.registerListener(this, GameMicroGames.getPlugin());
   }
 

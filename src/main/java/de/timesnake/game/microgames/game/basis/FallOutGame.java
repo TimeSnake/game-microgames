@@ -11,18 +11,19 @@ import de.timesnake.basic.bukkit.util.user.event.UserMoveEvent;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.chat.ExTextColor;
-import java.time.Duration;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import java.time.Duration;
+
 public abstract class FallOutGame extends MicroGame implements Listener {
 
   public FallOutGame(String name, String displayName, Material material, String description,
-      Integer minPlayers, int maxTimeSec) {
-    super(name, displayName, material, description, minPlayers, maxTimeSec);
+                     Integer minPlayers, Duration maxTime) {
+    super(name, displayName, material, description, minPlayers, maxTime);
   }
 
   public abstract Integer getDeathHeight();

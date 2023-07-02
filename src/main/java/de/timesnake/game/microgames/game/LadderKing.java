@@ -15,12 +15,13 @@ import de.timesnake.game.microgames.server.MicroGamesServer;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.extension.util.chat.Chat;
-import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitTask;
+
+import java.util.List;
 
 public class LadderKing extends ScoreGame<Integer> implements Listener {
 
@@ -40,7 +41,7 @@ public class LadderKing extends ScoreGame<Integer> implements Listener {
   public LadderKing() {
     super("ladderking", "King of the Ladder", Material.LADDER,
         "Try stand the longest time on top of the ladder",
-        2, -1);
+        2, null);
     Server.registerListener(this, GameMicroGames.getPlugin());
   }
 

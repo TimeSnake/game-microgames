@@ -8,13 +8,14 @@ import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.library.chat.ExTextColor;
-import java.time.Duration;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Instrument;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Note;
 import org.bukkit.scheduler.BukkitTask;
+
+import java.time.Duration;
 
 public abstract class ShrinkingPlatformGame extends FallOutGame {
 
@@ -23,8 +24,8 @@ public abstract class ShrinkingPlatformGame extends FallOutGame {
   private Integer radius;
 
   public ShrinkingPlatformGame(String name, String displayName, Material material,
-      String description, Integer minPlayers, int maxTimeSec) {
-    super(name, displayName, material, description, minPlayers, maxTimeSec);
+                               String description, Integer minPlayers, Duration maxTime) {
+    super(name, displayName, material, description, minPlayers, maxTime);
   }
 
   @Override

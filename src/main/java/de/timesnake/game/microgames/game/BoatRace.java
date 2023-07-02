@@ -11,9 +11,6 @@ import de.timesnake.basic.bukkit.util.user.event.UserDeathEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserMoveEvent;
 import de.timesnake.game.microgames.game.basis.LocationFinishGame;
 import de.timesnake.game.microgames.user.MicroGamesUser;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 import org.bukkit.Material;
 import org.bukkit.entity.Boat;
 import org.bukkit.entity.Entity;
@@ -25,6 +22,11 @@ import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.vehicle.VehicleExitEvent;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
 
+import java.time.Duration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+
 public class BoatRace extends LocationFinishGame implements Listener {
 
   private final Set<User> enterableUsers = new HashSet<>();
@@ -33,7 +35,7 @@ public class BoatRace extends LocationFinishGame implements Listener {
 
   public BoatRace() {
     super("boatrace", "Boat Race", Material.OAK_BOAT,
-        "Try to be the first at the finish", 1, 180);
+        "Try to be the first at the finish", 1, Duration.ofMinutes(3));
   }
 
   @Override
@@ -58,16 +60,20 @@ public class BoatRace extends LocationFinishGame implements Listener {
   }
 
   @Override
+  public void stop() {
+    this.boatByUser.forEach((u, b) -> b.remove());
+    this.boatByUser.clear();
+    super.stop();
+  }
+
+  @Override
   public void reset() {
     super.reset();
 
-    for (Boat boat : this.boatByUser.values()) {
-      boat.remove();
-    }
-
-    this.boatByUser.clear();
-
     if (this.previousMap != null) {
+      for (Boat boat : this.previousMap.getWorld().getEntitiesByClass(Boat.class)) {
+        boat.remove();
+      }
       Server.getWorldManager().reloadWorld(this.previousMap.getWorld());
     }
   }
@@ -119,13 +125,11 @@ public class BoatRace extends LocationFinishGame implements Listener {
       return;
     }
 
-    if (this.currentMap == null || !this.currentMap.getWorld().getBukkitWorld()
-        .equals(e.getFrom().getWorld())) {
+    if (this.currentMap == null || !this.currentMap.getWorld().getBukkitWorld().equals(e.getFrom().getWorld())) {
       return;
     }
 
-    if (e.getFrom().getBlockX() == e.getTo().getBlockX() && e.getFrom().getBlockZ() == e.getTo()
-        .getBlockZ()) {
+    if (e.getFrom().getBlockX() == e.getTo().getBlockX() && e.getFrom().getBlockZ() == e.getTo().getBlockZ()) {
       return;
     }
 
@@ -135,11 +139,15 @@ public class BoatRace extends LocationFinishGame implements Listener {
 
     Entity entity = e.getVehicle().getPassengers().get(0);
 
-    if (!(entity instanceof Player)) {
+    if (!(entity instanceof Player player)) {
       return;
     }
 
-    User user = Server.getUser(((Player) entity));
+    User user = Server.getUser(player);
+
+    if (user.isService()) {
+      return;
+    }
 
     this.setUserInBoat(user);
   }
@@ -155,6 +163,11 @@ public class BoatRace extends LocationFinishGame implements Listener {
     }
 
     User user = Server.getUser((Player) e.getEntered());
+
+    if (user.isService()) {
+      return;
+    }
+
     if (this.enterableUsers.contains(user)) {
       this.enterableUsers.remove(user);
       return;
@@ -169,6 +182,14 @@ public class BoatRace extends LocationFinishGame implements Listener {
       return;
     }
 
+    if (!(e.getExited() instanceof Player player)) {
+      return;
+    }
+
+    if (Server.getUser(player).isService()) {
+      return;
+    }
+
     if (!e.getExited().getWorld().equals(this.currentMap.getWorld().getBukkitWorld())) {
       return;
     }
@@ -179,6 +200,10 @@ public class BoatRace extends LocationFinishGame implements Listener {
   @EventHandler
   public void onUserDamage(UserDamageEvent e) {
     if (!this.isGameRunning()) {
+      return;
+    }
+
+    if (e.getUser().isService()) {
       return;
     }
 

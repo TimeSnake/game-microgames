@@ -11,10 +11,11 @@ import de.timesnake.game.microgames.game.basis.ScoreGame;
 import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.extension.util.chat.Chat;
-import java.time.Duration;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.scheduler.BukkitTask;
+
+import java.time.Duration;
 
 public class EggHunter extends ScoreGame<Integer> {
 
@@ -27,7 +28,7 @@ public class EggHunter extends ScoreGame<Integer> {
 
   public EggHunter() {
     super("egg_hunter", "EggHunter", Material.DRAGON_EGG,
-        "Click the egg most often", 2, -1);
+        "Click the egg most often", 2, null);
   }
 
   @Override

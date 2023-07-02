@@ -11,11 +11,13 @@ import de.timesnake.game.microgames.user.MicroGamesUser;
 import org.bukkit.Material;
 import org.bukkit.event.Listener;
 
+import java.time.Duration;
+
 public class Parkour extends LocationFinishGame implements Listener {
 
   public Parkour() {
     super("parkour", "Parkour", Material.GOLDEN_BOOTS,
-        "Beat the parkour as fast you can", 1, 180);
+        "Beat the parkour as fast you can", 1, Duration.ofMinutes(3));
   }
 
   @Override
