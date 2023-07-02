@@ -18,6 +18,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.util.Vector;
 
+import java.time.Duration;
+
 public abstract class LocationFinishGame extends MicroGame implements Listener {
 
   protected static final Integer SPEC_LOCATION_INDEX = 0;
@@ -25,10 +27,10 @@ public abstract class LocationFinishGame extends MicroGame implements Listener {
   protected static final Integer SPAWN_LOCATION_INDEX = 2;
   protected static final Integer FINISH_LOCATION_INDEX = 3;
 
-  public LocationFinishGame(String name, String displayName, Material material,
-      String description,
-      Integer minPlayers, int maxTimeSec) {
-    super(name, displayName, material, description, minPlayers, maxTimeSec);
+
+  public LocationFinishGame(String name, String displayName, Material material, String description, Integer minPlayers,
+                            Duration maxTime) {
+    super(name, displayName, material, description, minPlayers, maxTime);
     Server.registerListener(this, GameMicroGames.getPlugin());
   }
 

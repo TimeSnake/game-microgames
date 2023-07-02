@@ -17,6 +17,8 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import java.time.Duration;
+
 public class KnockOut extends ShrinkingPlatformGame implements Listener {
 
   public static final Integer START_RADIUS = 10;
@@ -31,7 +33,7 @@ public class KnockOut extends ShrinkingPlatformGame implements Listener {
 
   public KnockOut() {
     super("knockout", "KnockOut", Material.STICK,
-        "Knock all players from the platform", 2, 120);
+        "Knock all players from the platform", 2, Duration.ofMinutes(2));
     Server.registerListener(this, GameMicroGames.getPlugin());
   }
 

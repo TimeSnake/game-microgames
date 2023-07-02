@@ -12,14 +12,16 @@ import de.timesnake.game.microgames.game.basis.FallOutGame;
 import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Status;
-import java.util.HashSet;
-import java.util.Set;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+
+import java.time.Duration;
+import java.util.HashSet;
+import java.util.Set;
 
 public class TntRun extends FallOutGame implements Listener {
 
@@ -37,8 +39,7 @@ public class TntRun extends FallOutGame implements Listener {
   private final Set<Block> removedBlocks = new HashSet<>();
 
   public TntRun() {
-    super("tntrun", "TNT Run", Material.TNT, "Try not to fall",
-        1, 300);
+    super("tntrun", "TNT Run", Material.TNT, "Try not to fall", 1, Duration.ofMinutes(5));
 
     Server.registerListener(this, GameMicroGames.getPlugin());
   }

@@ -18,13 +18,6 @@ import de.timesnake.game.microgames.server.MicroGamesServer;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.extension.util.chat.Chat;
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import org.bukkit.Instrument;
 import org.bukkit.Material;
 import org.bukkit.Note;
@@ -32,6 +25,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
+
+import java.time.Duration;
+import java.util.*;
 
 public class HotPotato extends ScoreGame<Integer> implements Listener {
 
@@ -50,7 +46,7 @@ public class HotPotato extends ScoreGame<Integer> implements Listener {
 
   public HotPotato() {
     super("hotpotato", "Hot Potato", Material.BAKED_POTATO,
-        "Don't hold the potato", 2, -1);
+        "Don't hold the potato", 2, null);
 
     Server.registerListener(this, GameMicroGames.getPlugin());
   }

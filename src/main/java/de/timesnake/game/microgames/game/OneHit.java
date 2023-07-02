@@ -9,12 +9,14 @@ import de.timesnake.game.microgames.game.basis.MicroGame;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import org.bukkit.Material;
 
+import java.time.Duration;
+
 public class OneHit extends MicroGame {
 
 
   public OneHit(String name, String displayName, Material material, String description,
-      Integer minPlayers) {
-    super(name, displayName, material, description, minPlayers, 180);
+                Integer minPlayers) {
+    super(name, displayName, material, description, minPlayers, Duration.ofMinutes(3));
   }
 
   @Override

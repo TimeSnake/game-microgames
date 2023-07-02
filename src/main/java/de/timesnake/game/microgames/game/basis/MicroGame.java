@@ -19,11 +19,6 @@ import de.timesnake.library.basic.util.Loggers;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.chat.ExTextColor;
 import de.timesnake.library.extension.util.chat.Chat;
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.GameRule;
@@ -34,11 +29,21 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
+
 public abstract class MicroGame {
 
-  public static final int FIRST_POINTS = 3;
-  public static final int SECOND_POINTS = 2;
-  public static final int THIRD_POINTS = 1;
+  public static final java.util.Map<Integer, Integer> PARTY_POINTS = java.util.Map.of(
+      1, 6,
+      2, 4,
+      3, 3,
+      4, 1,
+      5, 1
+  );
 
   protected final String name;
   protected final String displayName;
@@ -65,18 +70,18 @@ public abstract class MicroGame {
 
   @Deprecated
   public MicroGame(String name, String displayName, Material material, String description,
-      Integer minPlayers, int maxTimeSec) {
+                   Integer minPlayers, int maxTimeSec) {
     this(name, displayName, material, description, minPlayers, Duration.ofSeconds(maxTimeSec));
   }
 
   public MicroGame(String name, String displayName, Material material, String description,
-      Integer minPlayers, Duration maxDuration) {
+                   Integer minPlayers, Duration maxDuration) {
     this.name = name;
     this.displayName = displayName;
     this.material = material;
     this.description = description;
     this.minPlayers = minPlayers;
-    this.maxTimeSec = ((int) maxDuration.toSeconds());
+    this.maxTimeSec = maxDuration != null ? ((int) maxDuration.toSeconds()) : -1;
     this.timeBar = Server.createBossBar("Time left: §c§l" + Chat.getTimeString(timeSec),
         BarColor.WHITE, BarStyle.SOLID);
 
@@ -246,24 +251,18 @@ public abstract class MicroGame {
 
     for (MicroGamesUser user : this.placement) {
       if (place == 1) {
-        if (MicroGamesServer.isPartyMode()) {
-          user.addPoints(FIRST_POINTS);
-        }
         title = user.getTDChatName() + "§f wins";
       } else if (place == 2) {
-        if (MicroGamesServer.isPartyMode()) {
-          user.addPoints(SECOND_POINTS);
-        }
         subTitle.append("2. ").append(user.getTDChatName());
       } else if (place == 3) {
-        if (MicroGamesServer.isPartyMode()) {
-          user.addPoints(THIRD_POINTS);
-        }
         subTitle.append("§f    3. ").append(user.getTDChatName());
       }
 
-      MicroGamesServer.getTablistManager().getTablist()
-          .updateEntryValue(user, user.getPoints());
+      if (MicroGamesServer.isPartyMode()) {
+        user.addPoints(PARTY_POINTS.getOrDefault(place, 0));
+      }
+
+      MicroGamesServer.getTablistManager().getTablist().updateEntryValue(user, user.getPoints());
 
       MicroGamesServer.broadcastMicroGamesTDMessage(this.getWinMessage(user, place));
       place++;
