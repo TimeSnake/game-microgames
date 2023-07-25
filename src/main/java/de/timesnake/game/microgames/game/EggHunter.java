@@ -5,51 +5,33 @@
 package de.timesnake.game.microgames.game;
 
 import de.timesnake.basic.bukkit.util.Server;
-import de.timesnake.basic.bukkit.util.user.event.UserInteractEvent;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.game.microgames.game.basis.ScoreGame;
-import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.user.MicroGamesUser;
-import de.timesnake.library.extension.util.chat.Chat;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
-import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.event.block.BlockFromToEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.time.Duration;
 
 public class EggHunter extends ScoreGame<Integer> {
 
-  private static final Integer START_LOCATION_INDEX = 0;
-  private static final Integer SPEC_LOCATION_INDEX = 1;
-
-  private static final Duration DURATION = Duration.ofSeconds(45);
-
-  private BukkitTask timeTask;
-
   public EggHunter() {
-    super("egg_hunter", "EggHunter", Material.DRAGON_EGG,
-        "Click the egg most often", 2, null);
-  }
-
-  @Override
-  public Integer getLocationAmount() {
-    return 2;
+    super("egghunter", "EggHunter", Material.DRAGON_EGG,
+        "Click the egg most often", 2, Duration.ofSeconds(45));
   }
 
   @Override
   public void load() {
     super.load();
-
-    super.sideboard.setScore(4, "§9§lTime");
-    super.sideboard.setScore(3, "§f" + DURATION + "s");
-    super.sideboard.setScore(2, "§f-------------------");
-    super.sideboard.setScore(1, "§c§lClicked Eggs");
-    super.sideboard.setScore(0, "§f0");
   }
 
   @Override
   protected void loadDelayed() {
-
+    super.loadDelayed();
   }
 
   @Override
@@ -57,24 +39,30 @@ public class EggHunter extends ScoreGame<Integer> {
     super.start();
 
     this.getStartLocation().getBlock().setType(Material.DRAGON_EGG);
-
-    this.timeTask = Server.runTaskTimerSynchrony((time) -> {
-      super.sideboard.setScore(3, Chat.getTimeString(time));
-
-      if (time == 0) {
-        this.stop();
-      }
-    }, ((int) DURATION.toSeconds()), true, 0, 20, GameMicroGames.getPlugin());
   }
 
   @Override
   public void stop() {
+    this.calcPlaces(true);
     super.stop();
+  }
+
+  @Override
+  public void reset() {
+    super.reset();
+    if (this.previousMap != null) {
+      Server.getWorldManager().reloadWorld(this.previousMap.getWorld());
+    }
   }
 
   @Override
   public boolean hasSideboard() {
     return true;
+  }
+
+  @Override
+  public String getScoreName() {
+    return "Clicked Eggs";
   }
 
   @Override
@@ -88,33 +76,45 @@ public class EggHunter extends ScoreGame<Integer> {
   }
 
   @Override
-  public ExLocation getSpecLocation() {
-    return super.currentMap.getLocation(SPEC_LOCATION_INDEX);
-  }
-
-  @Override
-  public ExLocation getStartLocation() {
-    return super.currentMap.getLocation(START_LOCATION_INDEX);
-  }
-
-  @Override
   public Integer getDefaultScore() {
     return 0;
   }
 
   @EventHandler
-  public void onInteract(UserInteractEvent e) {
+  public void onEntityDamage(PlayerInteractEvent e) {
     if (!this.isGameRunning()) {
       return;
     }
 
-    MicroGamesUser user = ((MicroGamesUser) e.getUser());
+    MicroGamesUser user = (MicroGamesUser) Server.getUser(e.getPlayer());
 
-    if (e.getClickedBlock() != null
-        && e.getClickedBlock().getType().equals(Material.DRAGON_EGG)) {
-      int number = this.scores.compute(user, (u, v) -> v + 1);
-      user.setSideboardScore(0, "§f" + number);
-
+    if (e.getClickedBlock().getType().equals(Material.DRAGON_EGG)) {
+      this.updateUserScore(user, (u, v) -> v + 1);
     }
+  }
+
+  @EventHandler
+  public void onInteract(BlockFromToEvent e) {
+    if (!this.isGameRunning()) {
+      return;
+    }
+
+    e.setCancelled(true);
+    e.getBlock().setType(Material.AIR);
+
+    this.spawnEgg(e.getBlock().getLocation());
+  }
+
+  private void spawnEgg(Location oldLocation) {
+    Block block;
+    do {
+      block = this.currentMap.getWorld().getHighestBlockAt(ExLocation.fromLocation(oldLocation).getRandomNearbyLocation(10).getBlock().getLocation());
+    } while (block.getY() == this.currentMap.getWorld().getMinHeight() || !this.isValidSpawnBlock(block));
+
+    block.getLocation().add(0, 1, 0).getBlock().setType(Material.DRAGON_EGG);
+  }
+
+  private boolean isValidSpawnBlock(Block block) {
+    return block.getType().equals(Material.END_STONE) || block.getType().equals(Material.OBSIDIAN);
   }
 }

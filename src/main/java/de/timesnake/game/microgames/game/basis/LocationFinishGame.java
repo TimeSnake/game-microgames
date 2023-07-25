@@ -22,9 +22,6 @@ import java.time.Duration;
 
 public abstract class LocationFinishGame extends MicroGame implements Listener {
 
-  protected static final Integer SPEC_LOCATION_INDEX = 0;
-  protected static final Integer START_LOCATION_INDEX = 1;
-  protected static final Integer SPAWN_LOCATION_INDEX = 2;
   protected static final Integer FINISH_LOCATION_INDEX = 3;
 
 
@@ -42,8 +39,9 @@ public abstract class LocationFinishGame extends MicroGame implements Listener {
 
   @Override
   protected void loadDelayed() {
+    super.loadDelayed();
+
     for (User user : Server.getPreGameUsers()) {
-      user.teleport(this.getSpawnLocation());
       user.lockLocation();
     }
   }
@@ -82,20 +80,6 @@ public abstract class LocationFinishGame extends MicroGame implements Listener {
   @Override
   public Integer getLocationAmount() {
     return 4;
-  }
-
-  @Override
-  public ExLocation getSpecLocation() {
-    return super.currentMap.getLocation(SPEC_LOCATION_INDEX);
-  }
-
-  @Override
-  public ExLocation getStartLocation() {
-    return super.currentMap.getLocation(START_LOCATION_INDEX);
-  }
-
-  public ExLocation getSpawnLocation() {
-    return this.currentMap.getLocation(SPAWN_LOCATION_INDEX);
   }
 
   public ExLocation getFinishLocation() {

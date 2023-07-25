@@ -7,11 +7,10 @@ package de.timesnake.game.microgames.game;
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.world.ExBlock;
-import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
 import de.timesnake.basic.bukkit.util.world.ExWorld.Restriction;
 import de.timesnake.basic.game.util.game.Map;
-import de.timesnake.game.microgames.game.basis.ScoreGame;
+import de.timesnake.game.microgames.game.basis.BoxedScoreGame;
 import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Status;
@@ -32,12 +31,7 @@ import org.bukkit.util.Vector;
 import java.time.Duration;
 import java.util.Set;
 
-public class Firefighter extends ScoreGame<Integer> implements Listener {
-
-  protected static final Integer SPEC_LOCATION_INDEX = 0;
-  protected static final Integer START_LOCATION_INDEX = 1;
-  protected static final Integer FIRST_CORNER_INDEX = 2;
-  protected static final Integer SECOND_CORNER_INDEX = 3;
+public class Firefighter extends BoxedScoreGame<Integer> implements Listener {
 
   private static final Duration DURATION = Duration.ofSeconds(45);
   private static final double FIRE_CHANCE = 0.2;
@@ -56,7 +50,7 @@ public class Firefighter extends ScoreGame<Integer> implements Listener {
 
   @Override
   public Integer getLocationAmount() {
-    return 2;
+    return 5;
   }
 
   @Override
@@ -85,25 +79,18 @@ public class Firefighter extends ScoreGame<Integer> implements Listener {
     super.sideboard.setScore(4, "§9§lTime");
     super.sideboard.setScore(3, "§f" + DURATION + "s");
     super.sideboard.setScore(2, "§f-------------------");
-    super.sideboard.setScore(1, "§c§lPunched out fires");
-    super.sideboard.setScore(0, "§f0");
   }
 
   @Override
   protected void loadDelayed() {
-    for (User user : Server.getPreGameUsers()) {
-      user.teleport(this.getStartLocation());
-    }
-
+    super.loadDelayed();
     this.spreadFire();
   }
 
   private void spreadFire() {
     ExWorld world = this.currentMap.getWorld();
-    ExLocation first = this.getFirstCorner();
-    ExLocation second = this.getSecondCorner();
 
-    for (Block block : world.getBlocksWithinCubic(first, second)) {
+    for (Block block : this.getBlocksWithinBox()) {
       if (!block.isBurnable() || EXCLUDED_MATERIALS.contains(block.getType())) {
         continue;
       }
@@ -171,6 +158,11 @@ public class Firefighter extends ScoreGame<Integer> implements Listener {
   }
 
   @Override
+  public String getScoreName() {
+    return "Punched out fires";
+  }
+
+  @Override
   public Integer getDefaultScore() {
     return 0;
   }
@@ -192,24 +184,6 @@ public class Firefighter extends ScoreGame<Integer> implements Listener {
     }
   }
 
-  @Override
-  public ExLocation getSpecLocation() {
-    return this.currentMap.getLocation(SPEC_LOCATION_INDEX);
-  }
-
-  @Override
-  public ExLocation getStartLocation() {
-    return this.currentMap.getLocation(START_LOCATION_INDEX);
-  }
-
-  public ExLocation getFirstCorner() {
-    return this.currentMap.getLocation(FIRST_CORNER_INDEX);
-  }
-
-  public ExLocation getSecondCorner() {
-    return this.currentMap.getLocation(SECOND_CORNER_INDEX);
-  }
-
   @EventHandler
   public void onPlayerInteract(PlayerInteractEvent e) {
     MicroGamesUser user = (MicroGamesUser) Server.getUser(e.getPlayer());
@@ -227,8 +201,7 @@ public class Firefighter extends ScoreGame<Integer> implements Listener {
       return;
     }
 
-    int number = this.scores.compute(user, (u, v) -> v == null ? 1 : v + 1);
-    user.setSideboardScore(0, "§f" + number);
+    this.updateUserScore(user, (u, v) -> v == null ? 1 : v + 1);
   }
 
 

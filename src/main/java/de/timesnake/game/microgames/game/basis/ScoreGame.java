@@ -12,6 +12,7 @@ import org.bukkit.Material;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.function.BiFunction;
 
 public abstract class ScoreGame<Score extends Comparable<Score>> extends MicroGame {
 
@@ -29,11 +30,15 @@ public abstract class ScoreGame<Score extends Comparable<Score>> extends MicroGa
     for (User user : Server.getPreGameUsers()) {
       this.scores.put(((MicroGamesUser) user), this.getDefaultScore());
     }
+
+    if (this.hasSideboard()) {
+      super.sideboard.setScore(1, "§c§l" + this.getScoreName());
+      super.sideboard.setScore(0, "§f" + this.getDefaultScore());
+    }
   }
 
   protected void calcPlaces(boolean highest) {
-    for (MicroGamesUser user : scores.entrySet().stream()
-        .sorted(Entry.comparingByValue()).map(Entry::getKey).toList()) {
+    for (MicroGamesUser user : scores.entrySet().stream().sorted(Entry.comparingByValue()).map(Entry::getKey).toList()) {
       if (highest) {
         this.placement.addFirst(user);
       } else {
@@ -54,4 +59,15 @@ public abstract class ScoreGame<Score extends Comparable<Score>> extends MicroGa
   }
 
   public abstract Score getDefaultScore();
+
+  public String getScoreName() {
+    return "Score";
+  }
+
+  public void updateUserScore(User user, BiFunction<MicroGamesUser, Score, Score> updateFunction) {
+    Score score = this.scores.compute(((MicroGamesUser) user), updateFunction);
+    if (this.hasSideboard()) {
+      user.setSideboardScore(0, "§f" + score);
+    }
+  }
 }

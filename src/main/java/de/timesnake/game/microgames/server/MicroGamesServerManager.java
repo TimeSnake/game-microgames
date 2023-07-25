@@ -23,8 +23,8 @@ import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.game.microgames.user.PartyManager;
 import de.timesnake.game.microgames.user.TablistManager;
 import de.timesnake.library.basic.util.Loggers;
-import de.timesnake.library.basic.util.RandomCollection;
 import de.timesnake.library.basic.util.Status;
+import de.timesnake.library.basic.util.WeightedRandomCollection;
 import de.timesnake.library.extension.util.chat.Chat;
 import de.timesnake.library.game.NonTmpGameInfo;
 import net.kyori.adventure.text.Component;
@@ -84,6 +84,9 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
     this.loadGame(new Firefighter());
     this.loadGame(new Spleef());
     this.loadGame(new ColorPunch());
+    this.loadGame(new EggHunter());
+    this.loadGame(new OreMiner());
+    this.loadGame(new Sheeeep());
 
     this.partyManager = new PartyManager();
 
@@ -146,11 +149,10 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
 
     MicroGame votedGame;
 
-    RandomCollection<MicroGame> votedGames = new RandomCollection<>(this.random);
+    WeightedRandomCollection<MicroGame> votedGames = new WeightedRandomCollection<>(this.random);
 
     votedGames.addAll(this.microGamesByName.values().stream()
-            .filter(mg -> Server.getGameNotServiceUsers().size() >= mg.getMinPlayers()
-                && (mg.getMaps().size() > 1 || !mg.equals(this.currentGame)))
+            .filter(mg -> Server.getGameNotServiceUsers().size() >= mg.getMinPlayers() && (mg.getMaps().size() > 1 || !mg.equals(this.currentGame)))
             .toList(),
         mg -> mg.getVotes().doubleValue());
 
@@ -262,7 +264,7 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
     this.broadcastMicroGamesTDMessage(Chat.getLineTDSeparator());
     this.broadcastMicroGamesTDMessage("§hPoint Distribution:");
 
-    for (Map.Entry<Integer, Integer> points : MicroGame.PARTY_POINTS.entrySet()) {
+    for (Map.Entry<Integer, Integer> points : MicroGame.PARTY_POINTS.entrySet().stream().sorted(Comparator.comparingInt(Map.Entry::getKey)).toList()) {
       this.broadcastMicroGamesTDMessage("§p    " + points.getKey() + ". Place: §v" + points.getValue() + " points");
     }
 
