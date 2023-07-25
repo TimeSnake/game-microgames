@@ -32,9 +32,6 @@ public class Spleef extends FallOutGame {
       .addExEnchantment(Enchantment.DIG_SPEED, 10)
       .setUnbreakable(true).setDropable(false).setMoveable(false).immutable();
 
-  protected static final Integer SPEC_LOCATION_INDEX = 0;
-  protected static final Integer START_LOCATION_INDEX = 1;
-  protected static final Integer SPAWN_LOCATION_INDEX = 2;
   protected static final Integer DEATH_HEIGHT_LOCATION_INDEX = 3;
 
   private final Random random = new Random();
@@ -101,20 +98,6 @@ public class Spleef extends FallOutGame {
     }
   }
 
-  @Override
-  public ExLocation getSpecLocation() {
-    return super.currentMap.getLocation(SPEC_LOCATION_INDEX);
-  }
-
-  @Override
-  public ExLocation getStartLocation() {
-    return super.currentMap.getLocation(START_LOCATION_INDEX);
-  }
-
-  public ExLocation getSpawnLocation() {
-    return this.currentMap.getLocation(SPAWN_LOCATION_INDEX);
-  }
-
   public ExLocation getDeathLocation() {
     return super.currentMap.getLocation(DEATH_HEIGHT_LOCATION_INDEX);
   }
@@ -131,6 +114,10 @@ public class Spleef extends FallOutGame {
     }
 
     User user = e.getUser();
+
+    if (user.isService()) {
+      return;
+    }
 
     if (user.getStatus().equals(Status.User.IN_GAME)) {
       user.addItem(new ItemStack(Material.SNOWBALL, 2));

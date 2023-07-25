@@ -30,15 +30,14 @@ import java.time.Duration;
 import java.util.*;
 
 public class ColorSwap extends FallOutGame implements Listener {
-
-  protected static final Integer SPEC_LOCATION_INDEX = 0;
-  protected static final Integer START_LOCATION_INDEX = 1;
-  protected static final Integer FIRST_CORNER_LOCATION_INDEX = 2;
-  protected static final Integer SECOND_CORNER_LOCATION_INDEX = 3;
+  protected static final Integer FIRST_CORNER_LOCATION_INDEX = 3;
+  protected static final Integer SECOND_CORNER_LOCATION_INDEX = 4;
 
   protected static final Integer MAX_LEVEL = 30;
 
-  protected static final Material[] MATERIALS = {Material.BLACK_WOOL, Material.BLUE_WOOL, Material.GRAY_WOOL, Material.GREEN_WOOL, Material.LIGHT_BLUE_WOOL, Material.LIGHT_GRAY_WOOL, Material.LIME_WOOL, Material.MAGENTA_WOOL, Material.ORANGE_WOOL, Material.PURPLE_WOOL, Material.RED_WOOL, Material.WHITE_WOOL, Material.YELLOW_WOOL};
+  protected static final List<Material> MATERIALS = List.of(Material.BLACK_WOOL, Material.BLUE_WOOL, Material.GRAY_WOOL,
+      Material.GREEN_WOOL, Material.LIGHT_BLUE_WOOL, Material.LIGHT_GRAY_WOOL, Material.LIME_WOOL, Material.MAGENTA_WOOL,
+      Material.ORANGE_WOOL, Material.PURPLE_WOOL, Material.RED_WOOL, Material.WHITE_WOOL, Material.YELLOW_WOOL);
 
   protected static final Integer LEVEL_TICKS = 4 * 20; //for first level
   protected static final Integer MIN_LEVEL_TICKS = 6;
@@ -61,7 +60,8 @@ public class ColorSwap extends FallOutGame implements Listener {
   private Integer ticks = 0;
 
   public ColorSwap() {
-    this("colorswap", "ColorSwap", Material.WHITE_WOOL, "Try to stand on the color, which is shown in your hotbar", 1, null);
+    this("colorswap", "ColorSwap", Material.WHITE_WOOL,
+        "Try to stand on the color, which is shown in your hotbar", 1, null);
   }
 
   public ColorSwap(String name, String displayName, Material material, String description, Integer minPlayers, Duration maxTime) {
@@ -71,7 +71,7 @@ public class ColorSwap extends FallOutGame implements Listener {
 
   @Override
   public Integer getLocationAmount() {
-    return 4;
+    return 5;
   }
 
   @Override
@@ -114,8 +114,9 @@ public class ColorSwap extends FallOutGame implements Listener {
 
   @Override
   protected void loadDelayed() {
+    super.loadDelayed();
+
     for (User user : Server.getPreGameUsers()) {
-      user.teleport(this.getStartLocation());
       user.lockInventory();
     }
   }
@@ -231,16 +232,6 @@ public class ColorSwap extends FallOutGame implements Listener {
     }
   }
 
-  @Override
-  public ExLocation getSpecLocation() {
-    return super.currentMap.getLocation(SPEC_LOCATION_INDEX);
-  }
-
-  @Override
-  public ExLocation getStartLocation() {
-    return super.currentMap.getLocation(START_LOCATION_INDEX);
-  }
-
   public ExLocation getFirstCorner() {
     return this.currentMap.getLocation(FIRST_CORNER_LOCATION_INDEX);
   }
@@ -284,20 +275,22 @@ public class ColorSwap extends FallOutGame implements Listener {
     protected Level(Integer level) {
       this.level = level;
       int tickDifference = ColorSwap.LEVEL_TICKS - ColorSwap.MIN_LEVEL_TICKS;
-      this.ticks = (int) (tickDifference * Math.pow((double) (tickDifference - 1) / tickDifference, ColorSwap.LEVEL_TICKS_DECREASE * this.level) + ColorSwap.MIN_LEVEL_TICKS);
+      this.ticks = (int) (tickDifference * Math.pow((double) (tickDifference - 1) / tickDifference,
+          ColorSwap.LEVEL_TICKS_DECREASE * this.level) + ColorSwap.MIN_LEVEL_TICKS);
 
-      int differentMaterials = (int) (ColorSwap.DIFFERENT_MATERIALS + (level - 1) * ColorSwap.DIFFERENT_MATERIALS_INCREASE);
+      int materialsNumber = (int) (ColorSwap.DIFFERENT_MATERIALS + (level - 1) * ColorSwap.DIFFERENT_MATERIALS_INCREASE);
 
-      ArrayList<Material> materials = new ArrayList<>(Arrays.asList(ColorSwap.MATERIALS));
-
+      ArrayList<Material> materials = new ArrayList<>(ColorSwap.MATERIALS);
       ArrayList<Material> selectedMaterials = new ArrayList<>();
 
       //get Materials
-      for (int i = 0; i < differentMaterials; i++) {
+      for (int i = 0; i < materialsNumber; i++) {
         int index = ColorSwap.this.random.nextInt(materials.size());
         selectedMaterials.add(materials.get(index));
         materials.remove(index);
       }
+
+      HashSet<Material> availableMaterials = new HashSet<>();
 
       //create pattern and save in HashMap
       ExWorld world = ColorSwap.this.currentMap.getWorld();
@@ -305,71 +298,79 @@ public class ColorSwap extends FallOutGame implements Listener {
 
       int type = ColorSwap.this.random.nextInt(3);
 
-      if (type == 0) {
-        for (int x = ColorSwap.this.beginX; x <= ColorSwap.this.endX; x += 2) {
-          for (int z = ColorSwap.this.beginZ; z <= ColorSwap.this.endZ; z += 2) {
+      switch (type) {
+        case 0 -> {
+          for (int x = ColorSwap.this.beginX; x <= ColorSwap.this.endX; x += 2) {
+            for (int z = ColorSwap.this.beginZ; z <= ColorSwap.this.endZ; z += 2) {
 
-            Material material = selectedMaterials.get(ColorSwap.this.random.nextInt(selectedMaterials.size()));
+              Material material = selectedMaterials.get(ColorSwap.this.random.nextInt(selectedMaterials.size()));
+              availableMaterials.add(material);
 
-            for (int patternX = 0; patternX < 2; patternX++) {
-              for (int patternZ = 0; patternZ < 2; patternZ++) {
-                if (x + patternX <= ColorSwap.this.endX && z + patternZ <= ColorSwap.this.endZ) {
-                  this.blocks.put(world.getBlockAt(x + patternX, y, z + patternZ), material);
+              for (int patternX = 0; patternX < 2; patternX++) {
+                for (int patternZ = 0; patternZ < 2; patternZ++) {
+                  if (x + patternX <= ColorSwap.this.endX && z + patternZ <= ColorSwap.this.endZ) {
+                    this.blocks.put(world.getBlockAt(x + patternX, y, z + patternZ), material);
+                  }
                 }
               }
             }
           }
         }
-      } else if (type == 1) {
-        boolean xz = ColorSwap.this.random.nextBoolean();
+        case 1 -> {
+          boolean xz = ColorSwap.this.random.nextBoolean();
+          if (xz) {
+            int halfZEnd = ColorSwap.this.endZ - (ColorSwap.this.endZ - ColorSwap.this.beginZ) / 2;
 
-        if (xz) {
-          int halfZEnd = ColorSwap.this.endZ - (ColorSwap.this.endZ - ColorSwap.this.beginZ) / 2;
+            for (int x = ColorSwap.this.beginX; x <= ColorSwap.this.endX; x += 1) {
 
-          for (int x = ColorSwap.this.beginX; x <= ColorSwap.this.endX; x += 1) {
+              Material material = selectedMaterials.get(ColorSwap.this.random.nextInt(selectedMaterials.size()));
+              availableMaterials.add(material);
 
-            Material material = selectedMaterials.get(ColorSwap.this.random.nextInt(selectedMaterials.size()));
+              for (int z = ColorSwap.this.beginZ; z <= halfZEnd; z += 1) {
+                this.blocks.put(world.getBlockAt(x, y, z), material);
+              }
 
-            for (int z = ColorSwap.this.beginZ; z <= halfZEnd; z += 1) {
-              this.blocks.put(world.getBlockAt(x, y, z), material);
+              material = selectedMaterials.get(ColorSwap.this.random.nextInt(selectedMaterials.size()));
+              availableMaterials.add(material);
+
+              for (int z = halfZEnd + 1; z <= ColorSwap.this.endZ; z += 1) {
+                this.blocks.put(world.getBlockAt(x, y, z), material);
+              }
             }
+          } else {
+            int halfXEnd = ColorSwap.this.endX - (ColorSwap.this.endX - ColorSwap.this.beginX) / 2;
 
-            material = selectedMaterials.get(ColorSwap.this.random.nextInt(selectedMaterials.size()));
+            for (int z = ColorSwap.this.beginZ; z <= ColorSwap.this.endZ; z += 1) {
 
-            for (int z = halfZEnd + 1; z <= ColorSwap.this.endZ; z += 1) {
-              this.blocks.put(world.getBlockAt(x, y, z), material);
-            }
-          }
-        } else {
-          int halfXEnd = ColorSwap.this.endX - (ColorSwap.this.endX - ColorSwap.this.beginX) / 2;
+              Material material = selectedMaterials.get(ColorSwap.this.random.nextInt(selectedMaterials.size()));
+              availableMaterials.add(material);
 
-          for (int z = ColorSwap.this.beginZ; z <= ColorSwap.this.endZ; z += 1) {
+              for (int x = ColorSwap.this.beginX; x <= halfXEnd; x += 1) {
+                this.blocks.put(world.getBlockAt(x, y, z), material);
+              }
 
-            Material material = selectedMaterials.get(ColorSwap.this.random.nextInt(selectedMaterials.size()));
+              material = selectedMaterials.get(ColorSwap.this.random.nextInt(selectedMaterials.size()));
+              availableMaterials.add(material);
 
-            for (int x = ColorSwap.this.beginX; x <= halfXEnd; x += 1) {
-              this.blocks.put(world.getBlockAt(x, y, z), material);
-            }
-
-            material = selectedMaterials.get(ColorSwap.this.random.nextInt(selectedMaterials.size()));
-
-            for (int x = halfXEnd + 1; x <= ColorSwap.this.endX; x += 1) {
-              this.blocks.put(world.getBlockAt(x, y, z), material);
+              for (int x = halfXEnd + 1; x <= ColorSwap.this.endX; x += 1) {
+                this.blocks.put(world.getBlockAt(x, y, z), material);
+              }
             }
           }
         }
-
-      } else if (type == 2) {
-        for (int x = ColorSwap.this.beginX; x <= ColorSwap.this.endX; x += 1) {
-          for (int z = ColorSwap.this.beginZ; z <= ColorSwap.this.endZ; z += 1) {
-            Material material = selectedMaterials.get(ColorSwap.this.random.nextInt(selectedMaterials.size()));
-            this.blocks.put(world.getBlockAt(x, y, z), material);
+        case 2 -> {
+          for (int x = ColorSwap.this.beginX; x <= ColorSwap.this.endX; x += 1) {
+            for (int z = ColorSwap.this.beginZ; z <= ColorSwap.this.endZ; z += 1) {
+              Material material = selectedMaterials.get(ColorSwap.this.random.nextInt(selectedMaterials.size()));
+              availableMaterials.add(material);
+              this.blocks.put(world.getBlockAt(x, y, z), material);
+            }
           }
         }
       }
 
       //get primaryMaterial
-      this.primaryMaterial = selectedMaterials.get((int) (Math.random() * (selectedMaterials.size() - 1)));
+      this.primaryMaterial = new ArrayList<>(availableMaterials).get(ColorSwap.this.random.nextInt(availableMaterials.size()));
     }
 
     public void switchPattern() {

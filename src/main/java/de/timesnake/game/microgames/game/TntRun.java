@@ -15,7 +15,6 @@ import de.timesnake.library.basic.util.Status;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -25,9 +24,6 @@ import java.util.Set;
 
 public class TntRun extends FallOutGame implements Listener {
 
-  protected static final Integer SPEC_LOCATION_INDEX = 0;
-  protected static final Integer START_LOCATION_INDEX = 1;
-  protected static final Integer SPAWN_LOCATION_INDEX = 2;
   protected static final Integer DEATH_HEIGHT_LOCATION_INDEX = 3;
 
   protected static final Integer REMOVE_DELAY = 19;
@@ -57,9 +53,7 @@ public class TntRun extends FallOutGame implements Listener {
 
   @Override
   protected void loadDelayed() {
-    for (User user : Server.getPreGameUsers()) {
-      user.teleport(this.getSpawnLocation());
-    }
+    super.loadDelayed();
   }
 
   @Override
@@ -102,9 +96,9 @@ public class TntRun extends FallOutGame implements Listener {
       for (Block block : blocks) {
         Location loc = block.getLocation().add(0.5, 0, 0.5);
         loc.getBlock().setType(Material.AIR);
-        TNTPrimed tnt = loc.getWorld().spawn(loc, TNTPrimed.class);
-        Server.runTaskLaterSynchrony(tnt::remove, TNT_REMOVE_DELAY,
-            GameMicroGames.getPlugin());
+        // TNTPrimed tnt = loc.getWorld().spawn(loc, TNTPrimed.class);
+        // Server.runTaskLaterSynchrony(tnt::remove, TNT_REMOVE_DELAY,
+        //     GameMicroGames.getPlugin());
       }
     }, REMOVE_DELAY, GameMicroGames.getPlugin());
 
@@ -140,20 +134,6 @@ public class TntRun extends FallOutGame implements Listener {
     if (Server.getInGameUsers().size() <= 1) {
       this.stop();
     }
-  }
-
-  @Override
-  public ExLocation getSpecLocation() {
-    return super.currentMap.getLocation(SPEC_LOCATION_INDEX);
-  }
-
-  @Override
-  public ExLocation getStartLocation() {
-    return super.currentMap.getLocation(START_LOCATION_INDEX);
-  }
-
-  public ExLocation getSpawnLocation() {
-    return this.currentMap.getLocation(SPAWN_LOCATION_INDEX);
   }
 
   public ExLocation getDeathLocation() {

@@ -40,10 +40,9 @@ public class BoatRace extends LocationFinishGame implements Listener {
 
   @Override
   protected void loadDelayed() {
+    super.loadDelayed();
 
     for (User user : Server.getPreGameUsers()) {
-      user.teleport(this.getStartLocation());
-
       this.setUserInBoat(user);
     }
   }
@@ -94,7 +93,10 @@ public class BoatRace extends LocationFinishGame implements Listener {
     MicroGamesUser user = (MicroGamesUser) e.getUser();
     if (this.getFinishLocation().distance(e.getTo()) < 3) {
       super.addWinner(user, true);
-      this.boatByUser.get(user).remove();
+      Boat boat = this.boatByUser.get(user);
+      if (boat != null) {
+        boat.remove();
+      }
     }
   }
 

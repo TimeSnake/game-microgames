@@ -37,6 +37,10 @@ import java.util.Random;
 
 public abstract class MicroGame {
 
+  protected static final Integer SPEC_LOCATION_INDEX = 0;
+  protected static final Integer START_LOCATION_INDEX = 1;
+  protected static final Integer SPAWN_LOCATION_INDEX = 2;
+
   public static final java.util.Map<Integer, Integer> PARTY_POINTS = java.util.Map.of(
       1, 6,
       2, 4,
@@ -131,7 +135,9 @@ public abstract class MicroGame {
     world.setAutoSave(false);
   }
 
-  public abstract Integer getLocationAmount();
+  public Integer getLocationAmount() {
+    return 3;
+  }
 
   public void prepare() {
     this.previousMap = this.currentMap;
@@ -151,7 +157,7 @@ public abstract class MicroGame {
     this.timeBar.setProgress(1);
 
     for (User user : Server.getPreGameUsers()) {
-      user.teleport(this.getStartLocation());
+      user.teleport(this.getSpawnLocation());
       if (this.sideboard != null) {
         user.setSideboard(this.sideboard);
       }
@@ -169,7 +175,9 @@ public abstract class MicroGame {
     Server.runTaskLaterSynchrony(this::loadDelayed, 5 * 20, GameMicroGames.getPlugin());
   }
 
-  protected abstract void loadDelayed();
+  protected void loadDelayed() {
+    Server.getPreGameUsers().forEach(u -> u.teleport(this.getStartLocation()));
+  }
 
   public void start() {
     for (User user : Server.getPreGameUsers()) {
@@ -299,9 +307,17 @@ public abstract class MicroGame {
 
   public abstract void onUserQuit(MicroGamesUser user);
 
-  public abstract ExLocation getSpecLocation();
+  public ExLocation getSpecLocation() {
+    return this.currentMap.getLocation(SPEC_LOCATION_INDEX);
+  }
 
-  public abstract ExLocation getStartLocation();
+  public ExLocation getStartLocation() {
+    return this.currentMap.getLocation(START_LOCATION_INDEX);
+  }
+
+  public ExLocation getSpawnLocation() {
+    return this.currentMap.getLocation(SPAWN_LOCATION_INDEX);
+  }
 
   public boolean isGameRunning() {
     return isGameRunning;

@@ -11,7 +11,6 @@ import de.timesnake.basic.bukkit.util.user.event.*;
 import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.bukkit.util.user.inventory.UserInventoryInteractEvent;
 import de.timesnake.basic.bukkit.util.user.inventory.UserInventoryInteractListener;
-import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.game.microgames.chat.Plugin;
 import de.timesnake.game.microgames.game.basis.MicroGame;
 import de.timesnake.game.microgames.main.GameMicroGames;
@@ -42,8 +41,6 @@ import java.util.*;
 
 public class Graffiti extends MicroGame implements Listener, UserInventoryInteractListener {
 
-  private static final Integer START_LOCATION_INDEX = 0;
-  private static final Integer SPEC_LOCATION_INDEX = 1;
   private static final Integer BLUE_SPAWN_LOCATION_INDEX = 3;
   private static final Integer RED_SPAWN_LOCATION_INDEX = 4;
 
@@ -139,7 +136,7 @@ public class Graffiti extends MicroGame implements Listener, UserInventoryIntera
 
   @Override
   public Integer getLocationAmount() {
-    return 3;
+    return 5;
   }
 
   @Override
@@ -297,16 +294,6 @@ public class Graffiti extends MicroGame implements Listener, UserInventoryIntera
     if (Server.getInGameUsers().size() <= 1) {
       this.stop();
     }
-  }
-
-  @Override
-  public ExLocation getSpecLocation() {
-    return super.currentMap.getLocation(SPEC_LOCATION_INDEX);
-  }
-
-  @Override
-  public ExLocation getStartLocation() {
-    return super.currentMap.getLocation(START_LOCATION_INDEX);
   }
 
   @EventHandler

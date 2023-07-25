@@ -24,9 +24,6 @@ public class KnockOut extends ShrinkingPlatformGame implements Listener {
   public static final Integer START_RADIUS = 10;
   public static final Integer MIN_RADIUS = 3;
   public static final Integer DECREASE_DELAY = 20;
-  protected static final Integer SPEC_LOCATION_INDEX = 0;
-  protected static final Integer START_LOCATION_INDEX = 1;
-  protected static final Integer SPAWN_LOCATION_INDEX = 2;
   protected static final ExItemStack STICK = new ExItemStack(Material.STICK).addExEnchantment(
       Enchantment.KNOCKBACK, 2);
 
@@ -35,11 +32,6 @@ public class KnockOut extends ShrinkingPlatformGame implements Listener {
     super("knockout", "KnockOut", Material.STICK,
         "Knock all players from the platform", 2, Duration.ofMinutes(2));
     Server.registerListener(this, GameMicroGames.getPlugin());
-  }
-
-  @Override
-  public Integer getLocationAmount() {
-    return 3;
   }
 
   @Override
@@ -103,20 +95,6 @@ public class KnockOut extends ShrinkingPlatformGame implements Listener {
     if (Server.getInGameUsers().size() <= 1) {
       this.stop();
     }
-  }
-
-  @Override
-  public ExLocation getSpecLocation() {
-    return super.currentMap.getLocation(SPEC_LOCATION_INDEX);
-  }
-
-  @Override
-  public ExLocation getStartLocation() {
-    return super.currentMap.getLocation(START_LOCATION_INDEX);
-  }
-
-  public ExLocation getSpawnLocation() {
-    return this.currentMap.getLocation(SPAWN_LOCATION_INDEX);
   }
 
   @EventHandler

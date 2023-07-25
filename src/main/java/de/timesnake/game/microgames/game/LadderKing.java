@@ -25,10 +25,8 @@ import java.util.List;
 
 public class LadderKing extends ScoreGame<Integer> implements Listener {
 
-  private static final Integer START_LOCATION_INDEX = 0;
-  private static final Integer SPEC_LOCATION_INDEX = 1;
-  private static final Integer LADDER_LOCATION_INDEX = 2;
-  // spawn locations all above 2
+  private static final Integer LADDER_LOCATION_INDEX = 3;
+  // spawn locations all above 3
 
   private static final Integer TIME = 90;
   private static final Integer SCORE_PERIOD = 10;
@@ -43,11 +41,6 @@ public class LadderKing extends ScoreGame<Integer> implements Listener {
         "Try stand the longest time on top of the ladder",
         2, null);
     Server.registerListener(this, GameMicroGames.getPlugin());
-  }
-
-  @Override
-  public Integer getLocationAmount() {
-    return 3;
   }
 
   @Override
@@ -73,7 +66,7 @@ public class LadderKing extends ScoreGame<Integer> implements Listener {
 
   @Override
   protected void loadDelayed() {
-    List<ExLocation> spawnLocations = super.currentMap.getLocations(3);
+    List<ExLocation> spawnLocations = super.currentMap.getLocations(4);
     for (User user : Server.getPreGameUsers()) {
       user.teleport(spawnLocations.get(super.random.nextInt(spawnLocations.size())));
       user.lockLocation();
@@ -152,16 +145,6 @@ public class LadderKing extends ScoreGame<Integer> implements Listener {
     if (Server.getInGameUsers().size() <= 1) {
       this.stop();
     }
-  }
-
-  @Override
-  public ExLocation getSpecLocation() {
-    return super.currentMap.getLocation(SPEC_LOCATION_INDEX);
-  }
-
-  @Override
-  public ExLocation getStartLocation() {
-    return super.currentMap.getLocation(START_LOCATION_INDEX);
   }
 
   @EventHandler

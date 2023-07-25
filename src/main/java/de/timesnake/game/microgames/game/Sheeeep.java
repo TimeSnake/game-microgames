@@ -1,0 +1,230 @@
+/*
+ * Copyright (C) 2023 timesnake
+ */
+
+package de.timesnake.game.microgames.game;
+
+import de.timesnake.basic.bukkit.util.Server;
+import de.timesnake.basic.bukkit.util.user.User;
+import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
+import de.timesnake.basic.bukkit.util.world.ExLocation;
+import de.timesnake.game.microgames.game.basis.BoxedScoreGame;
+import de.timesnake.game.microgames.main.GameMicroGames;
+import de.timesnake.game.microgames.user.MicroGamesUser;
+import de.timesnake.library.entities.EntityManager;
+import de.timesnake.library.entities.entity.SheepBuilder;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.animal.Sheep;
+import org.bukkit.DyeColor;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftSheep;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDropItemEvent;
+import org.bukkit.event.player.PlayerShearEntityEvent;
+
+import java.time.Duration;
+import java.util.*;
+
+public class Sheeeep extends BoxedScoreGame<Integer> implements Listener {
+
+
+  protected static final int COLOR_AMOUNT = 10;
+  private static final ExItemStack SHEARS = new ExItemStack(Material.SHEARS).setSlot(4)
+      .setMoveable(false).setDropable(false).unbreakable().immutable();
+  protected static final List<DyeColor> COLORS = List.of(DyeColor.values());
+
+  protected LinkedList<DyeColor> colors = new LinkedList<>();
+  protected Map<User, LinkedList<DyeColor>> colorsByUser = new HashMap<>();
+
+  protected Set<Sheep> sheep = new HashSet<>();
+
+  public Sheeeep() {
+    super("sheep", "Sheeeep", Material.SHEEP_SPAWN_EGG,
+        "Shear sheep in given order", 1, Duration.ofMinutes(3));
+
+    Server.registerListener(this, GameMicroGames.getPlugin());
+  }
+
+  @Override
+  public void onMapLoad(de.timesnake.basic.game.util.game.Map map) {
+    super.onMapLoad(map);
+
+    map.getWorld().setPVP(false);
+  }
+
+  @Override
+  public void prepare() {
+    super.prepare();
+
+    List<DyeColor> availableColors = new ArrayList<>(COLORS);
+
+    for (int i = 0; i < COLOR_AMOUNT; i++) {
+      this.colors.addLast(availableColors.remove(this.random.nextInt(availableColors.size())));
+    }
+  }
+
+  @Override
+  protected void loadDelayed() {
+    super.loadDelayed();
+
+    List<Block> blocks = new ArrayList<>(this.getBlocksWithinBox());
+
+    this.currentMap.getWorld().getEntitiesByClass(org.bukkit.entity.Sheep.class).forEach(org.bukkit.entity.Entity::remove);
+
+    for (DyeColor color : this.colors) {
+      Block block;
+
+      do {
+        block = this.currentMap.getWorld().getHighestBlockAt(blocks.get(this.random.nextInt(blocks.size())).getLocation());
+      } while (block.getY() == this.currentMap.getWorld().getMinHeight() || !this.isValidSpawnBlock(block));
+
+      this.spawnSheep(ExLocation.fromLocation(block.getLocation().add(0, 1, 0)), color);
+    }
+
+    for (User user : Server.getPreGameUsers()) {
+      LinkedList<DyeColor> colorOrder = new LinkedList<>(this.colors);
+      Collections.shuffle(colorOrder, this.random);
+      this.colorsByUser.put(user, colorOrder);
+    }
+  }
+
+  private boolean isValidSpawnBlock(Block block) {
+    return block.getType().equals(Material.GRASS_BLOCK);
+  }
+
+  @Override
+  public void start() {
+    super.start();
+
+    for (User user : Server.getInGameUsers()) {
+      this.showNextColorToUser(((MicroGamesUser) user));
+    }
+  }
+
+  @Override
+  public boolean hasSideboard() {
+    return false;
+  }
+
+  @Override
+  public boolean onUserJoin(MicroGamesUser user) {
+    return false;
+  }
+
+  @Override
+  public void onUserQuit(MicroGamesUser user) {
+
+  }
+
+  @Override
+  public Integer getDefaultScore() {
+    return 0;
+  }
+
+  @Override
+  public void reset() {
+    super.reset();
+    this.sheep.forEach(s -> s.remove(Entity.RemovalReason.DISCARDED));
+    if (this.previousMap != null) {
+      Server.getWorldManager().reloadWorld(this.previousMap.getWorld());
+    }
+
+    this.colors.clear();
+    this.colorsByUser.clear();
+  }
+
+  private void spawnSheep(ExLocation location, DyeColor color) {
+    Sheep sheep = new SheepBuilder(location.getExWorld().getHandle(), true, false)
+        .applyOnEntity(e -> {
+          e.setColor(net.minecraft.world.item.DyeColor.byId(color.getWoolData()));
+          e.setPos(location.getX(), location.getY(), location.getZ());
+          e.setInvulnerable(true);
+          e.setSpeed(1.2F);
+          e.setPersistenceRequired(true);
+        })
+        .build();
+
+    EntityManager.spawnEntity(location.getWorld(), sheep);
+    this.sheep.add(sheep);
+  }
+
+  @EventHandler
+  public void onShear(PlayerShearEntityEvent e) {
+    if (!this.isGameRunning()) {
+      return;
+    }
+
+    if (!(e.getEntity() instanceof org.bukkit.entity.Sheep sheep)) {
+      return;
+    }
+
+    MicroGamesUser user = (MicroGamesUser) Server.getUser(e.getPlayer());
+
+    if (user.isService()) {
+      return;
+    }
+
+    this.onUserSheared(user, sheep.getColor());
+
+    Server.runTaskLaterSynchrony(() -> ((CraftSheep) sheep).getHandle().ate(), 1, GameMicroGames.getPlugin());
+  }
+
+  @EventHandler
+  public void onDrop(EntityDropItemEvent e) {
+    if (!this.isGameRunning()) {
+      return;
+    }
+
+    e.setCancelled(true);
+  }
+
+  private void onUserSheared(MicroGamesUser user, DyeColor color) {
+    DyeColor targetColor = this.colorsByUser.get(user).getFirst();
+
+    if (!color.equals(targetColor)) {
+      return;
+    }
+
+    this.colorsByUser.get(user).removeFirst();
+    this.updateUserScore(user, (u, v) -> v != null ? v + 1 : 1);
+
+    if (this.colorsByUser.get(user).isEmpty()) {
+      this.calcPlaces(true);
+      this.stop();
+      return;
+    }
+
+    this.showNextColorToUser(user);
+  }
+
+  private void showNextColorToUser(MicroGamesUser user) {
+    DyeColor color = this.colorsByUser.get(user).getFirst();
+
+    user.fillHotBar(new ExItemStack(getMaterialFromDyeColor(color))
+        .setDropable(false).setMoveable(false).immutable());
+    user.setItem(SHEARS);
+  }
+
+  private static Material getMaterialFromDyeColor(DyeColor color) {
+    return switch (color) {
+      case RED -> Material.RED_WOOL;
+      case BLUE -> Material.BLUE_WOOL;
+      case CYAN -> Material.CYAN_WOOL;
+      case GRAY -> Material.GRAY_WOOL;
+      case LIME -> Material.LIME_WOOL;
+      case PINK -> Material.PINK_WOOL;
+      case BLACK -> Material.BLACK_WOOL;
+      case BROWN -> Material.BROWN_WOOL;
+      case GREEN -> Material.GREEN_WOOL;
+      case WHITE -> Material.WHITE_WOOL;
+      case ORANGE -> Material.ORANGE_WOOL;
+      case PURPLE -> Material.PURPLE_WOOL;
+      case YELLOW -> Material.YELLOW_WOOL;
+      case MAGENTA -> Material.MAGENTA_WOOL;
+      case LIGHT_BLUE -> Material.LIGHT_BLUE_WOOL;
+      case LIGHT_GRAY -> Material.LIGHT_GRAY_WOOL;
+    };
+  }
+}
