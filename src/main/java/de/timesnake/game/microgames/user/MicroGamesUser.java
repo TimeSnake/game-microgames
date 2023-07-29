@@ -39,6 +39,7 @@ public class MicroGamesUser extends SpectatorUser {
   private final VoteInventory voteInventory;
 
   private Integer points = 0;
+  private Integer place;
 
   public MicroGamesUser(Player player) {
     super(player);
@@ -92,6 +93,22 @@ public class MicroGamesUser extends SpectatorUser {
 
   public void addPoints(Integer points) {
     this.points += points;
+  }
+
+  public Integer getPlace() {
+    return place;
+  }
+
+  public void setPlace(Integer place) {
+    this.place = place;
+  }
+
+  public void resetPlace() {
+    this.place = null;
+  }
+
+  public boolean hasPlace() {
+    return this.place != null;
   }
 
   public class VoteInventory implements InventoryHolder, UserInventoryInteractListener,

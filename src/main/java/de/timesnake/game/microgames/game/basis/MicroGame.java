@@ -19,6 +19,7 @@ import de.timesnake.library.basic.util.Loggers;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.chat.ExTextColor;
 import de.timesnake.library.extension.util.chat.Chat;
+import de.timesnake.library.extension.util.cmd.IncCommandOption;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.GameRule;
@@ -30,10 +31,7 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public abstract class MicroGame {
 
@@ -62,15 +60,13 @@ public abstract class MicroGame {
   protected Map previousMap;
   protected Sideboard sideboard;
 
-
-  protected LinkedList<MicroGamesUser> placement = new LinkedList<>();
-
   private boolean isGameRunning = false;
   private Integer votes = 0;
 
   private BukkitTask timeTask;
   private final BossBar timeBar;
   private int timeSec;
+  private int currentPlace = 1;
 
   @Deprecated
   public MicroGame(String name, String displayName, Material material, String description,
@@ -199,34 +195,34 @@ public abstract class MicroGame {
     }
   }
 
-  protected void addWinner(MicroGamesUser user, boolean first) {
+  protected void addWinner(MicroGamesUser user, boolean firstWins) {
     if (!user.getStatus().equals(Status.User.OUT_GAME)) {
       user.joinSpectator();
     }
 
     int users = Server.getInGameUsers().size();
 
-    if (this.placement.contains(user)) {
+    if (user.hasPlace()) {
       return;
     }
 
-    if (first) {
-      this.placement.addLast(user);
-      MicroGamesServer.broadcastMicroGamesTDMessage(user.getTDChatName() + "§w finished #"
-          + this.placement.size());
+    if (firstWins) {
+      user.setPlace(this.currentPlace);
+      MicroGamesServer.broadcastMicroGamesTDMessage(user.getTDChatName() + "§w finished #" + this.currentPlace);
+      this.currentPlace++;
     } else {
-      this.placement.addFirst(user);
-      MicroGamesServer.broadcastMicroGamesTDMessage(user.getTDChatName() + "§w finished #"
-          + (users + 1));
+      user.setPlace(users + 1);
+      MicroGamesServer.broadcastMicroGamesTDMessage(user.getTDChatName() + "§w finished #" + (users + 1));
     }
 
     if (users == 1) {
       MicroGamesUser lastUser = (MicroGamesUser) Server.getInGameUsers().iterator().next();
 
-      if (first) {
-        this.placement.addLast(lastUser);
+      if (firstWins) {
+        lastUser.setPlace(this.currentPlace);
+        this.currentPlace++;
       } else {
-        this.placement.addFirst(lastUser);
+        lastUser.setPlace(1);
       }
 
       if (!lastUser.getStatus().equals(Status.User.OUT_GAME)) {
@@ -253,35 +249,44 @@ public abstract class MicroGame {
 
     MicroGamesServer.broadcastMicroGamesMessage(Chat.getLineSeparator());
 
-    int place = 1;
-    String title = null;
-    StringBuilder subTitle = new StringBuilder();
+    StringBuilder title = new StringBuilder();
+    StringBuilder title2 = new StringBuilder();
+    StringBuilder title3 = new StringBuilder();
 
-    for (MicroGamesUser user : this.placement) {
-      if (place == 1) {
-        title = user.getTDChatName() + "§f wins";
-      } else if (place == 2) {
-        subTitle.append("2. ").append(user.getTDChatName());
-      } else if (place == 3) {
-        subTitle.append("§f    3. ").append(user.getTDChatName());
+    List<MicroGamesUser> users = Server.getUsers().stream()
+        .map(u -> ((MicroGamesUser) u))
+        .filter(MicroGamesUser::hasPlace)
+        .sorted(Comparator.comparingInt(MicroGamesUser::getPlace))
+        .toList();
+
+    for (MicroGamesUser user : users) {
+      switch (user.getPlace()) {
+        case 1 -> title.append(user.getTDChatName()).append(" ");
+        case 2 -> title2.append(user.getTDChatName()).append(" ");
+        case 3 -> title3.append(user.getTDChatName()).append(" ");
       }
 
       if (MicroGamesServer.isPartyMode()) {
-        user.addPoints(PARTY_POINTS.getOrDefault(place, 0));
+        user.addPoints(PARTY_POINTS.getOrDefault(user.getPlace(), 0));
       }
 
       MicroGamesServer.getTablistManager().getTablist().updateEntryValue(user, user.getPoints());
 
-      MicroGamesServer.broadcastMicroGamesTDMessage(this.getWinMessage(user, place));
-      place++;
+      MicroGamesServer.broadcastMicroGamesTDMessage(this.getWinMessage(user, user.getPlace()));
     }
 
-    if (title != null) {
-      Server.broadcastTDTitle(title, subTitle.toString(), Duration.ofSeconds(3));
+    if (!title.isEmpty()) {
+      title.append("§fwins");
+      if (!title2.isEmpty()) {
+        title2.insert(0, "2. ");
+        if (!title3.isEmpty()) {
+          title2.append("§f   3. ").append(title3);
+        }
+      }
+      Server.broadcastTDTitle(title.toString(), title2.toString(), Duration.ofSeconds(3));
     } else {
       MicroGamesServer.broadcastMicroGamesTDMessage("Game ended");
-      Server.broadcastTitle(Component.text("Game ended", ExTextColor.WHITE),
-          Component.empty(), Duration.ofSeconds(3));
+      Server.broadcastTDTitle("§pGame ended","", Duration.ofSeconds(3));
     }
 
     MicroGamesServer.broadcastMicroGamesMessage(Chat.getLineSeparator());
@@ -298,7 +303,8 @@ public abstract class MicroGame {
   }
 
   public void reset() {
-    this.placement.clear();
+    this.currentPlace = 1;
+    Server.getUsers().forEach(u -> ((MicroGamesUser) u).resetPlace());
   }
 
   public abstract boolean hasSideboard();

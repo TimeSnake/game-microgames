@@ -35,7 +35,7 @@ public class BoatRace extends LocationFinishGame implements Listener {
 
   public BoatRace() {
     super("boatrace", "Boat Race", Material.OAK_BOAT,
-        "Try to be the first at the finish", 1, Duration.ofMinutes(3));
+        "Try to be first at finish", 1, Duration.ofMinutes(3));
   }
 
   @Override

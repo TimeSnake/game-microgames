@@ -10,9 +10,10 @@ import de.timesnake.game.microgames.user.MicroGamesUser;
 import org.bukkit.Material;
 
 import java.time.Duration;
-import java.util.HashMap;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 
 public abstract class ScoreGame<Score extends Comparable<Score>> extends MicroGame {
 
@@ -37,13 +38,22 @@ public abstract class ScoreGame<Score extends Comparable<Score>> extends MicroGa
     }
   }
 
-  protected void calcPlaces(boolean highest) {
-    for (MicroGamesUser user : scores.entrySet().stream().sorted(Entry.comparingByValue()).map(Entry::getKey).toList()) {
-      if (highest) {
-        this.placement.addFirst(user);
+  protected void calcPlaces(boolean highestWins) {
+    LinkedList<MicroGamesUser> users = scores.entrySet().stream().sorted(Entry.comparingByValue())
+        .map(Entry::getKey).collect(Collectors.toCollection(LinkedList::new));
+
+    int place = 1;
+    MicroGamesUser previous = null;
+
+    for (Iterator<MicroGamesUser> it = highestWins ? users.descendingIterator() : users.iterator(); it.hasNext(); place++) {
+      MicroGamesUser user = it.next();
+      if (previous != null && this.scores.get(previous).equals(this.scores.get(user))) {
+        user.setPlace(place - 1);
       } else {
-        this.placement.addLast(user);
+        user.setPlace(place);
       }
+
+      previous = user;
     }
   }
 
