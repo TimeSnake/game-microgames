@@ -201,7 +201,7 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
 
       this.currentGame = nextGame;
 
-      if (Server.getPreGameUsers().size() == 0 || this.paused) {
+      if (Server.getPreGameUsers().isEmpty() || this.paused) {
         this.paused = true;
         Loggers.GAME.info("Paused game loop");
         return;
@@ -211,7 +211,7 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
 
       this.startTask = Server.runTaskTimerSynchrony(() -> {
         if (start == 0) {
-          if (Server.getPreGameUsers().size() == 0 || this.paused) {
+          if (Server.getPreGameUsers().isEmpty() || this.paused) {
             this.paused = true;
             Loggers.GAME.info("Paused game loop");
             this.startTask.cancel();
