@@ -59,6 +59,7 @@ public class Sheeeep extends BoxedScoreGame<Integer> implements Listener {
     super.prepare();
 
     List<DyeColor> availableColors = new ArrayList<>(COLORS);
+    this.colors.clear();
 
     for (int i = 0; i < COLOR_AMOUNT; i++) {
       this.colors.addLast(availableColors.remove(this.random.nextInt(availableColors.size())));
@@ -136,7 +137,7 @@ public class Sheeeep extends BoxedScoreGame<Integer> implements Listener {
   }
 
   private void spawnSheep(ExLocation location, DyeColor color) {
-    Sheep sheep = new SheepBuilder(location.getExWorld().getHandle(), true, false)
+    Sheep sheep = new SheepBuilder(location.getExWorld().getHandle(), true, false, false)
         .applyOnEntity(e -> {
           e.setColor(net.minecraft.world.item.DyeColor.byId(color.getWoolData()));
           e.setPos(location.getX(), location.getY(), location.getZ());
