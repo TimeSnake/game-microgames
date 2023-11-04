@@ -12,12 +12,17 @@ import org.bukkit.Material;
 import org.bukkit.event.Listener;
 
 import java.time.Duration;
+import java.util.List;
 
 public class Parkour extends LocationFinishGame implements Listener {
 
   public Parkour() {
-    super("parkour", "Parkour", Material.GOLDEN_BOOTS,
-        "Beat the parkour as fast you can", 1, Duration.ofMinutes(3));
+    super("parkour", "Parkour",
+        Material.GOLDEN_BOOTS,
+        "Beat the parkour as fast you can",
+        List.of("§hGoal: §pfirst at finish", "Jump and run the parkour.", "Reach the finish (beacon) at first."),
+        1,
+        Duration.ofMinutes(3));
   }
 
   @Override

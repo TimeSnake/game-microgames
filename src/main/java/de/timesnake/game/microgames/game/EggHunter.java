@@ -16,12 +16,16 @@ import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.time.Duration;
+import java.util.List;
 
 public class EggHunter extends ScoreGame<Integer> {
 
   public EggHunter() {
     super("egghunter", "EggHunter", Material.DRAGON_EGG,
-        "Click the egg most often", 2, Duration.ofSeconds(45));
+        "Click the egg most often",
+        List.of("§hGoal: §pmost egg clicks", "Find the egg and click it to get points."),
+        2,
+        Duration.ofSeconds(45));
   }
 
   @Override

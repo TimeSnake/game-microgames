@@ -128,7 +128,7 @@ public class Graffiti extends MicroGame implements Listener, UserInventoryIntera
 
   public Graffiti() {
     super("graffiti", "Graffiti", Material.SEA_PICKLE,
-        "Paint the most walls", 2, null);
+        "Paint the most walls", List.of(), 2, null);
 
     Server.registerListener(this, GameMicroGames.getPlugin());
     Server.getInventoryEventManager().addInteractListener(this, PAINT_GUN);

@@ -19,7 +19,6 @@ import de.timesnake.library.basic.util.Loggers;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.chat.ExTextColor;
 import de.timesnake.library.extension.util.chat.Chat;
-import de.timesnake.library.extension.util.cmd.IncCommandOption;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.GameRule;
@@ -31,7 +30,10 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.time.Duration;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Random;
 
 public abstract class MicroGame {
 
@@ -50,7 +52,8 @@ public abstract class MicroGame {
   protected final String name;
   protected final String displayName;
   protected final Material material;
-  protected final String description;
+  protected final String headLine;
+  protected final List<String> description;
   private final int maxTimeSec;
 
   protected final Integer minPlayers;
@@ -69,33 +72,32 @@ public abstract class MicroGame {
   private int currentPlace = 1;
 
   @Deprecated
-  public MicroGame(String name, String displayName, Material material, String description,
+  public MicroGame(String name, String displayName, Material material, String headLine, List<String> description,
                    Integer minPlayers, int maxTimeSec) {
-    this(name, displayName, material, description, minPlayers, Duration.ofSeconds(maxTimeSec));
+    this(name, displayName, material, headLine, description, minPlayers, Duration.ofSeconds(maxTimeSec));
   }
 
-  public MicroGame(String name, String displayName, Material material, String description,
+  public MicroGame(String name, String displayName, Material material, String headLine, List<String> description,
                    Integer minPlayers, Duration maxDuration) {
     this.name = name;
     this.displayName = displayName;
     this.material = material;
+    this.headLine = headLine;
     this.description = description;
     this.minPlayers = minPlayers;
     this.maxTimeSec = maxDuration != null ? ((int) maxDuration.toSeconds()) : -1;
-    this.timeBar = Server.createBossBar("Time left: §c§l" + Chat.getTimeString(timeSec),
-        BarColor.WHITE, BarStyle.SOLID);
+    this.timeBar = Server.createBossBar("Time left: §c§l" + Chat.getTimeString(timeSec), BarColor.WHITE,
+        BarStyle.SOLID);
 
     for (Map map : MicroGamesServer.getGame().getMaps()) {
       if (map.getInfo().get(0).equalsIgnoreCase(this.name)) {
         if (map.getWorld() == null) {
-          Loggers.GAME.warning("Can not load map " + map.getName() +
-              ", world not exists");
+          Loggers.GAME.warning("Can not load map " + map.getName() + ", world not exists");
           continue;
         }
 
         if (map.getLocations().size() < this.getLocationAmount()) {
-          Loggers.GAME.warning("Can not load map " + map.getName() + ", too few " +
-              "locations");
+          Loggers.GAME.warning("Can not load map " + map.getName() + ", too few " + "locations");
           continue;
         }
 
@@ -166,7 +168,7 @@ public abstract class MicroGame {
 
     Server.broadcastTitle(
         Component.text(this.displayName, ExTextColor.GOLD, TextDecoration.BOLD),
-        Component.text(this.description), Duration.ofSeconds(5));
+        Component.text(this.headLine), Duration.ofSeconds(5));
 
     Server.runTaskLaterSynchrony(this::loadDelayed, 5 * 20, GameMicroGames.getPlugin());
   }
@@ -337,7 +339,11 @@ public abstract class MicroGame {
     return displayName;
   }
 
-  public String getDescription() {
+  public String getHeadLine() {
+    return headLine;
+  }
+
+  public List<String> getDescription() {
     return description;
   }
 

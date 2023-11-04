@@ -24,6 +24,7 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.Random;
 
 public class Spleef extends FallOutGame {
@@ -37,8 +38,16 @@ public class Spleef extends FallOutGame {
   private final Random random = new Random();
 
   public Spleef() {
-    super("spleef", "Spleef", Material.SNOWBALL,
-        "Spleef other players", 2, Duration.ofMinutes(3));
+    super("spleef",
+        "Spleef",
+        Material.SNOWBALL,
+        "Spleef other players",
+        List.of("§hGoal: §plast man standing",
+            "Break snow blocks to get snowballs and blocks.",
+            "Throw snowballs to knock back other players.",
+            "Use the shovel to spleef other players."),
+        2,
+        Duration.ofMinutes(3));
     Server.registerListener(this, GameMicroGames.getPlugin());
   }
 

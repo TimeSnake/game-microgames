@@ -37,9 +37,16 @@ public class LadderKing extends ScoreGame<Integer> implements Listener {
   private BukkitTask scoreTask;
 
   public LadderKing() {
-    super("ladderking", "King of the Ladder", Material.LADDER,
+    super("ladderking",
+        "King of the Ladder",
+        Material.LADDER,
         "Try stand the longest time on top of the ladder",
-        2, null);
+        List.of("§hGoal: §plongest time on top",
+            "Climb up the ladder to the top.",
+            "Knock other players from the ladder.",
+            "Be in sum the most time on top."),
+        2,
+        null);
     Server.registerListener(this, GameMicroGames.getPlugin());
   }
 

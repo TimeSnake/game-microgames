@@ -20,6 +20,7 @@ import org.bukkit.event.Listener;
 
 import java.time.Duration;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class TntRun extends FallOutGame implements Listener {
@@ -35,7 +36,14 @@ public class TntRun extends FallOutGame implements Listener {
   private final Set<Block> removedBlocks = new HashSet<>();
 
   public TntRun() {
-    super("tntrun", "TNT Run", Material.TNT, "Try not to fall", 1, Duration.ofMinutes(5));
+    super("tntrun",
+        "TNT Run",
+        Material.TNT,
+        "Try not to fall",
+        List.of("§hGoal: §plast man standing.", "Blocks your standing on gets tnt and despawn.", "Keep running to not" +
+            " fall."),
+        1,
+        Duration.ofMinutes(5));
 
     Server.registerListener(this, GameMicroGames.getPlugin());
   }

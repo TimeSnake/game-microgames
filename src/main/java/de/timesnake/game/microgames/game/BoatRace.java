@@ -6,9 +6,7 @@ package de.timesnake.game.microgames.game;
 
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.user.User;
-import de.timesnake.basic.bukkit.util.user.event.UserDamageEvent;
-import de.timesnake.basic.bukkit.util.user.event.UserDeathEvent;
-import de.timesnake.basic.bukkit.util.user.event.UserMoveEvent;
+import de.timesnake.basic.bukkit.util.user.event.*;
 import de.timesnake.game.microgames.game.basis.LocationFinishGame;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import org.bukkit.Material;
@@ -25,6 +23,7 @@ import org.bukkit.event.vehicle.VehicleMoveEvent;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class BoatRace extends LocationFinishGame implements Listener {
@@ -34,8 +33,13 @@ public class BoatRace extends LocationFinishGame implements Listener {
   private final HashMap<User, Boat> boatByUser = new HashMap<>();
 
   public BoatRace() {
-    super("boatrace", "Boat Race", Material.OAK_BOAT,
-        "Try to be first at finish", 1, Duration.ofMinutes(3));
+    super("boat_race",
+        "Boat Race",
+        Material.OAK_BOAT,
+        "Try to be first at finish",
+        List.of("§hGoal: §pfirst at finish", "Steer the boat to the finish (beacon)."),
+        1,
+        Duration.ofMinutes(3));
   }
 
   @Override
@@ -210,5 +214,25 @@ public class BoatRace extends LocationFinishGame implements Listener {
     }
 
     e.setCancelDamage(true);
+  }
+
+  @EventHandler
+  public void onBlockPlace(UserBlockPlaceEvent e) {
+    if (!this.isGameRunning()) {
+      return;
+    }
+
+    User user = e.getUser();
+
+    if (user.isService()) {
+      return;
+    }
+
+    if (!e.getBlockPlaced().getType().equals(Material.LILY_PAD)) {
+      return;
+    }
+
+    e.setCancelled(CancelPriority.HIGH, false);
+    e.setBuild(true);
   }
 }

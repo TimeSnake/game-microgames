@@ -87,6 +87,9 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
     this.loadGame(new EggHunter());
     this.loadGame(new OreMiner());
     this.loadGame(new Sheeeep());
+    this.loadGame(new SlimySlime());
+    this.loadGame(new SandStorm());
+    this.loadGame(new HotFeet());
 
     this.partyManager = new PartyManager();
 
@@ -101,7 +104,7 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
 
   private void loadGame(MicroGame game) {
     if (game.getMaps().isEmpty()) {
-      Loggers.GAME.info("Not loaded game '" + game.getDisplayName() + "', no map found");
+      Loggers.GAME.warning("Not loaded game '" + game.getDisplayName() + "', no map found");
       return;
     }
 
@@ -133,10 +136,6 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
   @Override
   protected SpectatorManager initSpectatorManager() {
     return new de.timesnake.game.microgames.user.SpectatorManager();
-  }
-
-  public void pause() {
-    this.paused = true;
   }
 
   public void nextGame() {
@@ -180,6 +179,7 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
     }
 
     this.broadcastMicroGamesTDMessage("§wSwitching to §v" + nextGame.getDisplayName());
+    nextGame.getDescription().forEach(this::broadcastMicroGamesTDMessage);
     nextGame.prepare();
 
     this.delayTask = Server.runTaskLaterSynchrony(() -> {
@@ -222,7 +222,7 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
           this.startTask.cancel();
         } else if (start <= 5) {
           Server.broadcastNote(Instrument.PLING, Note.natural(1, Note.Tone.A));
-          MicroGamesServer.broadcastMicroGamesTDMessage("§pThe game starts in §v" + start + " §ps");
+          MicroGamesServer.broadcastMicroGamesTDMessage("§pGame starts in §v" + start + " §ps");
           Server.broadcastTDTitle("§c" + start, "", Duration.ofSeconds(1));
         }
         start--;
@@ -241,7 +241,7 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
           games.addAll(entry.getValue());
         }
       }
-      if (games.size() == 0) {
+      if (games.isEmpty()) {
         return null;
       }
 
@@ -321,10 +321,10 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
 
       this.broadcastMicroGamesTDMessage("");
       this.broadcastMicroGamesTDMessage("");
-      this.broadcastMicroGamesTDMessage("§wThe party has ended");
+      this.broadcastMicroGamesTDMessage("§wParty has ended");
       this.broadcastMicroGamesTDMessage(Chat.getLineTDSeparator());
 
-      Server.broadcastTDTitle(users.get(0).getTDChatName() + "§p wins", "§wThe party has ended",
+      Server.broadcastTDTitle(users.get(0).getTDChatName() + "§p wins", "§wParty has ended",
           Duration.ofSeconds(4));
 
       int i = 1;

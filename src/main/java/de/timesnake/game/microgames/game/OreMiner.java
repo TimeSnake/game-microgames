@@ -24,6 +24,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.time.Duration;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 public class OreMiner extends BoxedScoreGame<Integer> implements Listener {
@@ -34,8 +35,9 @@ public class OreMiner extends BoxedScoreGame<Integer> implements Listener {
       Material.COAL_ORE, 1,
       Material.COPPER_ORE, 2,
       Material.IRON_ORE, 4,
-      Material.DIAMOND_ORE, 7,
-      Material.EMERALD_ORE, 10
+      Material.GOLD_ORE, 6,
+      Material.DIAMOND_ORE, 9,
+      Material.EMERALD_ORE, 12
   );
 
   private static final ExItemStack PICKAXE = new ExItemStack(Material.NETHERITE_PICKAXE)
@@ -46,16 +48,22 @@ public class OreMiner extends BoxedScoreGame<Integer> implements Listener {
       .immutable();
 
   private final WeightedRandomCollection<Material> oreWeights = new WeightedRandomCollection<Material>(this.random)
-      .addAll(new Tuple<>(0.5, Material.COAL_ORE),
-          new Tuple<>(0.2, Material.COPPER_ORE),
-          new Tuple<>(0.1, Material.IRON_ORE),
-          new Tuple<>(0.02, Material.DIAMOND_ORE),
-          new Tuple<>(0.01, Material.EMERALD_ORE)
+      .addAll(new Tuple<>(0.325, Material.COAL_ORE),
+          new Tuple<>(0.25, Material.COPPER_ORE),
+          new Tuple<>(0.175, Material.IRON_ORE),
+          new Tuple<>(0.125, Material.GOLD_ORE),
+          new Tuple<>(0.075, Material.DIAMOND_ORE),
+          new Tuple<>(0.05, Material.EMERALD_ORE)
       );
 
   public OreMiner() {
-    super("oreminer", "Ore Miner", Material.DEEPSLATE_DIAMOND_ORE,
-        "Mine most valuable ores", 1, Duration.ofSeconds(60));
+    super("oreminer",
+        "Ore Miner",
+        Material.DEEPSLATE_DIAMOND_ORE,
+        "Mine most valuable ores",
+        List.of("§hGoal: §pmost ore points", "Mine ores to get points.", "More noble ores gives more points."),
+        1,
+        Duration.ofSeconds(60));
 
     Server.registerListener(this, GameMicroGames.getPlugin());
   }
