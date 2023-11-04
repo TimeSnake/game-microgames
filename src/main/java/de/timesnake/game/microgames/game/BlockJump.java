@@ -19,6 +19,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.potion.PotionEffectType;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.Random;
 
 public class BlockJump extends LocationFinishGame implements Listener {
@@ -32,8 +33,13 @@ public class BlockJump extends LocationFinishGame implements Listener {
   private final Random random = new Random();
 
   public BlockJump() {
-    super("blockjump", "BlockJump", Material.GREEN_TERRACOTTA,
-        "Try to reach the top", 1, Duration.ofMinutes(3));
+    super("block_jump",
+        "BlockJump",
+        Material.GREEN_TERRACOTTA,
+        "Try to reach the top",
+        List.of("§hGoal: §preach top at first", "Use jump boost to climb up platforms."),
+        1,
+        Duration.ofMinutes(3));
   }
 
   @Override

@@ -18,12 +18,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import java.time.Duration;
+import java.util.List;
 
 public abstract class FallOutGame extends MicroGame implements Listener {
 
-  public FallOutGame(String name, String displayName, Material material, String description,
+  public FallOutGame(String name, String displayName, Material material, String headLine, List<String> description,
                      Integer minPlayers, Duration maxTime) {
-    super(name, displayName, material, description, minPlayers, maxTime);
+    super(name, displayName, material, headLine, description, minPlayers, maxTime);
   }
 
   public abstract Integer getDeathHeight();

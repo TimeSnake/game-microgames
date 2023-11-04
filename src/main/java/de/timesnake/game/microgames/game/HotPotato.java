@@ -46,8 +46,17 @@ public class HotPotato extends ScoreGame<Integer> implements Listener {
 
 
   public HotPotato() {
-    super("hotpotato", "Hot Potato", Material.BAKED_POTATO,
-        "Don't hold the potato", 2, null);
+    super("hotpotato",
+        "Hot Potato",
+        Material.BAKED_POTATO,
+        "Don't hold the potato",
+        List.of("§hGoal: §phold the potato the least time",
+            "At start, be in center to not get the potato.",
+            "Run away from potato holding players (in gold armor).",
+            "Punch players to give them the potato.",
+            "Potato holders have a cooldown, before they can give the potato away."),
+        2,
+        null);
 
     Server.registerListener(this, GameMicroGames.getPlugin());
   }

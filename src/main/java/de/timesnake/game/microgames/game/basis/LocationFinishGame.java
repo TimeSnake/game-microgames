@@ -19,15 +19,17 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.util.Vector;
 
 import java.time.Duration;
+import java.util.List;
 
 public abstract class LocationFinishGame extends MicroGame implements Listener {
 
   protected static final Integer FINISH_LOCATION_INDEX = 3;
 
 
-  public LocationFinishGame(String name, String displayName, Material material, String description, Integer minPlayers,
-                            Duration maxTime) {
-    super(name, displayName, material, description, minPlayers, maxTime);
+  public LocationFinishGame(String name, String displayName, Material material, String headLine,
+                            List<String> description,
+                            Integer minPlayers, Duration maxTime) {
+    super(name, displayName, material, headLine, description, minPlayers, maxTime);
     Server.registerListener(this, GameMicroGames.getPlugin());
   }
 
@@ -72,7 +74,7 @@ public abstract class LocationFinishGame extends MicroGame implements Listener {
 
   @Override
   public void onUserQuit(MicroGamesUser user) {
-    if (Server.getInGameUsers().size() == 0) {
+    if (Server.getInGameUsers().isEmpty()) {
       this.stop();
     }
   }

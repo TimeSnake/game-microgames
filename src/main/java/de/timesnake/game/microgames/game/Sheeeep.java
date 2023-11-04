@@ -41,8 +41,14 @@ public class Sheeeep extends BoxedScoreGame<Integer> implements Listener {
   protected Set<Sheep> sheep = new HashSet<>();
 
   public Sheeeep() {
-    super("sheep", "Sheeeep", Material.SHEEP_SPAWN_EGG,
-        "Shear sheep in given order", 1, Duration.ofMinutes(3));
+    super("sheep",
+        "Sheeeep",
+        Material.SHEEP_SPAWN_EGG,
+        "Shear sheep in given order",
+        List.of("§hGoal: §pshear 10 sheep", "Shear sheep with color given in your hotbar.",
+            "Be the first who sheared 10 sheep"),
+        1,
+        Duration.ofMinutes(3));
 
     Server.registerListener(this, GameMicroGames.getPlugin());
   }

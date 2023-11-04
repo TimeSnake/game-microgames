@@ -14,12 +14,18 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import java.time.Duration;
+import java.util.List;
 
 public class Dropper extends LocationFinishGame implements Listener {
 
   public Dropper() {
-    super("dropper", "Dropper", Material.ANVIL,
-        "Try to reach the ground without hitting any block", 1, Duration.ofMinutes(3));
+    super("dropper",
+        "Dropper",
+        Material.ANVIL,
+        "Try to reach the ground without hitting any block",
+        List.of("§hGoal: §preach ground first", "Jump off the platform an reach the ground without taking damage"),
+        1,
+        Duration.ofMinutes(3));
   }
 
   @Override

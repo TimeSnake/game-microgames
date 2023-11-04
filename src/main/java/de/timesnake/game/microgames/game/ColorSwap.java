@@ -4,6 +4,7 @@
 
 package de.timesnake.game.microgames.game;
 
+import de.timesnake.basic.bukkit.core.server.MathHelper;
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.event.UserMoveEvent;
@@ -30,6 +31,7 @@ import java.time.Duration;
 import java.util.*;
 
 public class ColorSwap extends FallOutGame implements Listener {
+
   protected static final Integer FIRST_CORNER_LOCATION_INDEX = 3;
   protected static final Integer SECOND_CORNER_LOCATION_INDEX = 4;
 
@@ -39,9 +41,8 @@ public class ColorSwap extends FallOutGame implements Listener {
       Material.GREEN_WOOL, Material.LIGHT_BLUE_WOOL, Material.LIGHT_GRAY_WOOL, Material.LIME_WOOL, Material.MAGENTA_WOOL,
       Material.ORANGE_WOOL, Material.PURPLE_WOOL, Material.RED_WOOL, Material.WHITE_WOOL, Material.YELLOW_WOOL);
 
-  protected static final Integer LEVEL_TICKS = 4 * 20; //for first level
+  protected static final Integer LEVEL_TICKS = 2 * 20; //for first level
   protected static final Integer MIN_LEVEL_TICKS = 6;
-  protected static final double LEVEL_TICKS_DECREASE = 7; //time decrease between first and second level
 
   protected static final Integer DIFFERENT_MATERIALS = 6; //for first level
   protected static final double DIFFERENT_MATERIALS_INCREASE = 0.25; // material increase per level-1
@@ -57,15 +58,20 @@ public class ColorSwap extends FallOutGame implements Listener {
   private BukkitTask waitingTask;
   private BukkitTask countdownTask;
   private BukkitTask countdownTask1;
-  private Integer ticks = 0;
 
   public ColorSwap() {
-    this("colorswap", "ColorSwap", Material.WHITE_WOOL,
-        "Try to stand on the color, which is shown in your hotbar", 1, null);
+    this("colorswap",
+        "ColorSwap",
+        Material.WHITE_WOOL,
+        "Try to stand on the color, which is shown in your hotbar",
+        List.of("§hGoal: §plast man standing", "Stand on the color, which is shown in your hotbar."),
+        1,
+        null);
   }
 
-  public ColorSwap(String name, String displayName, Material material, String description, Integer minPlayers, Duration maxTime) {
-    super(name, displayName, material, description, minPlayers, maxTime);
+  public ColorSwap(String name, String displayName, Material material, String headLine, List<String> description,
+                   Integer minPlayers, Duration maxTime) {
+    super(name, displayName, material, headLine, description, minPlayers, maxTime);
     Server.registerListener(this, GameMicroGames.getPlugin());
   }
 
@@ -96,8 +102,10 @@ public class ColorSwap extends FallOutGame implements Listener {
 
     this.clearFloor();
 
-    for (int i = 1; i <= ColorSwap.MAX_LEVEL; i++) {
-      this.levels.put(i, new Level(i));
+    List<Integer> timings = MathHelper.getDecreasingValues(LEVEL_TICKS, 3, MAX_LEVEL, MIN_LEVEL_TICKS);
+    for (int i = 0; i < ColorSwap.MAX_LEVEL; i++) {
+      System.out.println(timings.get(i));
+      this.levels.put(i + 1, new Level(i + 1, timings.get(i)));
     }
   }
 
@@ -143,29 +151,23 @@ public class ColorSwap extends FallOutGame implements Listener {
       }
       Server.broadcastNote(Instrument.PLING, Note.natural(1, Note.Tone.A));
 
-      this.ticks = level.getTicks();
+      countdownTask = Server.runTaskLaterSynchrony(() -> {
+        level.switchPatternToPrimaryMaterial();
+        Server.broadcastNote(Instrument.STICKS, Note.natural(0, Note.Tone.A));
 
-      countdownTask = Server.runTaskTimerSynchrony(() -> {
-        if (ticks == 0) {
-          level.switchPatternToPrimaryMaterial();
-          Server.broadcastNote(Instrument.STICKS, Note.natural(0, Note.Tone.A));
-
-          waitingTask = Server.runTaskLaterSynchrony(() -> {
-            for (User user : Server.getInGameUsers()) {
-              user.fillHotBar(new ItemStack(Material.AIR));
-            }
-            if (this.currentLevel.equals(MAX_LEVEL)) {
-              MicroGamesServer.broadcastMicroGamesMessage(Component.text("You completed all levels", ExTextColor.GOLD));
-              this.stop();
-            } else {
-              this.currentLevel++;
-              this.startLevel();
-            }
-          }, 2 * 20, GameMicroGames.getPlugin());
-        }
-
-        ticks--;
-      }, 0, 1, GameMicroGames.getPlugin());
+        waitingTask = Server.runTaskLaterSynchrony(() -> {
+          for (User user : Server.getInGameUsers()) {
+            user.fillHotBar(new ItemStack(Material.AIR));
+          }
+          if (this.currentLevel.equals(MAX_LEVEL)) {
+            MicroGamesServer.broadcastMicroGamesMessage(Component.text("You completed all levels", ExTextColor.GOLD));
+            this.stop();
+          } else {
+            this.currentLevel++;
+            this.startLevel();
+          }
+        }, 2 * 20, GameMicroGames.getPlugin());
+      }, level.getTicks(), GameMicroGames.getPlugin());
 
     }, 3 * 20, GameMicroGames.getPlugin());
   }
@@ -272,11 +274,9 @@ public class ColorSwap extends FallOutGame implements Listener {
     private final Material primaryMaterial;
     private final HashMap<Block, Material> blocks = new HashMap<>();
 
-    protected Level(Integer level) {
+    protected Level(Integer level, Integer ticks) {
       this.level = level;
-      int tickDifference = ColorSwap.LEVEL_TICKS - ColorSwap.MIN_LEVEL_TICKS;
-      this.ticks = (int) (tickDifference * Math.pow((double) (tickDifference - 1) / tickDifference,
-          ColorSwap.LEVEL_TICKS_DECREASE * this.level) + ColorSwap.MIN_LEVEL_TICKS);
+      this.ticks = ticks;
 
       int materialsNumber = (int) (ColorSwap.DIFFERENT_MATERIALS + (level - 1) * ColorSwap.DIFFERENT_MATERIALS_INCREASE);
 

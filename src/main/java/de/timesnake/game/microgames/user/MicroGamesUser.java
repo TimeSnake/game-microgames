@@ -7,12 +7,7 @@ package de.timesnake.game.microgames.user;
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.chat.ChatColor;
 import de.timesnake.basic.bukkit.util.user.User;
-import de.timesnake.basic.bukkit.util.user.inventory.ExInventory;
-import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
-import de.timesnake.basic.bukkit.util.user.inventory.UserInventoryClickEvent;
-import de.timesnake.basic.bukkit.util.user.inventory.UserInventoryClickListener;
-import de.timesnake.basic.bukkit.util.user.inventory.UserInventoryInteractEvent;
-import de.timesnake.basic.bukkit.util.user.inventory.UserInventoryInteractListener;
+import de.timesnake.basic.bukkit.util.user.inventory.*;
 import de.timesnake.basic.bukkit.util.user.scoreboard.TablistableGroup;
 import de.timesnake.basic.game.util.game.TablistGroupType;
 import de.timesnake.basic.game.util.user.SpectatorUser;
@@ -20,17 +15,14 @@ import de.timesnake.game.microgames.game.basis.MicroGame;
 import de.timesnake.game.microgames.server.MicroGamesServer;
 import de.timesnake.library.basic.util.Loggers;
 import de.timesnake.library.basic.util.Status;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.*;
 
 public class MicroGamesUser extends SpectatorUser {
 
@@ -126,7 +118,7 @@ public class MicroGamesUser extends SpectatorUser {
       for (MicroGame game : games) {
         ExItemStack item = new ExItemStack(i, game.getMaterial(),
             ChatColor.GOLD + game.getDisplayName(),
-            List.of(ChatColor.WHITE + game.getDescription()));
+            List.of(ChatColor.WHITE + game.getHeadLine()));
         item.hideAll();
         this.inv.setItemStack(item);
         i++;
@@ -161,7 +153,7 @@ public class MicroGamesUser extends SpectatorUser {
           MicroGamesUser.this.votedGames.remove(microGame);
 
           item.disenchant();
-          item.setLore(ChatColor.WHITE + microGame.getDescription());
+          item.setLore(ChatColor.WHITE + microGame.getHeadLine());
 
           Loggers.GAME.info(
               MicroGamesUser.this.getName() + " devoted " + microGame.getName());
@@ -170,7 +162,7 @@ public class MicroGamesUser extends SpectatorUser {
           microGame.addVote();
 
           item.enchant();
-          item.setLore(ChatColor.WHITE + microGame.getDescription(), "", "§aVoted");
+          item.setLore(ChatColor.WHITE + microGame.getHeadLine(), "", "§aVoted");
 
           Loggers.GAME.info(
               MicroGamesUser.this.getName() + " voted for " + microGame.getName());

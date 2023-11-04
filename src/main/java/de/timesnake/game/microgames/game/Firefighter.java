@@ -29,6 +29,7 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.Set;
 
 public class Firefighter extends BoxedScoreGame<Integer> implements Listener {
@@ -42,8 +43,13 @@ public class Firefighter extends BoxedScoreGame<Integer> implements Listener {
   private BukkitTask timeTask;
 
   public Firefighter() {
-    super("firefighter", "Firefighter", Material.BLAZE_POWDER,
-        "Punch out the fire", 1, null);
+    super("firefighter",
+        "Firefighter",
+        Material.BLAZE_POWDER,
+        "Punch out the fire",
+        List.of("§hGoal: §pmost punched out fires", "Punch out fires by clicking left."),
+        1,
+        null);
 
     Server.registerListener(this, GameMicroGames.getPlugin());
   }

@@ -16,6 +16,7 @@ import org.bukkit.Note;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.time.Duration;
+import java.util.List;
 
 public abstract class ShrinkingPlatformGame extends FallOutGame {
 
@@ -23,9 +24,10 @@ public abstract class ShrinkingPlatformGame extends FallOutGame {
   private Integer delay;
   private Integer radius;
 
-  public ShrinkingPlatformGame(String name, String displayName, Material material,
-                               String description, Integer minPlayers, Duration maxTime) {
-    super(name, displayName, material, description, minPlayers, maxTime);
+  public ShrinkingPlatformGame(String name, String displayName, Material material, String headLine,
+                               List<String> description,
+                               Integer minPlayers, Duration maxTime) {
+    super(name, displayName, material, headLine, description, minPlayers, maxTime);
   }
 
   @Override

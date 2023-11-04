@@ -18,6 +18,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import java.time.Duration;
+import java.util.List;
 
 public class KnockOut extends ShrinkingPlatformGame implements Listener {
 
@@ -29,8 +30,15 @@ public class KnockOut extends ShrinkingPlatformGame implements Listener {
 
 
   public KnockOut() {
-    super("knockout", "KnockOut", Material.STICK,
-        "Knock all players from the platform", 2, Duration.ofMinutes(2));
+    super("knockout",
+        "KnockOut",
+        Material.STICK,
+        "Knock all players from the platform",
+        List.of("§hGoal: §plast man standing",
+            "Use your knockback stick to punch out all players from the platform.",
+            "After a time, the platform becomes smaller."),
+        2,
+        Duration.ofMinutes(2));
     Server.registerListener(this, GameMicroGames.getPlugin());
   }
 
