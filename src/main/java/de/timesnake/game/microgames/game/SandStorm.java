@@ -40,14 +40,12 @@ public class SandStorm extends MicroGame {
         "Do not stop",
         List.of("§hGoal: §plast man standing", "Avoid falling sand blocks.", "If you stand still, you lose."),
         1,
-        Duration.ofSeconds(120));
+        Duration.ofSeconds(180));
   }
 
   @Override
   public void onMapLoad(Map map) {
     super.onMapLoad(map);
-
-    map.getWorld().setPVP(false);
   }
 
   @Override
@@ -83,13 +81,15 @@ public class SandStorm extends MicroGame {
 
   private void checkMovements() {
     for (User user : Server.getInGameUsers()) {
-      if (user.getLocation().getBlock().equals(this.lastBlockCounter.get(user).getB())) {
-        int count = this.lastBlockCounter.get(user).getA();
+      Tuple<Integer, Block> tuple = this.lastBlockCounter.get(user);
+      if (tuple != null && user.getLocation().getBlock().getX() == tuple.getB().getX()
+          && user.getLocation().getBlock().getZ() == tuple.getB().getZ()) {
+        int count = tuple.getA();
         if (count >= 3) {
           Server.runTaskSynchrony(() -> this.addWinner((MicroGamesUser) user, false), GameMicroGames.getPlugin());
           this.lastBlockCounter.remove(user);
         } else {
-          this.lastBlockCounter.get(user).setA(count + 1);
+          tuple.setA(count + 1);
         }
       } else {
         this.lastBlockCounter.put(user, new Tuple<>(0, user.getLocation().getBlock()));
