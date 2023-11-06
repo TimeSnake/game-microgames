@@ -83,7 +83,7 @@ public class Firefighter extends BoxedScoreGame<Integer> implements Listener {
     super.load();
 
     super.sideboard.setScore(4, "§9§lTime");
-    super.sideboard.setScore(3, "§f" + DURATION + "s");
+    super.sideboard.setScore(3, "§f" + DURATION.toSeconds() + "s");
     super.sideboard.setScore(2, "§f-------------------");
   }
 

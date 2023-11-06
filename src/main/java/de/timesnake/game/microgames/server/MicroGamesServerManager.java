@@ -90,6 +90,7 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
     this.loadGame(new SlimySlime());
     this.loadGame(new SandStorm());
     this.loadGame(new HotFeet());
+    this.loadGame(new RiseUp());
 
     this.partyManager = new PartyManager();
 
@@ -436,4 +437,15 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
     }
   }
 
+  @EventHandler
+  public void onUserDeath(UserDeathEvent e) {
+    e.setAutoRespawn(true);
+  }
+
+  @EventHandler
+  public void onUserRespawn(UserRespawnEvent e) {
+    if (this.currentGame != null) {
+      e.setRespawnLocation(this.currentGame.getSpawnLocation());
+    }
+  }
 }
