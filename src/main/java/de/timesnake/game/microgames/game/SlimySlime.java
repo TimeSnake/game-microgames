@@ -55,7 +55,7 @@ public class SlimySlime extends ScoreGame<Integer> implements Listener {
             "Carry at most 5 balls.",
             "Feed slimy slime to get points."),
         1,
-        Duration.ofSeconds(60));
+        Duration.ofSeconds(120));
     Server.registerListener(this, GameMicroGames.getPlugin());
   }
 
@@ -108,6 +108,10 @@ public class SlimySlime extends ScoreGame<Integer> implements Listener {
 
     if (this.mainSlime != null) {
       this.mainSlime.remove(net.minecraft.world.entity.Entity.RemovalReason.DISCARDED);
+    }
+
+    if (this.previousMap != null) {
+      Server.getWorldManager().reloadWorld(this.previousMap.getWorld());
     }
   }
 

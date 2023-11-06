@@ -104,7 +104,6 @@ public class ColorSwap extends FallOutGame implements Listener {
 
     List<Integer> timings = MathHelper.getDecreasingValues(LEVEL_TICKS, 3, MAX_LEVEL, MIN_LEVEL_TICKS);
     for (int i = 0; i < ColorSwap.MAX_LEVEL; i++) {
-      System.out.println(timings.get(i));
       this.levels.put(i + 1, new Level(i + 1, timings.get(i)));
     }
   }

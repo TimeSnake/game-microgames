@@ -6,6 +6,7 @@ package de.timesnake.game.microgames.game;
 
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
+import de.timesnake.basic.game.util.game.Map;
 import de.timesnake.game.microgames.game.basis.FallOutGame;
 import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.user.MicroGamesUser;
@@ -44,6 +45,13 @@ public class HotFeet extends FallOutGame {
         1,
         Duration.ofSeconds(180));
     Server.registerListener(this, GameMicroGames.getPlugin());
+  }
+
+  @Override
+  public void onMapLoad(Map map) {
+    super.onMapLoad(map);
+
+    map.getWorld().setPVP(false);
   }
 
   @Override
