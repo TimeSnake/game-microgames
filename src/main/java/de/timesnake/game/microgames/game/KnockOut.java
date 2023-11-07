@@ -25,8 +25,7 @@ public class KnockOut extends ShrinkingPlatformGame implements Listener {
   public static final Integer START_RADIUS = 10;
   public static final Integer MIN_RADIUS = 3;
   public static final Integer DECREASE_DELAY = 20;
-  protected static final ExItemStack STICK = new ExItemStack(Material.STICK).addExEnchantment(
-      Enchantment.KNOCKBACK, 2);
+  protected static final ExItemStack STICK = new ExItemStack(Material.STICK).addExEnchantment(Enchantment.KNOCKBACK, 2);
 
 
   public KnockOut() {

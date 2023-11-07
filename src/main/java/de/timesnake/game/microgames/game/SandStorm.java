@@ -111,16 +111,6 @@ public class SandStorm extends MicroGame {
     return false;
   }
 
-  @Override
-  public boolean onUserJoin(MicroGamesUser user) {
-    return false;
-  }
-
-  @Override
-  public void onUserQuit(MicroGamesUser user) {
-
-  }
-
   public ExLocation getFirstCorner() {
     return this.currentMap.getLocation(FIRST_CORNER_INDEX);
   }

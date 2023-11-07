@@ -10,6 +10,7 @@ import de.timesnake.basic.bukkit.util.user.event.UserDamageByUserEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserDamageEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserDropItemEvent;
 import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
+import de.timesnake.basic.bukkit.util.user.scoreboard.Sideboard;
 import de.timesnake.game.microgames.chat.Plugin;
 import de.timesnake.game.microgames.game.basis.ScoreGame;
 import de.timesnake.game.microgames.main.GameMicroGames;
@@ -65,9 +66,9 @@ public class HotPotato extends ScoreGame<Integer> implements Listener {
   public void load() {
     super.load();
 
-    super.sideboard.setScore(5, "§9§lTime left");
+    super.sideboard.setScore(5, "§9§lTime");
     super.sideboard.setScore(4, Chat.getTimeString(this.time));
-    super.sideboard.setScore(3, "§f---------------");
+    super.sideboard.setScore(3, Sideboard.SPACER);
   }
 
   @Override

@@ -9,7 +9,6 @@ import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.basic.game.util.game.Map;
 import de.timesnake.game.microgames.game.basis.FallOutGame;
 import de.timesnake.game.microgames.main.GameMicroGames;
-import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.basic.util.Tuple;
 import org.bukkit.Material;
@@ -130,16 +129,6 @@ public class HotFeet extends FallOutGame {
   @Override
   public boolean hasSideboard() {
     return false;
-  }
-
-  @Override
-  public boolean onUserJoin(MicroGamesUser user) {
-    return false;
-  }
-
-  @Override
-  public void onUserQuit(MicroGamesUser user) {
-
   }
 
   public ExLocation getFirstCorner() {

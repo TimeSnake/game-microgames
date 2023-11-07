@@ -20,7 +20,6 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.Random;
 
 public class BlockJump extends LocationFinishGame implements Listener {
 
@@ -29,8 +28,6 @@ public class BlockJump extends LocationFinishGame implements Listener {
   private static final double DENSITY = 0.38;
   private static final int HEIGHT = 50;
   private static final int HEIGHT_DIF = 10;
-
-  private final Random random = new Random();
 
   public BlockJump() {
     super("block_jump",

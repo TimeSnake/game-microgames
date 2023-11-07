@@ -311,9 +311,15 @@ public abstract class MicroGame {
 
   public abstract boolean hasSideboard();
 
-  public abstract boolean onUserJoin(MicroGamesUser user);
+  public boolean onUserJoin(MicroGamesUser user) {
+    return false;
+  }
 
-  public abstract void onUserQuit(MicroGamesUser user);
+  public void onUserQuit(MicroGamesUser user) {
+    if (Server.getInGameUsers().size() <= 1) {
+      this.stop();
+    }
+  }
 
   public ExLocation getSpecLocation() {
     return this.currentMap.getLocation(SPEC_LOCATION_INDEX);

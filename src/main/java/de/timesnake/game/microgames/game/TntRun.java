@@ -10,7 +10,6 @@ import de.timesnake.basic.bukkit.util.user.event.UserMoveEvent;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.game.microgames.game.basis.FallOutGame;
 import de.timesnake.game.microgames.main.GameMicroGames;
-import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Status;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -28,7 +27,6 @@ public class TntRun extends FallOutGame implements Listener {
   protected static final Integer DEATH_HEIGHT_LOCATION_INDEX = 3;
 
   protected static final Integer REMOVE_DELAY = 19;
-  protected static final Integer TNT_REMOVE_DELAY = 10;
 
   protected static final Double[][] NEAR_BLOCK_VECTORS = {{0.3, 0.0}, {0.0, 0.3}, {-0.3, 0.0},
       {0.0, -0.3}, {0.3, 0.3}, {0.3, -0.3}, {-0.3, 0.3}, {-0.3, -0.3}};
@@ -102,11 +100,7 @@ public class TntRun extends FallOutGame implements Listener {
 
     Server.runTaskLaterSynchrony(() -> {
       for (Block block : blocks) {
-        Location loc = block.getLocation().add(0.5, 0, 0.5);
-        loc.getBlock().setType(Material.AIR);
-        // TNTPrimed tnt = loc.getWorld().spawn(loc, TNTPrimed.class);
-        // Server.runTaskLaterSynchrony(tnt::remove, TNT_REMOVE_DELAY,
-        //     GameMicroGames.getPlugin());
+        block.setType(Material.AIR);
       }
     }, REMOVE_DELAY, GameMicroGames.getPlugin());
 
@@ -130,18 +124,6 @@ public class TntRun extends FallOutGame implements Listener {
   @Override
   public boolean hasSideboard() {
     return false;
-  }
-
-  @Override
-  public boolean onUserJoin(MicroGamesUser user) {
-    return false;
-  }
-
-  @Override
-  public void onUserQuit(MicroGamesUser user) {
-    if (Server.getInGameUsers().size() <= 1) {
-      this.stop();
-    }
   }
 
   public ExLocation getDeathLocation() {
