@@ -15,7 +15,6 @@ import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.basic.util.Tuple;
-import de.timesnake.library.extension.util.chat.Chat;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -25,7 +24,6 @@ import org.bukkit.block.data.type.Fire;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import java.time.Duration;
@@ -34,13 +32,9 @@ import java.util.Set;
 
 public class Firefighter extends BoxedScoreGame<Integer> implements Listener {
 
-  private static final Duration DURATION = Duration.ofSeconds(45);
   private static final double FIRE_CHANCE = 0.2;
 
-  private static final Set<Material> EXCLUDED_MATERIALS = Set.of(Material.GRASS,
-      Material.TALL_GRASS);
-
-  private BukkitTask timeTask;
+  private static final Set<Material> EXCLUDED_MATERIALS = Set.of(Material.GRASS, Material.TALL_GRASS);
 
   public Firefighter() {
     super("firefighter",
@@ -49,7 +43,7 @@ public class Firefighter extends BoxedScoreGame<Integer> implements Listener {
         "Punch out the fire",
         List.of("§hGoal: §pmost punched out fires", "Punch out fires by clicking left."),
         1,
-        null);
+        Duration.ofSeconds(45));
 
     Server.registerListener(this, GameMicroGames.getPlugin());
   }
@@ -76,15 +70,6 @@ public class Firefighter extends BoxedScoreGame<Integer> implements Listener {
     world.restrict(Restriction.NO_PLAYER_DAMAGE, true);
     world.restrict(Restriction.DROP_PICK_ITEM, true);
     world.setPVP(false);
-  }
-
-  @Override
-  public void load() {
-    super.load();
-
-    super.sideboard.setScore(4, "§9§lTime");
-    super.sideboard.setScore(3, "§f" + DURATION.toSeconds() + "s");
-    super.sideboard.setScore(2, "§f-------------------");
   }
 
   @Override
@@ -119,9 +104,7 @@ public class Firefighter extends BoxedScoreGame<Integer> implements Listener {
               ((Fire) blockData).setFace(blockFace, true);
               nearBlock.setBlockData(blockData);
             }
-
           }
-
         }
       }
     }
@@ -134,22 +117,10 @@ public class Firefighter extends BoxedScoreGame<Integer> implements Listener {
     for (User user : Server.getInGameUsers()) {
       user.setGameMode(GameMode.SURVIVAL);
     }
-
-    this.timeTask = Server.runTaskTimerSynchrony((time) -> {
-      super.sideboard.setScore(3, Chat.getTimeString(time));
-
-      if (time == 0) {
-        this.stop();
-      }
-    }, ((int) DURATION.toSeconds()), true, 0, 20, GameMicroGames.getPlugin());
   }
 
   @Override
   public void stop() {
-    if (this.timeTask != null) {
-      this.timeTask.cancel();
-    }
-
     super.calcPlaces(true);
     super.stop();
   }
@@ -176,18 +147,6 @@ public class Firefighter extends BoxedScoreGame<Integer> implements Listener {
   @Override
   public boolean hasSideboard() {
     return true;
-  }
-
-  @Override
-  public boolean onUserJoin(MicroGamesUser user) {
-    return false;
-  }
-
-  @Override
-  public void onUserQuit(MicroGamesUser user) {
-    if (Server.getInGameUsers().size() <= 1) {
-      this.stop();
-    }
   }
 
   @EventHandler

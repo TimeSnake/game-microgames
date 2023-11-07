@@ -12,7 +12,6 @@ import de.timesnake.basic.bukkit.util.world.ExWorld;
 import de.timesnake.basic.game.util.game.Map;
 import de.timesnake.game.microgames.game.basis.ScoreGame;
 import de.timesnake.game.microgames.main.GameMicroGames;
-import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.entities.EntityManager;
 import de.timesnake.library.entities.entity.SlimeBuilder;
 import net.minecraft.network.chat.Component;
@@ -140,16 +139,6 @@ public class SlimySlime extends ScoreGame<Integer> implements Listener {
   @Override
   public boolean hasSideboard() {
     return true;
-  }
-
-  @Override
-  public boolean onUserJoin(MicroGamesUser user) {
-    return false;
-  }
-
-  @Override
-  public void onUserQuit(MicroGamesUser user) {
-
   }
 
   @Override

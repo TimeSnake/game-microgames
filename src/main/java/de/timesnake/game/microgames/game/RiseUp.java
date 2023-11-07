@@ -9,7 +9,6 @@ import de.timesnake.basic.bukkit.util.world.ExWorld;
 import de.timesnake.basic.game.util.game.Map;
 import de.timesnake.game.microgames.game.basis.ScoreGame;
 import de.timesnake.game.microgames.main.GameMicroGames;
-import de.timesnake.game.microgames.user.MicroGamesUser;
 import org.bukkit.GameMode;
 import org.bukkit.GameRule;
 import org.bukkit.Material;
@@ -115,18 +114,6 @@ public class RiseUp extends ScoreGame<Integer> implements Listener {
     @Override
     public boolean hasSideboard() {
         return true;
-    }
-
-    @Override
-    public boolean onUserJoin(MicroGamesUser user) {
-        return false;
-    }
-
-    @Override
-    public void onUserQuit(MicroGamesUser user) {
-        if (Server.getInGameUsers().size() <= 1) {
-            this.stop();
-        }
     }
 
     @Override

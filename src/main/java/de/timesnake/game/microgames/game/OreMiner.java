@@ -11,7 +11,6 @@ import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.bukkit.util.world.ExBlock;
 import de.timesnake.game.microgames.game.basis.BoxedScoreGame;
 import de.timesnake.game.microgames.main.GameMicroGames;
-import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Tuple;
 import de.timesnake.library.basic.util.WeightedRandomCollection;
 import org.bukkit.GameMode;
@@ -133,16 +132,6 @@ public class OreMiner extends BoxedScoreGame<Integer> implements Listener {
   @Override
   public boolean hasSideboard() {
     return true;
-  }
-
-  @Override
-  public boolean onUserJoin(MicroGamesUser user) {
-    return false;
-  }
-
-  @Override
-  public void onUserQuit(MicroGamesUser user) {
-
   }
 
   @Override

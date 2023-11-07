@@ -116,16 +116,6 @@ public class Sheeeep extends BoxedScoreGame<Integer> implements Listener {
   }
 
   @Override
-  public boolean onUserJoin(MicroGamesUser user) {
-    return false;
-  }
-
-  @Override
-  public void onUserQuit(MicroGamesUser user) {
-
-  }
-
-  @Override
   public Integer getDefaultScore() {
     return 0;
   }
