@@ -9,6 +9,7 @@ import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.basic.game.util.game.Map;
 import de.timesnake.game.microgames.game.basis.FallOutGame;
 import de.timesnake.game.microgames.main.GameMicroGames;
+import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.basic.util.Tuple;
 import org.bukkit.Material;
@@ -62,7 +63,7 @@ public class HotFeet extends FallOutGame {
         .map(b -> new Tuple<>(b, 0))
         .collect(Collectors.toList());
     this.blocksWithDespawnTicks.forEach(b -> b.getA().setType(Material.WHITE_CONCRETE));
-    this.despawnBlocks = (int) (DESPAWN_PERCENTAGE * this.blocksWithDespawnTicks.size());
+    this.despawnBlocks = 2;//(int) (DESPAWN_PERCENTAGE * this.blocksWithDespawnTicks.size());
   }
 
   @Override
@@ -114,6 +115,8 @@ public class HotFeet extends FallOutGame {
 
   @Override
   public void stop() {
+    Server.getInGameUsers().forEach(u -> this.addWinner((MicroGamesUser) u, false));
+
     super.stop();
 
     if (this.despawnTask != null) {

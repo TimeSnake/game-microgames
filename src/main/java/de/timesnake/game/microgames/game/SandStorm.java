@@ -32,13 +32,17 @@ public class SandStorm extends MicroGame {
   private BukkitTask moveTask;
   private BukkitTask sandTask;
 
+  private int deathHeight;
+
   private final UserMap<User, Tuple<Integer, Block>> lastBlockCounter = new UserMap<>();
 
   public SandStorm() {
     super("sand_storm", "Sand Storm",
         Material.SAND,
         "Do not stop",
-        List.of("§hGoal: §plast man standing", "Avoid falling sand blocks.", "If you stand still, you lose."),
+        List.of("§hGoal: §plast man standing",
+            "Avoid falling and red sand blocks.",
+            "If you stand still or touch a red sand block, you lose."),
         1,
         Duration.ofSeconds(180));
   }
@@ -49,8 +53,17 @@ public class SandStorm extends MicroGame {
   }
 
   @Override
+  public void prepare() {
+    super.prepare();
+
+    this.currentMap.getWorld().setPVP(false);
+  }
+
+  @Override
   public void start() {
     super.start();
+
+    this.deathHeight = 0;
 
     this.moveTask = Server.runTaskTimerAsynchrony(this::checkMovements, 0, 10, GameMicroGames.getPlugin());
     this.sandTask = Server.runTaskTimerSynchrony(this::spawnSand, 120 * 10, true, 0, SAND_SPAWN_RATE,
@@ -59,6 +72,8 @@ public class SandStorm extends MicroGame {
 
   @Override
   public void stop() {
+    Server.getInGameUsers().forEach(u -> this.addWinner((MicroGamesUser) u, false));
+
     super.stop();
 
     if (this.sandTask != null) {
@@ -94,6 +109,10 @@ public class SandStorm extends MicroGame {
       } else {
         this.lastBlockCounter.put(user, new Tuple<>(0, user.getLocation().getBlock()));
       }
+
+      if (user.getLocation().add(0, -1, 0).getBlock().getType().equals(Material.RED_SAND)) {
+        Server.runTaskSynchrony(() -> this.addWinner((MicroGamesUser) user, false), GameMicroGames.getPlugin());
+      }
     }
   }
 
@@ -103,6 +122,17 @@ public class SandStorm extends MicroGame {
         this.currentMap.getWorld().spawnFallingBlock(block.getLocation().add(0.5, HEIGHT_DIFF, 0.5),
             Material.SAND.createBlockData());
       }
+    }
+
+    System.out.println(time);
+    if (time % 10 == 0 && time < 115 * 10) {
+      for (Block block : this.currentMap.getWorld().getBlocksWithinCubic(this.getFirstCorner(),
+          this.getSecondCorner().clone().add(0, this.deathHeight, 0))) {
+        if (block.getType().equals(Material.SAND)) {
+          block.setType(Material.RED_SAND);
+        }
+      }
+      this.deathHeight++;
     }
   }
 

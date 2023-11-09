@@ -54,7 +54,7 @@ public class SlimySlime extends ScoreGame<Integer> implements Listener {
             "Carry at most 5 balls.",
             "Feed slimy slime to get points."),
         1,
-        Duration.ofSeconds(120));
+        Duration.ofSeconds(90));
     Server.registerListener(this, GameMicroGames.getPlugin());
   }
 
