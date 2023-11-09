@@ -30,7 +30,10 @@ public class RiseUp extends ScoreGame<Integer> implements Listener {
 
   private static final int GOAL_LOCATION_INDEX = 3;
 
-  private static final int VERTICAL_RANGE = 5;
+  private static final int HORIZONTAL_RANGE = 5;
+  private static final int VERTICAL_RANGE = 4;
+
+  private static final double DESTROY_BLOCK_CHANCE = 0.2;
 
   private BukkitTask scoreTask;
 
@@ -43,7 +46,7 @@ public class RiseUp extends ScoreGame<Integer> implements Listener {
             "Build up using the provided blocks.",
             "You can use snowballs to knock other players down.",
             "When the time is up the order of the players is determined by the height they are standing at.",
-            "Players within a range of " + VERTICAL_RANGE + " blocks to the goal (gold block), get extra points."
+            "Players within a range of " + HORIZONTAL_RANGE + " blocks to the goal (gold block), get extra points."
         ),
         1,
         Duration.ofSeconds(120));
@@ -91,7 +94,7 @@ public class RiseUp extends ScoreGame<Integer> implements Listener {
       int distToGoal = ((int) userLoc.middleHorizontalBlock().updateY(0).distance(this.getGoalLocation().updateY(0)));
       int vertDiffToGoal = userLoc.getBlockY() - this.getGoalLocation().getBlockY();
       this.updateUserScore(user, (u, score) -> vertDiff +
-          (vertDiffToGoal >= 0 && distToGoal <= VERTICAL_RANGE ? VERTICAL_RANGE - distToGoal : 0));
+          (vertDiffToGoal >= -VERTICAL_RANGE && distToGoal <= HORIZONTAL_RANGE ? HORIZONTAL_RANGE - distToGoal : 0));
     }
   }
 
@@ -163,6 +166,12 @@ public class RiseUp extends ScoreGame<Integer> implements Listener {
       ((Player) e.getHitEntity()).damage(0.01, e.getEntity());
       e.getHitEntity().setVelocity(e.getEntity().getVelocity().normalize().multiply(this.random.nextBoolean() ? 1 :
           -1));
+    }
+
+    if (e.getHitBlock() != null && Tag.WOOL.isTagged(e.getHitBlock().getType())) {
+      if (this.random.nextDouble(1.0) < DESTROY_BLOCK_CHANCE) {
+        e.getHitBlock().setType(Material.AIR);
+      }
     }
   }
 
