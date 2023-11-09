@@ -48,12 +48,14 @@ public abstract class ScoreGame<Score extends Comparable<Score>> extends MicroGa
     int place = 1;
     MicroGamesUser previous = null;
 
-    for (Iterator<MicroGamesUser> it = highestWins ? users.descendingIterator() : users.iterator(); it.hasNext(); place++) {
+    Iterator<MicroGamesUser> it = highestWins ? users.descendingIterator() : users.iterator();
+    while (it.hasNext()) {
       MicroGamesUser user = it.next();
       if (previous != null && this.scores.get(previous).equals(this.scores.get(user))) {
         user.setPlace(place - 1);
       } else {
         user.setPlace(place);
+        place++;
       }
 
       previous = user;

@@ -180,7 +180,6 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
     }
 
     this.broadcastMicroGamesTDMessage("§wSwitching to §v" + nextGame.getDisplayName());
-    nextGame.getDescription().forEach(this::broadcastMicroGamesTDMessage);
     nextGame.prepare();
 
     this.delayTask = Server.runTaskLaterSynchrony(() -> {
@@ -207,6 +206,8 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
         Loggers.GAME.info("Paused game loop");
         return;
       }
+
+      nextGame.getDescription().forEach(this::broadcastMicroGamesTDMessage);
 
       this.start = START_DELAY;
 

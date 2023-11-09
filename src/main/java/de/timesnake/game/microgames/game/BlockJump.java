@@ -36,7 +36,7 @@ public class BlockJump extends LocationFinishGame implements Listener {
         "Try to reach the top",
         List.of("§hGoal: §preach top at first", "Use jump boost to climb up platforms."),
         1,
-        Duration.ofMinutes(3));
+        Duration.ofMinutes(2));
   }
 
   @Override
