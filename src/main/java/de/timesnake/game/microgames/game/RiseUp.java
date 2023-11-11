@@ -46,7 +46,7 @@ public class RiseUp extends ScoreGame<Integer> implements Listener {
             "Build up using the provided blocks.",
             "You can use snowballs to knock other players down.",
             "When the time is up the order of the players is determined by the height they are standing at.",
-            "Players within a range of " + HORIZONTAL_RANGE + " blocks to the goal (gold block), get extra points."
+            "Players near the goal (gold block), get extra points."
         ),
         1,
         Duration.ofSeconds(120));
