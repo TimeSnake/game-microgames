@@ -2,6 +2,7 @@ package de.timesnake.game.microgames.game;
 
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.user.User;
+import de.timesnake.basic.bukkit.util.user.event.AsyncUserMoveEvent;
 import de.timesnake.basic.bukkit.util.user.event.CancelPriority;
 import de.timesnake.basic.bukkit.util.user.event.UserBlockBreakEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserDamageEvent;
@@ -93,8 +94,8 @@ public class RiseUp extends ScoreGame<Integer> implements Listener {
       int vertDiff = userLoc.getBlockY() - this.getStartLocation().getBlockY();
       int distToGoal = ((int) userLoc.middleHorizontalBlock().updateY(0).distance(this.getGoalLocation().updateY(0)));
       int vertDiffToGoal = userLoc.getBlockY() - this.getGoalLocation().getBlockY();
-      this.updateUserScore(user, (u, score) -> vertDiff +
-          (vertDiffToGoal >= -VERTICAL_RANGE && distToGoal <= HORIZONTAL_RANGE ? HORIZONTAL_RANGE - distToGoal : 0));
+      this.updateUserScore(user, (u, score) -> distToGoal > 30 ? 0 : (vertDiff +
+          (vertDiffToGoal >= -VERTICAL_RANGE && distToGoal <= HORIZONTAL_RANGE ? HORIZONTAL_RANGE - distToGoal : 0)));
     }
   }
 
@@ -152,6 +153,11 @@ public class RiseUp extends ScoreGame<Integer> implements Listener {
     return this.currentMap.getLocation(GOAL_LOCATION_INDEX);
   }
 
+  @Override
+  public Integer getLocationAmount() {
+    return 4;
+  }
+
   @EventHandler
   public void onProjectileHit(ProjectileHitEvent e) {
     if (!this.isGameRunning()) {
@@ -199,5 +205,22 @@ public class RiseUp extends ScoreGame<Integer> implements Listener {
     }
 
     e.setCancelDamage(true);
+  }
+
+  @EventHandler
+  public void onUserMove(AsyncUserMoveEvent e) {
+    if (!this.isGameRunning()) {
+      return;
+    }
+
+    User user = e.getUser();
+
+    if (user.isService()) {
+      return;
+    }
+
+    if (e.getTo().getBlockY() < this.getSpawnLocation().getBlockY()) {
+      user.teleport(this.getSpawnLocation());
+    }
   }
 }

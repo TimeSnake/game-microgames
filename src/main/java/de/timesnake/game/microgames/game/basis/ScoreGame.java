@@ -53,7 +53,7 @@ public abstract class ScoreGame<Score extends Comparable<Score>> extends MicroGa
     while (it.hasNext()) {
       MicroGamesUser user = it.next();
       if (previous != null && this.scores.get(previous).equals(this.scores.get(user))) {
-        user.setPlace(place - 1);
+        user.setPlace(place - (place > 1 ? -1 : 0));
         offset++;
       } else {
         place += offset;
