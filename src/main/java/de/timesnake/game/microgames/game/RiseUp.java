@@ -175,7 +175,7 @@ public class RiseUp extends ScoreGame<Integer> implements Listener {
     }
 
     if (e.getHitBlock() != null && Tag.WOOL.isTagged(e.getHitBlock().getType())) {
-      if (this.random.nextDouble(1.0) < DESTROY_BLOCK_CHANCE) {
+      if (this.random.nextDouble() < DESTROY_BLOCK_CHANCE) {
         e.getHitBlock().setType(Material.AIR);
       }
     }
