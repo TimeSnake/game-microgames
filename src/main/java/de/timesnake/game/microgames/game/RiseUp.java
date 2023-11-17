@@ -94,7 +94,7 @@ public class RiseUp extends ScoreGame<Integer> implements Listener {
       int vertDiff = userLoc.getBlockY() - this.getStartLocation().getBlockY();
       int distToGoal = ((int) userLoc.middleHorizontalBlock().updateY(0).distance(this.getGoalLocation().updateY(0)));
       int vertDiffToGoal = userLoc.getBlockY() - this.getGoalLocation().getBlockY();
-      this.updateUserScore(user, (u, score) -> distToGoal > 30 ? 0 : (vertDiff +
+      this.updateUserScore(user, (u, score) -> distToGoal > 48 ? 0 : (vertDiff +
           (vertDiffToGoal >= -VERTICAL_RANGE && distToGoal <= HORIZONTAL_RANGE ? HORIZONTAL_RANGE - distToGoal : 0)));
     }
   }
