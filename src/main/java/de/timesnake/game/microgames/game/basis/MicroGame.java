@@ -249,6 +249,8 @@ public abstract class MicroGame {
       this.timeTask.cancel();
     }
 
+    MicroGamesServer.getSpectatorManager().clearTools();
+
     MicroGamesServer.broadcastMicroGamesMessage(Chat.getLineSeparator());
 
     StringBuilder title = new StringBuilder();

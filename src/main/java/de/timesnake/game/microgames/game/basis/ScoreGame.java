@@ -46,19 +46,19 @@ public abstract class ScoreGame<Score extends Comparable<Score>> extends MicroGa
         .map(Entry::getKey).collect(Collectors.toCollection(LinkedList::new));
 
     int place = 1;
-    int offset = 0;
+    int nextPlace = 1;
     MicroGamesUser previous = null;
 
     Iterator<MicroGamesUser> it = highestWins ? users.descendingIterator() : users.iterator();
     while (it.hasNext()) {
       MicroGamesUser user = it.next();
       if (previous != null && this.scores.get(previous).equals(this.scores.get(user))) {
-        user.setPlace(place - (place > 1 ? -1 : 0));
-        offset++;
-      } else {
-        place += offset;
         user.setPlace(place);
-        offset = 1;
+        nextPlace++;
+      } else {
+        place = nextPlace;
+        user.setPlace(place);
+        nextPlace = ++place;
       }
 
       previous = user;
