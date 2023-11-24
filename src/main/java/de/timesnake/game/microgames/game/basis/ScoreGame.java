@@ -10,8 +10,8 @@ import de.timesnake.game.microgames.user.MicroGamesUser;
 import org.bukkit.Material;
 
 import java.time.Duration;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
@@ -45,13 +45,15 @@ public abstract class ScoreGame<Score extends Comparable<Score>> extends MicroGa
     LinkedList<MicroGamesUser> users = scores.entrySet().stream().sorted(Entry.comparingByValue())
         .map(Entry::getKey).collect(Collectors.toCollection(LinkedList::new));
 
+    if (highestWins) {
+      Collections.reverse(users);
+    }
+
     int place = 1;
     int nextPlace = 1;
-    MicroGamesUser previous = null;
+    MicroGamesUser previous = users.getFirst();
 
-    Iterator<MicroGamesUser> it = highestWins ? users.descendingIterator() : users.iterator();
-    while (it.hasNext()) {
-      MicroGamesUser user = it.next();
+    for (MicroGamesUser user : users) {
       if (previous != null && this.scores.get(previous).equals(this.scores.get(user))) {
         user.setPlace(place);
         nextPlace++;
@@ -83,6 +85,10 @@ public abstract class ScoreGame<Score extends Comparable<Score>> extends MicroGa
   }
 
   public void updateUserScore(User user, BiFunction<MicroGamesUser, Score, Score> updateFunction) {
+    if (!this.isGameRunning()) {
+      return;
+    }
+
     Score score = this.scores.compute(((MicroGamesUser) user), updateFunction);
     if (this.hasSideboard()) {
       user.setSideboardScore(0, "§f" + score);
