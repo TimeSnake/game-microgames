@@ -32,7 +32,7 @@ import java.util.Set;
 
 public class Firefighter extends BoxedScoreGame<Integer> implements Listener {
 
-  private static final double FIRE_CHANCE = 0.2;
+  private static final double FIRE_CHANCE = 0.15;
 
   private static final Set<Material> EXCLUDED_MATERIALS = Set.of(Material.GRASS, Material.TALL_GRASS);
 

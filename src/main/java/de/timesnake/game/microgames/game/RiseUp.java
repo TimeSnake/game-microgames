@@ -49,7 +49,7 @@ public class RiseUp extends ScoreGame<Integer> implements Listener {
             "When the time is up the order of the players is determined by the height they are standing at.",
             "Players near the goal (gold block), get extra points."
         ),
-        1,
+        2,
         Duration.ofSeconds(120));
     Server.registerListener(this, GameMicroGames.getPlugin());
   }

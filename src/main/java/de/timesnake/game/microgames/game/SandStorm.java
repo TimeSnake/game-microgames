@@ -124,7 +124,7 @@ public class SandStorm extends MicroGame {
       }
     }
 
-    if (time % 7 == 0 && time <= 117 * 10) {
+    if (time % 8 == 0 && time <= 117 * 10) {
       for (Block block : this.currentMap.getWorld().getBlocksWithinCubic(this.getFirstCorner(),
           this.getSecondCorner().clone().add(0, this.deathHeight, 0))) {
         if (block.getType().equals(Material.SAND)) {
