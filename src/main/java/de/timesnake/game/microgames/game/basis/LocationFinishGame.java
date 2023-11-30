@@ -64,12 +64,10 @@ public abstract class LocationFinishGame extends MicroGame implements Listener {
   @Override
   public void reset() {
     super.reset();
-    Server.getWorldManager().reloadWorld(this.currentMap.getWorld());
-  }
 
-  @Override
-  public boolean onUserJoin(MicroGamesUser user) {
-    return false;
+    if (this.previousMap != null) {
+      Server.getWorldManager().reloadWorld(this.previousMap.getWorld());
+    }
   }
 
   @Override

@@ -299,6 +299,9 @@ public abstract class MicroGame {
 
     Server.broadcastSound(Sound.ENTITY_PLAYER_LEVELUP, 2);
 
+    this.currentPlace = 1;
+    Server.getUsers().forEach(u -> ((MicroGamesUser) u).resetPlace());
+
     MicroGamesServer.nextGame();
   }
 
@@ -307,8 +310,7 @@ public abstract class MicroGame {
   }
 
   public void reset() {
-    this.currentPlace = 1;
-    Server.getUsers().forEach(u -> ((MicroGamesUser) u).resetPlace());
+
   }
 
   public abstract boolean hasSideboard();

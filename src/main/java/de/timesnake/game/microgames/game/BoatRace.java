@@ -77,7 +77,6 @@ public class BoatRace extends LocationFinishGame implements Listener {
       for (Boat boat : this.previousMap.getWorld().getEntitiesByClass(Boat.class)) {
         boat.remove();
       }
-      Server.getWorldManager().reloadWorld(this.previousMap.getWorld());
     }
   }
 
