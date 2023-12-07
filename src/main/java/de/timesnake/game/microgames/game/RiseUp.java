@@ -220,7 +220,7 @@ public class RiseUp extends ScoreGame<Integer> implements Listener {
     }
 
     if (e.getTo().getBlockY() < this.getSpawnLocation().getBlockY()) {
-      user.teleport(this.getSpawnLocation());
+      Server.runTaskSynchrony(() -> user.teleport(this.getSpawnLocation()), GameMicroGames.getPlugin());
     }
   }
 }
