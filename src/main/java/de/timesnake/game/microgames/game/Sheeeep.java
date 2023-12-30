@@ -133,7 +133,7 @@ public class Sheeeep extends BoxedScoreGame<Integer> implements Listener {
   }
 
   private void spawnSheep(ExLocation location, DyeColor color) {
-    Sheep sheep = new SheepBuilder(location.getExWorld().getHandle(), true, false, false)
+    Sheep sheep = new SheepBuilder()
         .applyOnEntity(e -> {
           e.setColor(net.minecraft.world.item.DyeColor.byId(color.getWoolData()));
           e.setPos(location.getX(), location.getY(), location.getZ());
@@ -141,7 +141,7 @@ public class Sheeeep extends BoxedScoreGame<Integer> implements Listener {
           e.setSpeed(1.2F);
           e.setPersistenceRequired(true);
         })
-        .build();
+        .build(location.getExWorld().getHandle());
 
     EntityManager.spawnEntity(location.getWorld(), sheep);
     this.sheep.add(sheep);

@@ -71,7 +71,7 @@ public class SlimySlime extends ScoreGame<Integer> implements Listener {
     super.prepare();
 
     this.slimeSize = 1;
-    this.mainSlime = new SlimeBuilder(this.currentMap.getWorld().getHandle(), false, false, true)
+    this.mainSlime = new SlimeBuilder()
         .applyOnEntity(e -> {
           e.setInvulnerable(true);
           e.setSize((int) this.slimeSize, true);
@@ -80,7 +80,7 @@ public class SlimySlime extends ScoreGame<Integer> implements Listener {
           ExLocation loc = this.getMotherSlimeLocation();
           e.setPos(loc.getX(), loc.getY(), loc.getZ());
         })
-        .build();
+        .build(this.currentMap.getWorld().getHandle());
     EntityManager.spawnEntity(this.currentMap.getWorld().getBukkitWorld(), this.mainSlime);
   }
 
@@ -124,12 +124,13 @@ public class SlimySlime extends ScoreGame<Integer> implements Listener {
       if (Server.getRandom().nextDouble() <= SLIME_SPAWN_CHANCE * Math.sqrt(Server.getInGameUsers().size()) / locs.size()) {
         int max = Server.getRandom().nextInt(1, MAX_SLIMES_PER_SPAWN + 1);
         for (int i = 0; i < max; i++) {
-          Slime slime = new SlimeBuilder(loc.getExWorld().getHandle(), true, false, true)
+          Slime slime = new SlimeBuilder()
+              .loadDefaultPathfinderGoals()
               .applyOnEntity(e -> {
                 e.setSize(1, true);
                 e.setPos(loc.getX(), loc.getY(), loc.getZ());
               })
-              .build();
+              .build(this.currentMap.getWorld().getHandle());
           EntityManager.spawnEntity(loc.getWorld(), slime);
         }
       }
