@@ -36,14 +36,14 @@ dependencies {
 
   compileOnly "de.timesnake:basic-bukkit:3.1.2"
 
-  compileOnly "de.timesnake:database-bukkit:2.2.1"
-  compileOnly "de.timesnake:database-api:2.2.1"
+  compileOnly "de.timesnake:database-bukkit:2.2.2"
+  compileOnly "de.timesnake:database-api:2.2.2"
 
-  compileOnly "de.timesnake:channel-bukkit:3.0.5"
-  compileOnly "de.timesnake:channel-api:3.0.5"
+  compileOnly "de.timesnake:channel-bukkit:3.0.6"
+  compileOnly "de.timesnake:channel-api:3.0.6"
 
   compileOnly "de.timesnake:library-packets:2.1.1"
-  compileOnly "de.timesnake:library-entities:2.1"
+  compileOnly "de.timesnake:library-entities:2.2"
   compileOnly "de.timesnake:library-extension:1.2"
   compileOnly "de.timesnake:library-basic:1.2.2"
   compileOnly "de.timesnake:library-chat:1.1"
