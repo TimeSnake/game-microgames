@@ -4,22 +4,22 @@
 
 package de.timesnake.game.microgames.user;
 
-import de.timesnake.basic.bukkit.util.chat.Argument;
-import de.timesnake.basic.bukkit.util.chat.CommandListener;
-import de.timesnake.basic.bukkit.util.chat.Sender;
+import de.timesnake.basic.bukkit.util.chat.cmd.Argument;
+import de.timesnake.basic.bukkit.util.chat.cmd.CommandListener;
+import de.timesnake.basic.bukkit.util.chat.cmd.Completion;
+import de.timesnake.basic.bukkit.util.chat.cmd.Sender;
+import de.timesnake.game.microgames.chat.Plugin;
 import de.timesnake.game.microgames.server.MicroGamesServer;
+import de.timesnake.library.commands.PluginCommand;
+import de.timesnake.library.commands.simple.Arguments;
 import de.timesnake.library.extension.util.chat.Code;
-import de.timesnake.library.extension.util.chat.Plugin;
-import de.timesnake.library.extension.util.cmd.Arguments;
-import de.timesnake.library.extension.util.cmd.ExCommand;
-import java.util.List;
 
 public class SkipGameCmd implements CommandListener {
 
-  private Code perm;
+  private final Code perm = Plugin.MICRO_GAMES.createPermssionCode("microgames.skip");
 
   @Override
-  public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd,
+  public void onCommand(Sender sender, PluginCommand cmd,
       Arguments<Argument> args) {
     if (!args.isLengthEquals(1, true)) {
       return;
@@ -38,13 +38,13 @@ public class SkipGameCmd implements CommandListener {
   }
 
   @Override
-  public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd,
-      Arguments<Argument> args) {
-    return List.of("skip");
+  public Completion getTabCompletion() {
+    return new Completion(this.perm)
+        .addArgument(new Completion("skip"));
   }
 
   @Override
-  public void loadCodes(Plugin plugin) {
-    this.perm = plugin.createPermssionCode("microgames.skip");
+  public String getPermission() {
+    return this.perm.getPermission();
   }
 }
