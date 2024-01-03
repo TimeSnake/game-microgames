@@ -1,7 +1,7 @@
 main: de.timesnake.game.microgames.main.GameMicroGames
 version: 1.5
 name: game-microgames
-author: Mn
+author: timesnake
 api-version: 1.13
 depend: [ basic-bukkit ]
 
