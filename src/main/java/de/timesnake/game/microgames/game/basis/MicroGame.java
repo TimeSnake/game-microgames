@@ -18,7 +18,7 @@ import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Loggers;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.chat.ExTextColor;
-import de.timesnake.library.extension.util.chat.Chat;
+import de.timesnake.library.chat.Chat;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.GameRule;

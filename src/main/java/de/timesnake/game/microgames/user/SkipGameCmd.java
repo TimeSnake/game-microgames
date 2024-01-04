@@ -12,7 +12,7 @@ import de.timesnake.game.microgames.chat.Plugin;
 import de.timesnake.game.microgames.server.MicroGamesServer;
 import de.timesnake.library.commands.PluginCommand;
 import de.timesnake.library.commands.simple.Arguments;
-import de.timesnake.library.extension.util.chat.Code;
+import de.timesnake.library.chat.Code;
 
 public class SkipGameCmd implements CommandListener {
 

@@ -12,7 +12,7 @@ import de.timesnake.game.microgames.game.basis.MicroGame;
 import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Tuple;
-import de.timesnake.library.extension.util.player.UserMap;
+import de.timesnake.library.basic.util.UserMap;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.scheduler.BukkitTask;

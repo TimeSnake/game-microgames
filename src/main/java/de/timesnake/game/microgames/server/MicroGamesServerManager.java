@@ -25,7 +25,7 @@ import de.timesnake.game.microgames.user.TablistManager;
 import de.timesnake.library.basic.util.Loggers;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.basic.util.WeightedRandomCollection;
-import de.timesnake.library.extension.util.chat.Chat;
+import de.timesnake.library.chat.Chat;
 import de.timesnake.library.game.NonTmpGameInfo;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Instrument;
