@@ -12,7 +12,7 @@ import de.timesnake.basic.bukkit.util.user.inventory.UserInventoryInteractListen
 import de.timesnake.game.microgames.chat.Plugin;
 import de.timesnake.game.microgames.server.MicroGamesServer;
 import de.timesnake.library.chat.ExTextColor;
-import de.timesnake.library.extension.util.chat.Code;
+import de.timesnake.library.chat.Code;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 
