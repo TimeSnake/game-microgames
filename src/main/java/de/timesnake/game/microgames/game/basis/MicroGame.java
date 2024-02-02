@@ -17,8 +17,8 @@ import de.timesnake.game.microgames.server.MicroGamesServer;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Loggers;
 import de.timesnake.library.basic.util.Status;
-import de.timesnake.library.chat.ExTextColor;
 import de.timesnake.library.chat.Chat;
+import de.timesnake.library.chat.ExTextColor;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.GameRule;
@@ -90,7 +90,7 @@ public abstract class MicroGame {
         BarStyle.SOLID);
 
     for (Map map : MicroGamesServer.getGame().getMaps()) {
-      if (map.getInfo().get(0).equalsIgnoreCase(this.name)) {
+      if (map.getProperty("type").equals(this.name)) {
         if (map.getWorld() == null) {
           Loggers.GAME.warning("Can not load map " + map.getName() + ", world not exists");
           continue;
