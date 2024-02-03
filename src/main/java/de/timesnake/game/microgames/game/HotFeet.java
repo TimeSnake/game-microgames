@@ -26,7 +26,6 @@ public class HotFeet extends FallOutGame {
   private static final Integer FIRST_CORNER_INDEX = 3;
   private static final Integer SECOND_CORNER_INDEX = 4;
 
-  private static final float DESPAWN_PERCENTAGE = 0.01f;
   private static final int DESPAWN_TIME = 40;
 
   private BukkitTask despawnTask;
@@ -86,7 +85,7 @@ public class HotFeet extends FallOutGame {
             case AIR -> {
             }
             case WHITE_CONCRETE -> {
-              if (i > 0 && !block.getLocation().getNearbyPlayers(3,
+              if (i > 0 && !block.getLocation().getNearbyPlayers(1.5,
                   p -> Server.getUser(p).hasStatus(Status.User.IN_GAME)).isEmpty()) {
                 block.setType(Material.YELLOW_CONCRETE);
                 tuple.setB(DESPAWN_TIME / 2);
