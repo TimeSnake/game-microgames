@@ -41,7 +41,7 @@ public abstract class FallOutGame extends MicroGame implements Listener {
       return;
     }
 
-    if (e.getTo().getBlockY() < this.getDeathHeight()) {
+    if (e.getTo().getBlockY() <= this.getDeathHeight()) {
       user.showTitle(Component.text("You lose!", ExTextColor.WARNING), Component.empty(),
           Duration.ofSeconds(3));
       Server.broadcastSound(Sound.ENTITY_PLAYER_HURT, 2);
