@@ -15,12 +15,13 @@ import de.timesnake.basic.game.util.game.Map;
 import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.server.MicroGamesServer;
 import de.timesnake.game.microgames.user.MicroGamesUser;
-import de.timesnake.library.basic.util.Loggers;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.chat.Chat;
 import de.timesnake.library.chat.ExTextColor;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bukkit.GameRule;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -48,6 +49,8 @@ public abstract class MicroGame {
       4, 1,
       5, 1
   );
+
+  protected final Logger logger = LogManager.getLogger("micro-game.game");
 
   protected final String name;
   protected final String displayName;
@@ -92,19 +95,19 @@ public abstract class MicroGame {
     for (Map map : MicroGamesServer.getGame().getMaps()) {
       if (map.getProperty("type").equals(this.name)) {
         if (map.getWorld() == null) {
-          Loggers.GAME.warning("Can not load map " + map.getName() + ", world not exists");
+          this.logger.warn("Can not load map '{}', world not exists", map.getName());
           continue;
         }
 
         if (map.getLocations().size() < this.getLocationAmount()) {
-          Loggers.GAME.warning("Can not load map " + map.getName() + ", too few " + "locations");
+          this.logger.warn("Can not load map '{}', too few locations", map.getName());
           continue;
         }
 
         this.maps.add(map);
         this.onMapLoad(map);
 
-        Loggers.GAME.info("Added map " + map.getName() + " to game " + this.displayName);
+        this.logger.info("Added map '{}' to game '{}'", map.getName(), this.displayName);
       }
     }
 
@@ -290,7 +293,7 @@ public abstract class MicroGame {
       Server.broadcastTDTitle(title.toString(), title2.toString(), Duration.ofSeconds(3));
     } else {
       MicroGamesServer.broadcastMicroGamesTDMessage("Game ended");
-      Server.broadcastTDTitle("§pGame ended","", Duration.ofSeconds(3));
+      Server.broadcastTDTitle("§pGame ended", "", Duration.ofSeconds(3));
     }
 
     MicroGamesServer.broadcastMicroGamesMessage(Chat.getLineSeparator());

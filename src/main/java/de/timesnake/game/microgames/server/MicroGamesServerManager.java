@@ -22,12 +22,13 @@ import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.game.microgames.user.PartyManager;
 import de.timesnake.game.microgames.user.TablistManager;
-import de.timesnake.library.basic.util.Loggers;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.basic.util.WeightedRandomCollection;
 import de.timesnake.library.chat.Chat;
 import de.timesnake.library.game.NonTmpGameInfo;
 import net.kyori.adventure.text.Component;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bukkit.Instrument;
 import org.bukkit.Note;
 import org.bukkit.entity.Player;
@@ -48,6 +49,9 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
 
   private static final Integer NEXT_GAME_DELAY = 15;
   private static final Integer START_DELAY = 10;
+
+  private final Logger logger = LogManager.getLogger("micro-game.server");
+
   private final Map<String, MicroGame> microGamesByName = new HashMap<>();
   private final Map<Integer, List<MicroGame>> microGamesByMinPlayers = new HashMap<>();
 
@@ -105,13 +109,13 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
 
   private void loadGame(MicroGame game) {
     if (game.getMaps().isEmpty()) {
-      Loggers.GAME.warning("Not loaded game '" + game.getDisplayName() + "', no map found");
+      this.logger.warn("Not loaded game '{}', no map found", game.getDisplayName());
       return;
     }
 
     this.microGamesByName.put(game.getName(), game);
     this.microGamesByMinPlayers.computeIfAbsent(game.getMinPlayers(), k -> new LinkedList<>()).add(game);
-    Loggers.GAME.info("Loaded game " + game.getDisplayName());
+    this.logger.info("Loaded game '{}'", game.getDisplayName());
   }
 
   @Override
@@ -203,7 +207,7 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
 
       if (Server.getPreGameUsers().isEmpty() || this.paused) {
         this.paused = true;
-        Loggers.GAME.info("Paused game loop");
+        this.logger.info("Paused game loop");
         return;
       }
 
@@ -215,7 +219,7 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
         if (start == 0) {
           if (Server.getPreGameUsers().isEmpty() || this.paused) {
             this.paused = true;
-            Loggers.GAME.info("Paused game loop");
+            this.logger.info("Paused game loop");
             this.startTask.cancel();
             return;
           }
@@ -387,7 +391,7 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
     MicroGamesUser user = (MicroGamesUser) e.getUser();
     if (this.paused) {
       user.joinSpectator();
-      Loggers.GAME.info("Resumed game loop");
+      this.logger.info("Resumed game loop");
       this.nextGame();
     } else {
       if (!this.currentGame.onUserJoin(user)) {
@@ -402,10 +406,10 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
     MicroGamesUser user = ((MicroGamesUser) e.getUser());
     if (this.currentGame.isGameRunning()) {
       this.currentGame.onUserQuit(user);
-    } else if (Server.getGameNotServiceUsers().size() == 0) {
+    } else if (Server.getGameNotServiceUsers().isEmpty()) {
       this.startTask.cancel();
       this.paused = true;
-      Loggers.GAME.info("Paused game loop");
+      this.logger.info("Paused game loop");
     }
 
     user.clearVotes();

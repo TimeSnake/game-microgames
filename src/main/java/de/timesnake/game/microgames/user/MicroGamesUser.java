@@ -13,9 +13,10 @@ import de.timesnake.basic.game.util.game.TablistGroupType;
 import de.timesnake.basic.game.util.user.SpectatorUser;
 import de.timesnake.game.microgames.game.basis.MicroGame;
 import de.timesnake.game.microgames.server.MicroGamesServer;
-import de.timesnake.library.basic.util.Loggers;
 import de.timesnake.library.basic.util.Status;
 import net.kyori.adventure.text.Component;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -25,6 +26,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 public class MicroGamesUser extends SpectatorUser {
+
+  private final Logger logger = LogManager.getLogger("micro-games.user");
 
   private final Set<MicroGame> votedGames = new HashSet<>();
 
@@ -154,18 +157,14 @@ public class MicroGamesUser extends SpectatorUser {
 
           item.disenchant();
           item.setLore(ChatColor.WHITE + microGame.getHeadLine());
-
-          Loggers.GAME.info(
-              MicroGamesUser.this.getName() + " devoted " + microGame.getName());
+          MicroGamesUser.this.logger.info("'{}' devoted '{}'", MicroGamesUser.this.getName(), microGame.getName());
         } else {
           MicroGamesUser.this.votedGames.add(microGame);
           microGame.addVote();
 
           item.enchant();
           item.setLore(ChatColor.WHITE + microGame.getHeadLine(), "", "§aVoted");
-
-          Loggers.GAME.info(
-              MicroGamesUser.this.getName() + " voted for " + microGame.getName());
+          MicroGamesUser.this.logger.info("'{}' voted for '{}'", MicroGamesUser.this.getName(), microGame.getName());
         }
 
         this.gamesByItem.put(item, microGame);
