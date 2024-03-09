@@ -4,33 +4,28 @@
 
 package de.timesnake.game.microgames.user;
 
+import de.timesnake.basic.bukkit.core.user.scoreboard.tablist.Tablist2;
 import de.timesnake.basic.bukkit.util.Server;
-import de.timesnake.basic.bukkit.util.chat.ChatColor;
 import de.timesnake.basic.bukkit.util.group.DisplayGroup;
-import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.scoreboard.ScoreboardManager;
+import de.timesnake.basic.bukkit.util.user.scoreboard.TablistGroup;
 import de.timesnake.basic.bukkit.util.user.scoreboard.TablistGroupType;
-import de.timesnake.basic.bukkit.util.user.scoreboard.TablistableGroup;
-import de.timesnake.basic.bukkit.util.user.scoreboard.TablistableRemainTeam;
-import de.timesnake.basic.bukkit.util.user.scoreboard.TeamTablist;
-import de.timesnake.basic.bukkit.util.user.scoreboard.TeamTablistBuilder;
-import de.timesnake.library.basic.util.Status;
+import de.timesnake.library.chat.ExTextColor;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class TablistManager {
 
-  private final TeamTablist tablist;
-  private final TablistableGroup gameTeam;
-  private final TablistableRemainTeam spectatorTeam;
+  private final Tablist2 tablist;
+  private final TablistGroup gameTeam;
+  private final TablistGroup spectatorGroup;
 
   public TablistManager() {
-
-    // tablist
-
-    this.gameTeam = new TablistableGroup() {
+    this.gameTeam = new TablistGroup() {
       @Override
-      public String getTablistRank() {
-        return "0";
+      public int getTablistRank() {
+        return 0;
       }
 
       @Override
@@ -44,17 +39,22 @@ public class TablistManager {
       }
 
       @Override
-      public org.bukkit.ChatColor getTablistPrefixChatColor() {
-        return ChatColor.WHITE;
+      public ExTextColor getTablistPrefixChatColor() {
+        return ExTextColor.WHITE;
       }
 
       @Override
-      public org.bukkit.ChatColor getTablistChatColor() {
-        return ChatColor.WHITE;
+      public ExTextColor getTablistChatColor() {
+        return ExTextColor.WHITE;
       }
     };
 
-    this.spectatorTeam = new TablistableRemainTeam() {
+    this.spectatorGroup = new TablistGroup() {
+      @Override
+      public int getTablistRank() {
+        return 80;
+      }
+
       @Override
       public String getTablistName() {
         return "spec";
@@ -62,56 +62,42 @@ public class TablistManager {
 
       @Override
       public String getTablistPrefix() {
-        return "";
+        return "spec";
       }
 
       @Override
-      public org.bukkit.ChatColor getTablistPrefixChatColor() {
-        return ChatColor.WHITE;
+      public ExTextColor getTablistPrefixChatColor() {
+        return ExTextColor.WHITE;
       }
 
       @Override
-      public org.bukkit.ChatColor getTablistChatColor() {
-        return ChatColor.GRAY;
+      public ExTextColor getTablistChatColor() {
+        return ExTextColor.GRAY;
       }
     };
 
-    this.tablist = Server.getScoreboardManager()
-        .registerTeamTablist(new TeamTablistBuilder("lounge_side")
-            .colorType(TeamTablist.ColorType.WHITE)
-            .teams(List.of(this.gameTeam))
-            .teamType(TablistGroupType.DUMMY)
-            .groupTypes(DisplayGroup.MAIN_TABLIST_GROUPS)
-            .remainTeam(this.spectatorTeam)
-            .userJoin((e, tablist) -> {
-              User user = e.getUser();
-              Status.User status = user.getStatus();
+    List<TablistGroupType> types = new ArrayList<>();
+    types.add(de.timesnake.basic.game.util.game.TablistGroupType.GAME_TEAM);
+    types.addAll(DisplayGroup.MAIN_TABLIST_GROUPS);
 
-              if (status.equals(Status.User.OUT_GAME) || status.equals(
-                  Status.User.SPECTATOR)) {
-                ((TeamTablist) tablist).addRemainEntry(e.getUser());
-              } else {
-                tablist.addEntry(e.getUser());
-              }
-            })
-            .userQuit((e, tablist) -> tablist.removeEntry(e.getUser())));
+    this.tablist = Server.getScoreboardManager()
+        .registerTablist(new Tablist2.Builder("micro_games")
+            .groupTypes(types)
+            .colorGroupType(de.timesnake.basic.game.util.game.TablistGroupType.GAME_TEAM)
+            .addDefaultGroup(de.timesnake.basic.game.util.game.TablistGroupType.GAME_TEAM, this.spectatorGroup)
+            .setGroupGap(null, 2));
 
     this.tablist.setHeader("§6MicroGames");
-
     this.tablist.setFooter(ScoreboardManager.getDefaultFooter());
 
     Server.getScoreboardManager().setActiveTablist(this.tablist);
   }
 
-  public TeamTablist getTablist() {
+  public Tablist2 getTablist() {
     return tablist;
   }
 
-  public TablistableGroup getGameTeam() {
+  public TablistGroup getGameTeam() {
     return gameTeam;
-  }
-
-  public TablistableRemainTeam getSpectatorTeam() {
-    return spectatorTeam;
   }
 }

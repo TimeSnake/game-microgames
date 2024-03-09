@@ -5,12 +5,12 @@
 package de.timesnake.game.microgames.server;
 
 import com.google.common.collect.Lists;
+import de.timesnake.basic.bukkit.core.user.scoreboard.tablist.Tablist2;
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.ServerManager;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.event.*;
 import de.timesnake.basic.bukkit.util.user.scoreboard.Sideboard;
-import de.timesnake.basic.bukkit.util.user.scoreboard.Tablist;
 import de.timesnake.basic.game.util.game.Game;
 import de.timesnake.basic.game.util.server.GameServerManager;
 import de.timesnake.basic.game.util.user.SpectatorManager;
@@ -40,8 +40,7 @@ import org.bukkit.util.Vector;
 import java.time.Duration;
 import java.util.*;
 
-public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameInfo>> implements
-    Listener {
+public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameInfo>> implements Listener {
 
   public static MicroGamesServerManager getInstance() {
     return (MicroGamesServerManager) ServerManager.getInstance();
@@ -129,7 +128,7 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
   }
 
   @Override
-  public Tablist getGameTablist() {
+  public Tablist2 getGameTablist() {
     return MicroGamesServer.getTablistManager().getTablist();
   }
 

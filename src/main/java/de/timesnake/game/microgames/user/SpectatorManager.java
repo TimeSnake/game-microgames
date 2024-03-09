@@ -8,6 +8,7 @@ import de.timesnake.basic.bukkit.util.chat.Chat;
 import de.timesnake.basic.bukkit.util.user.scoreboard.Sideboard;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.game.microgames.server.MicroGamesServer;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class SpectatorManager extends de.timesnake.basic.game.util.user.SpectatorManager {
@@ -23,7 +24,7 @@ public class SpectatorManager extends de.timesnake.basic.game.util.user.Spectato
   }
 
   @Override
-  public ExLocation getSpectatorSpawn() {
+  public @NotNull ExLocation getSpectatorSpawn() {
     return MicroGamesServer.getCurrentGame().getSpecLocation();
   }
 

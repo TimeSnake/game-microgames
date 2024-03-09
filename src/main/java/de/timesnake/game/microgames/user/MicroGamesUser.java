@@ -8,7 +8,7 @@ import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.chat.ChatColor;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.inventory.*;
-import de.timesnake.basic.bukkit.util.user.scoreboard.TablistableGroup;
+import de.timesnake.basic.bukkit.util.user.scoreboard.TablistGroup;
 import de.timesnake.basic.game.util.game.TablistGroupType;
 import de.timesnake.basic.game.util.user.SpectatorUser;
 import de.timesnake.game.microgames.game.basis.MicroGame;
@@ -50,7 +50,7 @@ public class MicroGamesUser extends SpectatorUser {
 
   public void joinGame() {
     this.setStatus(Status.User.PRE_GAME);
-    MicroGamesServer.getTablistManager().getTablist().addEntry(this);
+    MicroGamesServer.getTablistManager().getTablist().reloadEntry(this, true);
     this.setDefault();
     this.setCollitionWithEntites(true);
     for (User user : Server.getUsers()) {
@@ -66,10 +66,9 @@ public class MicroGamesUser extends SpectatorUser {
   }
 
   @Override
-  public TablistableGroup getTablistGroup(
-      de.timesnake.basic.bukkit.util.user.scoreboard.TablistGroupType type) {
-    if (type.equals(TablistGroupType.DUMMY)) {
-      return MicroGamesServer.getTablistManager().getGameTeam();
+  public TablistGroup getTablistGroup(de.timesnake.basic.bukkit.util.user.scoreboard.TablistGroupType type) {
+    if (type.equals(TablistGroupType.GAME_TEAM)) {
+      return this.hasStatus(Status.User.SPECTATOR, Status.User.OUT_GAME) ? null : MicroGamesServer.getTablistManager().getGameTeam();
     }
     return super.getTablistGroup(type);
   }
