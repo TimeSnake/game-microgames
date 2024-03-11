@@ -114,7 +114,7 @@ public class KnockOut extends ShrinkingPlatformGame implements Listener {
 
   @Override
   public Integer getDeathHeight() {
-    return this.getSpawnLocation().getBlockY();
+    return this.getSpawnLocation().getBlockY() - 1;
   }
 
 }

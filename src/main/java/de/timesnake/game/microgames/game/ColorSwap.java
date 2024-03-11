@@ -7,14 +7,12 @@ package de.timesnake.game.microgames.game;
 import de.timesnake.basic.bukkit.core.server.MathHelper;
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.user.User;
-import de.timesnake.basic.bukkit.util.user.event.UserMoveEvent;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
 import de.timesnake.game.microgames.game.basis.FallOutGame;
 import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.server.MicroGamesServer;
 import de.timesnake.game.microgames.user.MicroGamesUser;
-import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.chat.ExTextColor;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Instrument;
@@ -22,7 +20,6 @@ import org.bukkit.Material;
 import org.bukkit.Note;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
@@ -50,10 +47,10 @@ public class ColorSwap extends FallOutGame implements Listener {
   private final Random random = new Random();
 
   private final HashMap<Integer, Level> levels = new HashMap<>();
-  int beginX;
-  int beginZ;
-  int endX;
-  int endZ;
+  protected int beginX;
+  protected int beginZ;
+  protected int endX;
+  protected int endZ;
   private Integer currentLevel = 1;
   private BukkitTask waitingTask;
   private BukkitTask countdownTask;
@@ -134,6 +131,42 @@ public class ColorSwap extends FallOutGame implements Listener {
     this.startLevel();
   }
 
+  @Override
+  public void stop() {
+    for (User user : Server.getGameNotServiceUsers()) {
+      user.unlockInventory();
+    }
+
+    if (this.waitingTask != null) {
+      this.waitingTask.cancel();
+    }
+
+    if (this.countdownTask != null) {
+      this.countdownTask.cancel();
+    }
+
+    if (this.countdownTask1 != null) {
+      this.countdownTask1.cancel();
+    }
+
+    this.clearFloor();
+
+    super.stop();
+  }
+
+  @Override
+  public void reset() {
+    super.reset();
+    this.clearFloor();
+
+    this.currentLevel = 1;
+    super.sideboard.setScore(3, "§f" + this.currentLevel);
+
+    if (this.previousMap != null) {
+      Server.getWorldManager().reloadWorld(this.previousMap.getWorld());
+    }
+  }
+
   public void startLevel() {
     super.sideboard.setScore(3, "§f" + this.currentLevel);
     Level level = this.levels.get(this.currentLevel);
@@ -171,45 +204,9 @@ public class ColorSwap extends FallOutGame implements Listener {
     }, 3 * 20, GameMicroGames.getPlugin());
   }
 
-  @Override
-  public void stop() {
-    for (User user : Server.getGameNotServiceUsers()) {
-      user.unlockInventory();
-    }
-
-    if (this.waitingTask != null) {
-      this.waitingTask.cancel();
-    }
-
-    if (this.countdownTask != null) {
-      this.countdownTask.cancel();
-    }
-
-    if (this.countdownTask1 != null) {
-      this.countdownTask1.cancel();
-    }
-
-    this.clearFloor();
-
-    super.stop();
-  }
-
-  @Override
-  public void reset() {
-    super.reset();
-    this.clearFloor();
-
-    this.currentLevel = 1;
-    super.sideboard.setScore(3, "§f" + this.currentLevel);
-
-    if (this.previousMap != null) {
-      Server.getWorldManager().reloadWorld(this.previousMap.getWorld());
-    }
-  }
-
   private void clearFloor() {
     ExWorld world = this.currentMap.getWorld();
-    int y = this.getFirstCorner().getBlockY() - 1;
+    int y = this.getFirstCorner().getBlockY();
 
     for (int x = this.beginX; x <= this.endX; x++) {
       for (int z = this.beginZ; z <= this.endZ; z++) {
@@ -218,18 +215,6 @@ public class ColorSwap extends FallOutGame implements Listener {
           block.setType(Material.WHITE_WOOL);
         }
       }
-    }
-  }
-
-  @Override
-  public boolean onUserJoin(MicroGamesUser user) {
-    return false;
-  }
-
-  @Override
-  public void onUserQuit(MicroGamesUser user) {
-    if (Server.getInGameUsers().size() <= 1) {
-      this.stop();
     }
   }
 
@@ -246,20 +231,10 @@ public class ColorSwap extends FallOutGame implements Listener {
     return this.getFirstCorner().getBlockY();
   }
 
-  @EventHandler
-  public void onUserMove(UserMoveEvent e) {
-    User user = e.getUser();
-
-    if (!this.isGameRunning()) {
-      return;
-    }
-
-    if (user.getStatus().equals(Status.User.IN_GAME)) {
-      if (e.getTo().getBlockY() < this.getFirstCorner().getBlockY()) {
-        super.onUserMove(e);
-        super.sideboard.setScore(0, String.valueOf(Server.getInGameUsers().size()));
-      }
-    }
+  @Override
+  protected void addWinner(MicroGamesUser user, boolean firstWins) {
+    super.addWinner(user, firstWins);
+    super.sideboard.setScore(0, String.valueOf(Server.getInGameUsers().size()));
   }
 
   private boolean isReplaceable(Block block) {
@@ -293,7 +268,7 @@ public class ColorSwap extends FallOutGame implements Listener {
 
       //create pattern and save in HashMap
       ExWorld world = ColorSwap.this.currentMap.getWorld();
-      int y = ColorSwap.this.getSpecLocation().getBlockY() - 1;
+      int y = ColorSwap.this.getFirstCorner().getBlockY();
 
       int type = ColorSwap.this.random.nextInt(3);
 
