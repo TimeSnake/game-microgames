@@ -104,6 +104,13 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
     this.currentGame = microGamesByName.values().stream().toList().get(this.random.nextInt(microGamesByName.size()));
     this.currentGame.prepare();
     this.currentGame.load();
+
+    super.loaded();
+  }
+
+  @Override
+  public void loaded() {
+
   }
 
   private void loadGame(MicroGame game) {

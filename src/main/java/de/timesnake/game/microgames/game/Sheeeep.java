@@ -14,7 +14,12 @@ import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.entities.EntityManager;
 import de.timesnake.library.entities.entity.SheepBuilder;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.animal.Sheep;
+import net.minecraft.world.entity.player.Player;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -134,6 +139,10 @@ public class Sheeeep extends BoxedScoreGame<Integer> implements Listener {
 
   private void spawnSheep(ExLocation location, DyeColor color) {
     Sheep sheep = new SheepBuilder()
+        .addPathfinderGoal(1, e -> new FloatGoal(e))
+        .addPathfinderGoal(2, e -> new WaterAvoidingRandomStrollGoal(e, 1.0D))
+        .addPathfinderGoal(3, e -> new LookAtPlayerGoal(e, Player.class, 6.0F))
+        .addPathfinderGoal(4, e -> new RandomLookAroundGoal(e))
         .applyOnEntity(e -> {
           e.setColor(net.minecraft.world.item.DyeColor.byId(color.getWoolData()));
           e.setPos(location.getX(), location.getY(), location.getZ());
