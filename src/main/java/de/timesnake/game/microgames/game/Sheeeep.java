@@ -140,7 +140,7 @@ public class Sheeeep extends BoxedScoreGame<Integer> implements Listener {
   private void spawnSheep(ExLocation location, DyeColor color) {
     Sheep sheep = new SheepBuilder()
         .addPathfinderGoal(1, e -> new FloatGoal(e))
-        .addPathfinderGoal(2, e -> new WaterAvoidingRandomStrollGoal(e, 1.0D))
+        .addPathfinderGoal(2, e -> new WaterAvoidingRandomStrollGoal(e, 2.0D))
         .addPathfinderGoal(3, e -> new LookAtPlayerGoal(e, Player.class, 6.0F))
         .addPathfinderGoal(4, e -> new RandomLookAroundGoal(e))
         .applyOnEntity(e -> {

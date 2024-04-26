@@ -17,8 +17,8 @@ import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.server.MicroGamesServer;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Status;
-import de.timesnake.library.chat.Chat;
 import de.timesnake.library.basic.util.UserSet;
+import de.timesnake.library.chat.Chat;
 import org.bukkit.Instrument;
 import org.bukkit.Material;
 import org.bukkit.Note;
@@ -129,7 +129,7 @@ public class HotPotato extends ScoreGame<Integer> implements Listener {
       }
 
       if (time % 20 == 0) {
-        MicroGamesServer.broadcastMicroGamesTDMessage("§pThe best Player is now §cglowing!");
+        MicroGamesServer.broadcastMicroGamesTDMessage("§pThe best player is now §cglowing!");
         MicroGamesServer.broadcastNote(Instrument.PIANO, Note.natural(0, Note.Tone.C));
 
         List<Map.Entry<MicroGamesUser, Integer>> entries = new ArrayList<>(this.scores.entrySet());

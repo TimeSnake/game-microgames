@@ -104,8 +104,7 @@ public class BoatRace extends LocationFinishGame implements Listener {
   }
 
   private void setUserInBoat(User user) {
-    Boat boat = (Boat) this.getStartLocation().getWorld()
-        .spawnEntity(this.getStartLocation(), EntityType.BOAT);
+    Boat boat = (Boat) this.getStartLocation().getWorld().spawnEntity(this.getStartLocation(), EntityType.BOAT);
     boat.setInvulnerable(true);
     boat.setRotation(this.getStartLocation().getYaw(), 0);
 
@@ -150,7 +149,7 @@ public class BoatRace extends LocationFinishGame implements Listener {
 
     User user = Server.getUser(player);
 
-    if (user.isService()) {
+    if (user == null || user.isService()) {
       return;
     }
 
