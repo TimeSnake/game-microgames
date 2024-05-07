@@ -101,7 +101,7 @@ public class OreMiner extends BoxedScoreGame<Integer> implements Listener {
   }
 
   @Override
-  protected void loadDelayed() {
+  protected void applyBeforeStart() {
     Server.getPreGameUsers().forEach(u -> u.setItem(PICKAXE));
   }
 

@@ -73,8 +73,8 @@ public class Firefighter extends BoxedScoreGame<Integer> implements Listener {
   }
 
   @Override
-  protected void loadDelayed() {
-    super.loadDelayed();
+  protected void applyBeforeStart() {
+    super.applyBeforeStart();
     this.spreadFire();
   }
 

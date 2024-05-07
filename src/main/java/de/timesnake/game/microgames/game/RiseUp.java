@@ -100,8 +100,8 @@ public class RiseUp extends ScoreGame<Integer> implements Listener {
   }
 
   @Override
-  protected void loadDelayed() {
-    super.loadDelayed();
+  protected void applyBeforeStart() {
+    super.applyBeforeStart();
 
     List<Material> materials = new ArrayList<>(Tag.WOOL.getValues());
 

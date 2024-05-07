@@ -94,6 +94,7 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
     this.loadGame(new SandStorm());
     this.loadGame(new HotFeet());
     this.loadGame(new RiseUp());
+    this.loadGame(new BuildOver());
 
     this.partyManager = new PartyManager();
 
@@ -413,7 +414,9 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
     if (this.currentGame.isGameRunning()) {
       this.currentGame.onUserQuit(user);
     } else if (Server.getGameNotServiceUsers().isEmpty()) {
-      this.startTask.cancel();
+      if (this.startTask != null) {
+        this.startTask.cancel();
+      }
       this.paused = true;
       this.logger.info("Paused game loop");
     }

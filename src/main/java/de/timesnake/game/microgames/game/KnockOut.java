@@ -48,7 +48,7 @@ public class KnockOut extends ShrinkingPlatformGame implements Listener {
   }
 
   @Override
-  protected void loadDelayed() {
+  protected void applyBeforeStart() {
     for (User user : Server.getPreGameUsers()) {
       user.teleport(this.getSpawnLocation());
       user.lockInventoryItemMove();

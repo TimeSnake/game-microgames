@@ -34,8 +34,8 @@ public class EggHunter extends ScoreGame<Integer> {
   }
 
   @Override
-  protected void loadDelayed() {
-    super.loadDelayed();
+  protected void applyBeforeStart() {
+    super.applyBeforeStart();
   }
 
   @Override

@@ -72,8 +72,8 @@ public class HotPotato extends ScoreGame<Integer> implements Listener {
   }
 
   @Override
-  protected void loadDelayed() {
-    super.loadDelayed();
+  protected void applyBeforeStart() {
+    super.applyBeforeStart();
 
     for (User user : Server.getPreGameUsers()) {
       user.lockInventoryItemMove();

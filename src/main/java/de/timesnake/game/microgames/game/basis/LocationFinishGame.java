@@ -8,6 +8,7 @@ import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.event.UserDeathEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserMoveEvent;
+import de.timesnake.basic.bukkit.util.user.event.UserRespawnEvent;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.user.MicroGamesUser;
@@ -15,7 +16,6 @@ import de.timesnake.library.basic.util.Status;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.util.Vector;
 
 import java.time.Duration;
@@ -40,8 +40,8 @@ public abstract class LocationFinishGame extends MicroGame implements Listener {
   }
 
   @Override
-  protected void loadDelayed() {
-    super.loadDelayed();
+  protected void applyBeforeStart() {
+    super.applyBeforeStart();
 
     for (User user : Server.getPreGameUsers()) {
       user.lockLocation();
@@ -91,10 +91,13 @@ public abstract class LocationFinishGame extends MicroGame implements Listener {
     if (!this.isGameRunning()) {
       return;
     }
+    e.setAutoRespawn(true);
     this.onUserDeath(e);
   }
 
-  protected abstract void onUserDeath(UserDeathEvent e);
+  protected void onUserDeath(UserDeathEvent e) {
+    e.setBroadcastDeathMessage(false);
+  }
 
   @EventHandler
   public void onMove(UserMoveEvent e) {
@@ -119,10 +122,14 @@ public abstract class LocationFinishGame extends MicroGame implements Listener {
   protected abstract void onUserMove(UserMoveEvent e);
 
   @EventHandler
-  public void onRespawn(PlayerRespawnEvent e) {
+  public void onRespawn(UserRespawnEvent e) {
     if (!this.isGameRunning()) {
       return;
     }
+    this.onUserRepsawn(e);
+  }
+
+  protected void onUserRepsawn(UserRespawnEvent e) {
     e.setRespawnLocation(this.getSpawnLocation());
   }
 }

@@ -11,6 +11,7 @@ import de.timesnake.basic.bukkit.util.user.scoreboard.ScoreboardManager;
 import de.timesnake.basic.bukkit.util.user.scoreboard.TablistGroup;
 import de.timesnake.basic.bukkit.util.user.scoreboard.TablistGroupType;
 import de.timesnake.library.chat.ExTextColor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,23 +30,8 @@ public class TablistManager {
       }
 
       @Override
-      public String getTablistName() {
+      public @NotNull String getTablistName() {
         return "game";
-      }
-
-      @Override
-      public String getTablistPrefix() {
-        return "";
-      }
-
-      @Override
-      public ExTextColor getTablistPrefixChatColor() {
-        return ExTextColor.WHITE;
-      }
-
-      @Override
-      public ExTextColor getTablistChatColor() {
-        return ExTextColor.WHITE;
       }
     };
 
@@ -56,22 +42,12 @@ public class TablistManager {
       }
 
       @Override
-      public String getTablistName() {
+      public @NotNull String getTablistName() {
         return "spec";
       }
 
       @Override
-      public String getTablistPrefix() {
-        return "spec";
-      }
-
-      @Override
-      public ExTextColor getTablistPrefixChatColor() {
-        return ExTextColor.WHITE;
-      }
-
-      @Override
-      public ExTextColor getTablistChatColor() {
+      public ExTextColor getTablistColor() {
         return ExTextColor.GRAY;
       }
     };
