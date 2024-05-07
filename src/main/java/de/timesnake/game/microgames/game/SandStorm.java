@@ -72,8 +72,7 @@ public class SandStorm extends MicroGame {
 
   @Override
   public void stop() {
-    Server.getInGameUsers().forEach(u -> this.addWinner((MicroGamesUser) u, false));
-
+    this.addRemainingAsWinner(false);
     super.stop();
 
     if (this.sandTask != null) {

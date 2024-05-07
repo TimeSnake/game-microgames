@@ -117,8 +117,8 @@ public class ColorSwap extends FallOutGame implements Listener {
   }
 
   @Override
-  protected void loadDelayed() {
-    super.loadDelayed();
+  protected void applyBeforeStart() {
+    super.applyBeforeStart();
 
     for (User user : Server.getPreGameUsers()) {
       user.lockInventory();

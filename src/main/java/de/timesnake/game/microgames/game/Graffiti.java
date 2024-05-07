@@ -17,8 +17,8 @@ import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.server.MicroGamesServer;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Status;
-import de.timesnake.library.chat.ExTextColor;
 import de.timesnake.library.chat.Chat;
+import de.timesnake.library.chat.ExTextColor;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -152,7 +152,7 @@ public class Graffiti extends MicroGame implements Listener, UserInventoryIntera
   }
 
   @Override
-  protected void loadDelayed() {
+  protected void applyBeforeStart() {
 
     List<User> users = new ArrayList<>(Server.getPreGameUsers());
     Collections.shuffle(users);

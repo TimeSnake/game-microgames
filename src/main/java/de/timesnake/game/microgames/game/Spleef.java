@@ -63,7 +63,7 @@ public class Spleef extends FallOutGame {
   }
 
   @Override
-  protected void loadDelayed() {
+  protected void applyBeforeStart() {
     for (User user : Server.getPreGameUsers()) {
       user.teleport(this.getSpawnLocation());
       user.addItem(SHOVEL);

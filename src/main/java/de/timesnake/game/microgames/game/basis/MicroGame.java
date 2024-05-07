@@ -74,12 +74,6 @@ public abstract class MicroGame {
   private int timeSec;
   private int currentPlace = 1;
 
-  @Deprecated
-  public MicroGame(String name, String displayName, Material material, String headLine, List<String> description,
-                   Integer minPlayers, int maxTimeSec) {
-    this(name, displayName, material, headLine, description, minPlayers, Duration.ofSeconds(maxTimeSec));
-  }
-
   public MicroGame(String name, String displayName, Material material, String headLine, List<String> description,
                    Integer minPlayers, Duration maxDuration) {
     this.name = name;
@@ -93,6 +87,11 @@ public abstract class MicroGame {
         BarStyle.SOLID);
 
     for (Map map : MicroGamesServer.getGame().getMaps()) {
+      if (map.getProperty("type") == null) {
+        this.logger.warn("Can not load map '{}', no type defined", map.getName());
+        continue;
+      }
+
       if (map.getProperty("type").equals(this.name)) {
         if (map.getWorld() == null) {
           this.logger.warn("Can not load map '{}', world not exists", map.getName());
@@ -173,10 +172,10 @@ public abstract class MicroGame {
         Component.text(this.displayName, ExTextColor.GOLD, TextDecoration.BOLD),
         Component.text(this.headLine), Duration.ofSeconds(5));
 
-    Server.runTaskLaterSynchrony(this::loadDelayed, 5 * 20, GameMicroGames.getPlugin());
+    Server.runTaskLaterSynchrony(this::applyBeforeStart, 5 * 20, GameMicroGames.getPlugin());
   }
 
-  protected void loadDelayed() {
+  protected void applyBeforeStart() {
     Server.getPreGameUsers().forEach(u -> u.teleport(this.getStartLocation()));
   }
 
@@ -239,6 +238,12 @@ public abstract class MicroGame {
       this.stop();
     }
 
+  }
+
+  protected void addRemainingAsWinner(boolean firstWins) {
+    for (User user : Server.getInGameUsers()) {
+      ((MicroGamesUser) user).setPlace(firstWins ? this.currentPlace : 1);
+    }
   }
 
   public void stop() {

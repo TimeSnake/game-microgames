@@ -6,7 +6,10 @@ package de.timesnake.game.microgames.game;
 
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.user.User;
-import de.timesnake.basic.bukkit.util.user.event.*;
+import de.timesnake.basic.bukkit.util.user.event.CancelPriority;
+import de.timesnake.basic.bukkit.util.user.event.UserBlockPlaceEvent;
+import de.timesnake.basic.bukkit.util.user.event.UserDamageEvent;
+import de.timesnake.basic.bukkit.util.user.event.UserMoveEvent;
 import de.timesnake.game.microgames.game.basis.LocationFinishGame;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import org.bukkit.Material;
@@ -43,8 +46,8 @@ public class BoatRace extends LocationFinishGame implements Listener {
   }
 
   @Override
-  protected void loadDelayed() {
-    super.loadDelayed();
+  protected void applyBeforeStart() {
+    super.applyBeforeStart();
 
     for (User user : Server.getPreGameUsers()) {
       this.setUserInBoat(user);
@@ -83,12 +86,6 @@ public class BoatRace extends LocationFinishGame implements Listener {
   @Override
   public boolean hasSideboard() {
     return false;
-  }
-
-  @Override
-  protected void onUserDeath(UserDeathEvent e) {
-    e.setAutoRespawn(true);
-    e.setBroadcastDeathMessage(false);
   }
 
   @Override

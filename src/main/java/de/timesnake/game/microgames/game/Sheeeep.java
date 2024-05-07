@@ -78,8 +78,8 @@ public class Sheeeep extends BoxedScoreGame<Integer> implements Listener {
   }
 
   @Override
-  protected void loadDelayed() {
-    super.loadDelayed();
+  protected void applyBeforeStart() {
+    super.applyBeforeStart();
 
     List<Block> blocks = new ArrayList<>(this.getBlocksWithinBox());
 

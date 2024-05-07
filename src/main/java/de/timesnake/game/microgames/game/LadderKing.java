@@ -57,7 +57,7 @@ public class LadderKing extends ScoreGame<Integer> implements Listener {
   }
 
   @Override
-  protected void loadDelayed() {
+  protected void applyBeforeStart() {
     List<ExLocation> spawnLocations = super.currentMap.getLocations(4);
     for (User user : Server.getPreGameUsers()) {
       user.teleport(spawnLocations.get(super.random.nextInt(spawnLocations.size())));

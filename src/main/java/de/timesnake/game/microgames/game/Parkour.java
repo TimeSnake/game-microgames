@@ -4,7 +4,6 @@
 
 package de.timesnake.game.microgames.game;
 
-import de.timesnake.basic.bukkit.util.user.event.UserDeathEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserMoveEvent;
 import de.timesnake.game.microgames.game.basis.LocationFinishGame;
 import de.timesnake.game.microgames.user.MicroGamesUser;
@@ -31,15 +30,9 @@ public class Parkour extends LocationFinishGame implements Listener {
   }
 
   @Override
-  protected void onUserDeath(UserDeathEvent e) {
-    e.setAutoRespawn(true);
-  }
-
-  @Override
   public void onUserMove(UserMoveEvent e) {
     if (e.getUser().getLocation().getBlock().equals(this.getFinishLocation().getBlock())) {
       super.addWinner(((MicroGamesUser) e.getUser()), true);
     }
   }
-
 }

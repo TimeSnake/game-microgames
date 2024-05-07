@@ -8,7 +8,6 @@ package de.timesnake.game.microgames.game;
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.event.UserDamageEvent;
-import de.timesnake.basic.bukkit.util.user.event.UserDeathEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserMoveEvent;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
 import de.timesnake.game.microgames.game.basis.LocationFinishGame;
@@ -100,12 +99,6 @@ public class BlockJump extends LocationFinishGame implements Listener {
   @Override
   public boolean hasSideboard() {
     return false;
-  }
-
-  @Override
-  protected void onUserDeath(UserDeathEvent e) {
-    e.setAutoRespawn(true);
-    e.setBroadcastDeathMessage(false);
   }
 
   @Override
