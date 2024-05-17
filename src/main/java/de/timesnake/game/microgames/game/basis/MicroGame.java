@@ -86,6 +86,8 @@ public abstract class MicroGame {
     this.timeBar = Server.createBossBar("Time left: §c§l" + Chat.getTimeString(timeSec), BarColor.WHITE,
         BarStyle.SOLID);
 
+    this.beforeMapLoad();
+
     for (Map map : MicroGamesServer.getGame().getMaps()) {
       if (map.getProperty("type") == null) {
         this.logger.warn("Can not load map '{}', no type defined", map.getName());
@@ -114,6 +116,10 @@ public abstract class MicroGame {
         .registerSideboard(new SideboardBuilder()
             .name(name)
             .title("§6§l" + displayName));
+  }
+
+  public void beforeMapLoad() {
+
   }
 
   public void onMapLoad(Map map) {
