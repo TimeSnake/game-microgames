@@ -36,7 +36,7 @@ public class BuildOver extends LocationFinishGame implements Listener {
     super("build_over", "Build Over",
         Material.GOLDEN_BOOTS,
         "Beat the parkour as fast you can",
-        List.of("§hGoal: §pfirst at finish", "Reach the finish (beacon) at first."),
+        List.of("§hGoal: §pfirst at finish", "Reach the finish at first."),
         1,
         Duration.ofMinutes(3));
 
