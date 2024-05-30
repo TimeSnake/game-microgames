@@ -1,5 +1,5 @@
 main: de.timesnake.game.microgames.main.GameMicroGames
-version: 1.7.0
+version: 1.8.0
 name: game-microgames
 author: timesnake
 api-version: 1.13
