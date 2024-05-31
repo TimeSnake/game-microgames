@@ -110,7 +110,7 @@ public class RiseUp extends ScoreGame<Integer> implements Listener {
     for (User user : Server.getPreGameUsers()) {
       ExItemStack blocks = new ExItemStack(materials.get(this.random.nextInt(materials.size()))).asQuantity(64);
       user.setItem(0,
-          new ExItemStack(Material.SHEARS).addExEnchantment(Enchantment.DIG_SPEED, 3).unbreakable().cloneWithoutId());
+          new ExItemStack(Material.SHEARS).addExEnchantment(Enchantment.EFFICIENCY, 3).unbreakable().cloneWithoutId());
       user.setItem(1, blocks.cloneWithoutId());
       user.setItem(2, blocks.cloneWithoutId());
       user.setItem(3, blocks.cloneWithoutId());

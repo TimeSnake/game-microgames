@@ -49,7 +49,7 @@ public class BlockJump extends LocationFinishGame implements Listener {
     super.start();
     for (User user : Server.getInGameUsers()) {
       user.getPlayer().setWalkSpeed(0.3F);
-      user.addPotionEffect(PotionEffectType.JUMP, 3);
+      user.addPotionEffect(PotionEffectType.JUMP_BOOST, 3);
     }
   }
 

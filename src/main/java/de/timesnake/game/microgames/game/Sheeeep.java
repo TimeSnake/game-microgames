@@ -23,7 +23,7 @@ import net.minecraft.world.entity.player.Player;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_20_R1.entity.CraftSheep;
+import org.bukkit.craftbukkit.entity.CraftSheep;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDropItemEvent;
