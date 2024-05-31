@@ -29,7 +29,7 @@ import java.util.Random;
 public class Spleef extends FallOutGame {
 
   private static final ExItemStack SHOVEL = new ExItemStack(Material.GOLDEN_SHOVEL)
-      .addExEnchantment(Enchantment.DIG_SPEED, 10)
+      .addExEnchantment(Enchantment.EFFICIENCY, 10)
       .setUnbreakable(true).setDropable(false).setMoveable(false).immutable();
 
   protected static final Integer DEATH_HEIGHT_LOCATION_INDEX = 3;

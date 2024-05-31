@@ -34,7 +34,7 @@ public class Firefighter extends BoxedScoreGame<Integer> implements Listener {
 
   private static final double FIRE_CHANCE = 0.15;
 
-  private static final Set<Material> EXCLUDED_MATERIALS = Set.of(Material.GRASS, Material.TALL_GRASS);
+  private static final Set<Material> EXCLUDED_MATERIALS = Set.of(Material.SHORT_GRASS, Material.TALL_GRASS);
 
   public Firefighter() {
     super("firefighter",

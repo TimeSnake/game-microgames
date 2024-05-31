@@ -35,8 +35,8 @@ public class HotPotato extends ScoreGame<Integer> implements Listener {
       .setDisplayName("§cHot Potato");
   private static final int TIME = 180;
   private static final int COOLDOWN_TICKS = 40;
-  private static final int SLOW_TICKS = 40;
-  private static final int SLOW_AMPLIFIER = 2;
+  private static final int SLOWNESS_TICKS = 40;
+  private static final int SLOWNESS_AMPLIFIER = 2;
   private static final int GLOW_TICKS = 7 * 20;
 
   private final Set<User> holders = new UserSet<>();
@@ -94,7 +94,7 @@ public class HotPotato extends ScoreGame<Integer> implements Listener {
       user.sendPluginTDMessage(Plugin.MICRO_GAMES, "§sYou have the §chot potato");
     }
 
-    user.addPotionEffect(PotionEffectType.SLOW, SLOW_TICKS, SLOW_AMPLIFIER);
+    user.addPotionEffect(PotionEffectType.SLOWNESS, SLOWNESS_TICKS, SLOWNESS_AMPLIFIER);
     this.cooldownUsers.add(user);
     Server.runTaskLaterSynchrony(() -> this.cooldownUsers.remove(user), COOLDOWN_TICKS, GameMicroGames.getPlugin());
   }

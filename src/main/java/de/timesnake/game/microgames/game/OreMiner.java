@@ -43,7 +43,7 @@ public class OreMiner extends BoxedScoreGame<Integer> implements Listener {
       .unbreakable()
       .setDropable(false)
       .setMoveable(false)
-      .addExEnchantment(Enchantment.DIG_SPEED, 10)
+      .addExEnchantment(Enchantment.EFFICIENCY, 10)
       .immutable();
 
   private final WeightedRandomCollection<Material> oreWeights = new WeightedRandomCollection<Material>(this.random)
