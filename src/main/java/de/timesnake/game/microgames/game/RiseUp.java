@@ -34,7 +34,7 @@ public class RiseUp extends ScoreGame<Integer> implements Listener {
   private static final int HORIZONTAL_RANGE = 5;
   private static final int VERTICAL_RANGE = 4;
 
-  private static final double DESTROY_BLOCK_CHANCE = 0.2;
+  private static final double DESTROY_BLOCK_CHANCE = 0.3;
 
   private BukkitTask scoreTask;
 
@@ -64,6 +64,8 @@ public class RiseUp extends ScoreGame<Integer> implements Listener {
     world.restrict(ExWorld.Restriction.BLOCK_BREAK, true);
     world.restrict(ExWorld.Restriction.BLOCK_PLACE, false);
     world.restrict(ExWorld.Restriction.DROP_PICK_ITEM, false);
+    world.restrict(ExWorld.Restriction.FIRE_PUNCH_OUT, false);
+    world.restrict(ExWorld.Restriction.FLINT_AND_STEEL, false);
   }
 
   @Override
@@ -115,6 +117,7 @@ public class RiseUp extends ScoreGame<Integer> implements Listener {
       user.setItem(4, blocks.cloneWithoutId());
       user.setItem(5, new ExItemStack(Material.SNOWBALL).asQuantity(64).cloneWithoutId());
       user.setItem(6, new ExItemStack(Material.VINE).asQuantity(32).cloneWithoutId());
+      user.setItem(7, new ExItemStack(Material.FLINT_AND_STEEL));
       user.lockInventory();
     }
 
