@@ -117,7 +117,7 @@ public class RiseUp extends ScoreGame<Integer> implements Listener {
       user.setItem(4, blocks.cloneWithoutId());
       user.setItem(5, new ExItemStack(Material.SNOWBALL).asQuantity(64).cloneWithoutId());
       user.setItem(6, new ExItemStack(Material.VINE).asQuantity(32).cloneWithoutId());
-      user.setItem(7, new ExItemStack(Material.FLINT_AND_STEEL));
+      user.setItem(7, new ExItemStack(Material.FIRE_CHARGE).asQuantity(8).cloneWithoutId());
       user.lockInventory();
     }
 
