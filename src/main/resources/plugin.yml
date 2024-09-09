@@ -2,7 +2,7 @@ main: de.timesnake.game.microgames.main.GameMicroGames
 version: 1.8.0
 name: game-microgames
 author: timesnake
-api-version: 1.13
+api-version: 1.21
 depend: [ basic-bukkit ]
 
 commands:
