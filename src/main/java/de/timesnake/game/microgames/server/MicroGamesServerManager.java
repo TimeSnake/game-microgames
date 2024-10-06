@@ -245,21 +245,20 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
   }
 
   private MicroGame getRandomGame() {
+    int players = Server.getGameNotServiceUsers().size();
+    List<MicroGame> games = new ArrayList<>();
+    for (Map.Entry<Integer, List<MicroGame>> entry : this.microGamesByMinPlayers.entrySet()) {
+      if (players >= entry.getKey()) {
+        games.addAll(entry.getValue());
+      }
+    }
+    if (games.isEmpty()) {
+      return null;
+    }
+
     MicroGame nextGame;
     do {
-      int players = Server.getGameNotServiceUsers().size();
-      List<MicroGame> games = new ArrayList<>();
-      for (Map.Entry<Integer, List<MicroGame>> entry : this.microGamesByMinPlayers.entrySet()) {
-        if (players >= entry.getKey()) {
-          games.addAll(entry.getValue());
-        }
-      }
-      if (games.isEmpty()) {
-        return null;
-      }
-
       nextGame = games.get(this.random.nextInt(games.size()));
-
     } while (nextGame.getMaps().size() == 1 && this.currentGame.equals(nextGame));
     return nextGame;
   }

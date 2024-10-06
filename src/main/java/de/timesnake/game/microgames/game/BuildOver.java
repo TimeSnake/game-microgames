@@ -18,6 +18,7 @@ import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -71,6 +72,7 @@ public class BuildOver extends LocationFinishGame implements Listener {
     Server.getPreGameUsers().forEach(u -> {
       u.addItem(BUILDING_ITEMS.cloneWithId());
       u.addItem(BUILDING_ITEMS.cloneWithId());
+      u.addItem(new ExItemStack(Material.SHEARS).addExEnchantment(Enchantment.EFFICIENCY, 3));
     });
   }
 
@@ -94,6 +96,7 @@ public class BuildOver extends LocationFinishGame implements Listener {
     super.onUserRepsawn(e);
     e.getUser().addItem(BUILDING_ITEMS.cloneWithId());
     e.getUser().addItem(BUILDING_ITEMS.cloneWithId());
+    e.getUser().addItem(new ExItemStack(Material.SHEARS).addExEnchantment(Enchantment.EFFICIENCY, 3));
   }
 
   @Override
