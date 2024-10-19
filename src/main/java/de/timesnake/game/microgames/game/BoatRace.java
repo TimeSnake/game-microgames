@@ -228,6 +228,5 @@ public class BoatRace extends LocationFinishGame implements Listener {
     }
 
     e.setCancelled(CancelPriority.HIGH, false);
-    e.setBuild(true);
   }
 }

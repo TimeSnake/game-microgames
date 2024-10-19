@@ -121,7 +121,6 @@ public class BuildOver extends LocationFinishGame implements Listener {
 
     if (!this.polygonByMap.get(this.currentMap).contains(ExLocation.fromLocation(e.getBlock().getLocation()))) {
       e.setCancelled(true);
-      e.setBuild(false);
     }
   }
 }
