@@ -19,6 +19,7 @@ import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.basic.util.UserSet;
 import de.timesnake.library.chat.Chat;
+import org.bukkit.Color;
 import org.bukkit.Instrument;
 import org.bukkit.Material;
 import org.bukkit.Note;
@@ -95,14 +96,32 @@ public class HotPotato extends ScoreGame<Integer> implements Listener {
     }
 
     user.addPotionEffect(PotionEffectType.SLOWNESS, SLOWNESS_TICKS, SLOWNESS_AMPLIFIER);
-    this.cooldownUsers.add(user);
-    Server.runTaskLaterSynchrony(() -> this.cooldownUsers.remove(user), COOLDOWN_TICKS, GameMicroGames.getPlugin());
+  }
+
+  private void giveCooldown(User user) {
+    this.holders.add(user);
+    user.getInventory().setHelmet(ExItemStack.getLeatherArmor(Material.LEATHER_HELMET, Color.BLACK));
+    user.getInventory().setChestplate(ExItemStack.getLeatherArmor(Material.LEATHER_CHESTPLATE, Color.BLACK));
+    user.getInventory().setLeggings(ExItemStack.getLeatherArmor(Material.LEATHER_LEGGINGS, Color.BLACK));
+    user.getInventory().setBoots(ExItemStack.getLeatherArmor(Material.LEATHER_BOOTS, Color.BLACK));
+  }
+
+  private void removeCooldown(User user) {
+    user.clearArmor();
   }
 
   private void removeHotPotatoFrom(User user) {
     this.holders.remove(user);
     user.playNote(Instrument.PIANO, Note.natural(1, Note.Tone.C));
     user.clearInventory();
+
+    this.cooldownUsers.add(user);
+    this.giveCooldown(user);
+
+    Server.runTaskLaterSynchrony(() -> {
+      this.removeCooldown(user);
+      this.cooldownUsers.remove(user);
+    }, COOLDOWN_TICKS, GameMicroGames.getPlugin());
   }
 
   private void chooseHolder() {
@@ -181,7 +200,7 @@ public class HotPotato extends ScoreGame<Integer> implements Listener {
     if (Server.getInGameUsers().size() <= 1) {
       this.stop();
     } else if (this.holders.remove(user)) {
-      if (this.holders.size() == 0) {
+      if (this.holders.isEmpty()) {
         this.chooseHolder();
       }
     }
@@ -219,7 +238,7 @@ public class HotPotato extends ScoreGame<Integer> implements Listener {
     User target = e.getUser();
     User damager = e.getUserDamager();
 
-    if (this.cooldownUsers.contains(damager)) {
+    if (this.cooldownUsers.contains(target)) {
       e.setCancelled(true);
       return;
     }

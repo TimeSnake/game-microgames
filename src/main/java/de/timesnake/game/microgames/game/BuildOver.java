@@ -13,6 +13,7 @@ import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.basic.bukkit.util.world.ExPolygon;
 import de.timesnake.basic.game.util.game.Map;
+import de.timesnake.game.microgames.chat.Plugin;
 import de.timesnake.game.microgames.game.basis.LocationFinishGame;
 import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.user.MicroGamesUser;
@@ -39,7 +40,7 @@ public class BuildOver extends LocationFinishGame implements Listener {
         "Beat the parkour as fast you can",
         List.of("§hGoal: §pfirst at finish", "Reach the finish at first."),
         1,
-        Duration.ofMinutes(3));
+        Duration.ofMinutes(4));
 
     Server.registerListener(this, GameMicroGames.getPlugin());
   }
@@ -120,6 +121,7 @@ public class BuildOver extends LocationFinishGame implements Listener {
     }
 
     if (!this.polygonByMap.get(this.currentMap).contains(ExLocation.fromLocation(e.getBlock().getLocation()))) {
+      e.getUser().sendPluginTDMessage(Plugin.MICRO_GAMES, "§wYou can not build here");
       e.setCancelled(true);
     }
   }
