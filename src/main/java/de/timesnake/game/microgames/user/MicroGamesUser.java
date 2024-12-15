@@ -51,7 +51,9 @@ public class MicroGamesUser extends SpectatorUser {
   public void joinGame() {
     this.setStatus(Status.User.PRE_GAME);
     MicroGamesServer.getTablistManager().getTablist().reloadEntry(this, true);
-    this.setDefault();
+    this.resetPlayerProperties();
+    this.unlockAll();
+    this.clearInventory();
     this.setCollitionWithEntites(true);
     for (User user : Server.getUsers()) {
       user.showUser(this);
