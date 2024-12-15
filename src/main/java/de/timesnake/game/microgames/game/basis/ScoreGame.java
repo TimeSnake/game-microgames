@@ -86,9 +86,13 @@ public abstract class ScoreGame<Score extends Comparable<Score>> extends MicroGa
       return;
     }
 
-    Score score = this.scores.compute(((MicroGamesUser) user), updateFunction);
+    this.scores.compute(((MicroGamesUser) user), updateFunction);
     if (this.hasSideboard()) {
-      user.setSideboardScore(0, "§f" + score);
+      this.updateUserScoreOnSideboard((MicroGamesUser) user);
     }
+  }
+
+  public void updateUserScoreOnSideboard(MicroGamesUser user) {
+    user.setSideboardScore(0, "§f" + this.scores.getOrDefault(user, this.getDefaultScore()));
   }
 }
