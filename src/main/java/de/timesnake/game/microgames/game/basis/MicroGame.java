@@ -31,10 +31,7 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public abstract class MicroGame {
 
@@ -403,4 +400,16 @@ public abstract class MicroGame {
     return material;
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    MicroGame microGame = (MicroGame) o;
+    return Objects.equals(name, microGame.name);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(name);
+  }
 }

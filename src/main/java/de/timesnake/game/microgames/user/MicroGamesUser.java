@@ -7,23 +7,22 @@ package de.timesnake.game.microgames.user;
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.chat.ChatColor;
 import de.timesnake.basic.bukkit.util.user.User;
-import de.timesnake.basic.bukkit.util.user.inventory.*;
+import de.timesnake.basic.bukkit.util.user.inventory.ExInventory;
+import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.bukkit.util.user.scoreboard.TablistGroup;
 import de.timesnake.basic.game.util.game.TablistGroupType;
 import de.timesnake.basic.game.util.user.SpectatorUser;
 import de.timesnake.game.microgames.game.basis.MicroGame;
 import de.timesnake.game.microgames.server.MicroGamesServer;
 import de.timesnake.library.basic.util.Status;
-import net.kyori.adventure.text.Component;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 public class MicroGamesUser extends SpectatorUser {
 
@@ -70,7 +69,8 @@ public class MicroGamesUser extends SpectatorUser {
   @Override
   public TablistGroup getTablistGroup(de.timesnake.basic.bukkit.util.user.scoreboard.TablistGroupType type) {
     if (type.equals(TablistGroupType.GAME_TEAM)) {
-      return this.hasStatus(Status.User.SPECTATOR, Status.User.OUT_GAME) ? null : MicroGamesServer.getTablistManager().getGameTeam();
+      return this.hasStatus(Status.User.SPECTATOR, Status.User.OUT_GAME) ? null :
+          MicroGamesServer.getTablistManager().getGameTeam();
     }
     return super.getTablistGroup(type);
   }
@@ -107,78 +107,50 @@ public class MicroGamesUser extends SpectatorUser {
     return this.place != null;
   }
 
-  public class VoteInventory implements InventoryHolder, UserInventoryInteractListener,
-      UserInventoryClickListener {
+  public class VoteInventory {
 
-    private final ExItemStack item = new ExItemStack(Material.NETHER_STAR,
-        ChatColor.GOLD + "Voting");
+    private final ExItemStack item;
     private final ExInventory inv;
-    private final HashMap<ExItemStack, MicroGame> gamesByItem = new HashMap<>();
 
     public VoteInventory(Collection<MicroGame> games) {
-      this.inv = new ExInventory(games.size(), Component.text("Voting"), this);
+      this.inv = new ExInventory(games.size(), "Voting");
+
+      this.item = new ExItemStack(Material.NETHER_STAR)
+          .setDisplayName("§hVoting")
+          .onInteract(e -> e.getUser().openInventory(this.inv));
 
       int i = 0;
       for (MicroGame game : games) {
-        ExItemStack item = new ExItemStack(i, game.getMaterial(),
-            ChatColor.GOLD + game.getDisplayName(),
-            List.of(ChatColor.WHITE + game.getHeadLine()));
-        item.hideAll();
+        ExItemStack item = new ExItemStack(i, game.getMaterial())
+            .setDisplayName("§h" + game.getDisplayName())
+            .setLore("§f" + game.getHeadLine())
+            .hideAll();
+        item.onClick(e -> {
+          if (MicroGamesUser.this.votedGames.contains(game)) {
+            game.removeVote();
+            MicroGamesUser.this.votedGames.remove(game);
+
+            item.disenchant();
+            item.setLore(ChatColor.WHITE + game.getHeadLine());
+            MicroGamesUser.this.logger.info("'{}' devoted '{}'", MicroGamesUser.this.getName(), game.getName());
+          } else {
+            MicroGamesUser.this.votedGames.add(game);
+            game.addVote();
+
+            item.enchant();
+            item.setLore(ChatColor.WHITE + game.getHeadLine(), "", "§aVoted");
+            MicroGamesUser.this.logger.info("'{}' voted for '{}'", MicroGamesUser.this.getName(), game.getName());
+          }
+          this.inv.setItemStack(item);
+        }, true);
+
         this.inv.setItemStack(item);
         i++;
-        this.gamesByItem.put(item, game);
       }
-
-      Server.getInventoryEventManager().addClickListener(this, this);
-      Server.getInventoryEventManager().addInteractListener(this, this.item);
-    }
-
-    @Override
-    public @NotNull Inventory getInventory() {
-      return this.inv.getInventory();
     }
 
     public ExItemStack getItem() {
       return item;
-    }
-
-    @Override
-    public void onUserInventoryClick(UserInventoryClickEvent event) {
-      if (!event.getUser().equals(MicroGamesUser.this)) {
-        return;
-      }
-
-      ExItemStack item = event.getClickedItem();
-      MicroGame microGame = this.gamesByItem.get(item);
-
-      if (microGame != null) {
-        if (MicroGamesUser.this.votedGames.contains(microGame)) {
-          microGame.removeVote();
-          MicroGamesUser.this.votedGames.remove(microGame);
-
-          item.disenchant();
-          item.setLore(ChatColor.WHITE + microGame.getHeadLine());
-          MicroGamesUser.this.logger.info("'{}' devoted '{}'", MicroGamesUser.this.getName(), microGame.getName());
-        } else {
-          MicroGamesUser.this.votedGames.add(microGame);
-          microGame.addVote();
-
-          item.enchant();
-          item.setLore(ChatColor.WHITE + microGame.getHeadLine(), "", "§aVoted");
-          MicroGamesUser.this.logger.info("'{}' voted for '{}'", MicroGamesUser.this.getName(), microGame.getName());
-        }
-
-        this.gamesByItem.put(item, microGame);
-        this.inv.setItemStack(item);
-      }
-
-      event.setCancelled(true);
-    }
-
-
-    @Override
-    public void onUserInventoryInteract(UserInventoryInteractEvent event) {
-      event.getUser().openInventory(this.inv);
     }
   }
 
