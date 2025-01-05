@@ -197,7 +197,8 @@ public class RiseUp extends ScoreGame<Integer> implements Listener {
       return;
     }
 
-    if (Tag.WOOL.isTagged(e.getBlock().getType()) || e.getBlock().getType().equals(Material.VINE)) {
+    if (Tag.WOOL.isTagged(e.getBlock().getType()) || e.getBlock().getType().equals(Material.VINE)
+        || e.getBlock().getType().equals(Material.SNOW_BLOCK)) {
       e.setCancelled(CancelPriority.HIGH, false);
     }
   }

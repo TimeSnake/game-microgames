@@ -99,11 +99,16 @@ public class HotPotato extends ScoreGame<Integer> implements Listener {
   }
 
   private void giveCooldown(User user) {
-    this.holders.add(user);
+    this.cooldownUsers.add(user);
     user.getInventory().setHelmet(ExItemStack.getLeatherArmor(Material.LEATHER_HELMET, Color.BLACK));
     user.getInventory().setChestplate(ExItemStack.getLeatherArmor(Material.LEATHER_CHESTPLATE, Color.BLACK));
     user.getInventory().setLeggings(ExItemStack.getLeatherArmor(Material.LEATHER_LEGGINGS, Color.BLACK));
     user.getInventory().setBoots(ExItemStack.getLeatherArmor(Material.LEATHER_BOOTS, Color.BLACK));
+
+    Server.runTaskLaterSynchrony(() -> {
+      this.removeCooldown(user);
+      this.cooldownUsers.remove(user);
+    }, COOLDOWN_TICKS, GameMicroGames.getPlugin());
   }
 
   private void removeCooldown(User user) {
@@ -115,13 +120,8 @@ public class HotPotato extends ScoreGame<Integer> implements Listener {
     user.playNote(Instrument.PIANO, Note.natural(1, Note.Tone.C));
     user.clearInventory();
 
-    this.cooldownUsers.add(user);
-    this.giveCooldown(user);
 
-    Server.runTaskLaterSynchrony(() -> {
-      this.removeCooldown(user);
-      this.cooldownUsers.remove(user);
-    }, COOLDOWN_TICKS, GameMicroGames.getPlugin());
+    this.giveCooldown(user);
   }
 
   private void chooseHolder() {
