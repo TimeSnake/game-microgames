@@ -301,7 +301,7 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
       }
     }
 
-    while (partyGames.get(0).equals(this.currentGame)) {
+    while (partyGames.getFirst().equals(this.currentGame)) {
       Collections.shuffle(partyGames);
     }
 

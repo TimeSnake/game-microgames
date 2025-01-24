@@ -187,7 +187,9 @@ public class BoatRace extends LocationFinishGame implements Listener {
       return;
     }
 
-    if (Server.getUser(player).isService()) {
+    User user = Server.getUser(player);
+
+    if (user == null || user.isService()) {
       return;
     }
 
