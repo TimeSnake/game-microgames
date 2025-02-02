@@ -15,7 +15,6 @@ import de.timesnake.basic.game.util.game.Game;
 import de.timesnake.basic.game.util.server.GameServerManager;
 import de.timesnake.basic.game.util.user.SpectatorManager;
 import de.timesnake.database.util.game.DbGame;
-import de.timesnake.game.microgames.chat.Plugin;
 import de.timesnake.game.microgames.game.*;
 import de.timesnake.game.microgames.game.basis.MicroGame;
 import de.timesnake.game.microgames.main.GameMicroGames;
@@ -25,6 +24,7 @@ import de.timesnake.game.microgames.user.TablistManager;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.basic.util.WeightedRandomCollection;
 import de.timesnake.library.chat.Chat;
+import de.timesnake.library.chat.Plugin;
 import de.timesnake.library.game.NonTmpGameInfo;
 import net.kyori.adventure.text.Component;
 import org.apache.logging.log4j.LogManager;
@@ -365,11 +365,11 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
   }
 
   public void broadcastMicroGamesMessage(Component message) {
-    Server.broadcastMessage(Plugin.MICRO_GAMES, message);
+    Server.broadcastMessage(Plugin.GAME, message);
   }
 
   public void broadcastMicroGamesTDMessage(String message) {
-    Server.broadcastTDMessage(Plugin.MICRO_GAMES, message);
+    Server.broadcastTDMessage(Plugin.GAME, message);
   }
 
   public boolean isPaused() {

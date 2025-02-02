@@ -9,10 +9,10 @@ import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.bukkit.util.user.inventory.UserInventoryInteractEvent;
 import de.timesnake.basic.bukkit.util.user.inventory.UserInventoryInteractListener;
-import de.timesnake.game.microgames.chat.Plugin;
 import de.timesnake.game.microgames.server.MicroGamesServer;
-import de.timesnake.library.chat.ExTextColor;
 import de.timesnake.library.chat.Code;
+import de.timesnake.library.chat.ExTextColor;
+import de.timesnake.library.chat.Plugin;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 
@@ -25,7 +25,7 @@ public class PartyManager implements UserInventoryInteractListener {
   public PartyManager() {
     Server.getInventoryEventManager().addInteractListener(this, ITEM);
 
-    this.perm = Plugin.MICRO_GAMES.createPermssionCode("microgames.party");
+    this.perm = Plugin.GAME.createPermssionCode("microgames.party");
   }
 
   @Override
@@ -33,19 +33,19 @@ public class PartyManager implements UserInventoryInteractListener {
     User user = event.getUser();
 
     if (!user.isSneaking()) {
-      user.sendPluginMessage(Plugin.MICRO_GAMES,
+      user.sendPluginMessage(Plugin.GAME,
           Component.text("Click while sneaking to activate", ExTextColor.PERSONAL));
       return;
     }
 
-    if (user.hasPermission(this.perm, Plugin.MICRO_GAMES)) {
+    if (user.hasPermission(this.perm, Plugin.GAME)) {
       if (!MicroGamesServer.getCurrentGame().isGameRunning()
           && !MicroGamesServer.isPartyMode()) {
-        user.sendPluginMessage(Plugin.MICRO_GAMES,
+        user.sendPluginMessage(Plugin.GAME,
             Component.text("Initiating party mode", ExTextColor.PERSONAL));
         MicroGamesServer.startParty();
       } else {
-        user.sendPluginMessage(Plugin.MICRO_GAMES,
+        user.sendPluginMessage(Plugin.GAME,
             Component.text("Party Mode currently not available", ExTextColor.PERSONAL));
       }
     }

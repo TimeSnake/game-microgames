@@ -5,6 +5,7 @@
 package de.timesnake.game.microgames.game;
 
 import de.timesnake.basic.bukkit.util.Server;
+import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.event.UserBlockPlaceEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserDeathEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserMoveEvent;
@@ -13,15 +14,17 @@ import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.basic.bukkit.util.world.ExPolygon;
 import de.timesnake.basic.game.util.game.Map;
-import de.timesnake.game.microgames.chat.Plugin;
 import de.timesnake.game.microgames.game.basis.LocationFinishGame;
 import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.user.MicroGamesUser;
+import de.timesnake.library.basic.util.RandomList;
+import de.timesnake.library.chat.Plugin;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
+import org.bukkit.Tag;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
 
 import java.time.Duration;
 import java.util.HashMap;
@@ -29,8 +32,9 @@ import java.util.List;
 
 public class BuildOver extends LocationFinishGame implements Listener {
 
-  private static final Material BUILDING_BLOCKS = Material.WHITE_WOOL;
-  private static final ExItemStack BUILDING_ITEMS = new ExItemStack(BUILDING_BLOCKS, 64);
+  private static final ExItemStack SHEARS = new ExItemStack(Material.SHEARS)
+      .setDropable(false);
+  private static final RandomList<Material> BUILDING_BLOCKS = new RandomList<>(Tag.WOOL.getValues());
 
   private HashMap<Map, ExPolygon> polygonByMap;
 
@@ -71,9 +75,10 @@ public class BuildOver extends LocationFinishGame implements Listener {
     super.applyBeforeStart();
 
     Server.getPreGameUsers().forEach(u -> {
-      u.addItem(BUILDING_ITEMS.cloneWithId());
-      u.addItem(BUILDING_ITEMS.cloneWithId());
-      u.addItem(new ExItemStack(Material.SHEARS).addExEnchantment(Enchantment.EFFICIENCY, 3));
+      ItemStack blocks = new ItemStack(BUILDING_BLOCKS.getRandom()).asQuantity(64);
+      u.addItem(blocks);
+      u.addItem(blocks);
+      u.addItem(SHEARS);
     });
   }
 
@@ -95,14 +100,22 @@ public class BuildOver extends LocationFinishGame implements Listener {
   @Override
   protected void onUserRepsawn(UserRespawnEvent e) {
     super.onUserRepsawn(e);
-    e.getUser().addItem(BUILDING_ITEMS.cloneWithId());
-    e.getUser().addItem(BUILDING_ITEMS.cloneWithId());
-    e.getUser().addItem(new ExItemStack(Material.SHEARS).addExEnchantment(Enchantment.EFFICIENCY, 3));
+    User user = e.getUser();
+    user.clearInventory();
+    ItemStack blocks = new ItemStack(BUILDING_BLOCKS.getRandom()).asQuantity(64);
+    user.addItem(blocks);
+    user.addItem(blocks);
+    user.addItem(SHEARS);
   }
 
   @Override
   public boolean hasSideboard() {
     return false;
+  }
+
+  @Override
+  protected void onUserFallIntoVoid(User user) {
+    user.kill();
   }
 
   @EventHandler
@@ -121,7 +134,7 @@ public class BuildOver extends LocationFinishGame implements Listener {
     }
 
     if (!this.polygonByMap.get(this.currentMap).contains(ExLocation.fromLocation(e.getBlock().getLocation()))) {
-      e.getUser().sendPluginTDMessage(Plugin.MICRO_GAMES, "§wYou can not build here");
+      e.getUser().sendPluginTDMessage(Plugin.GAME, "§wYou can not build here");
       e.setCancelled(true);
     }
   }

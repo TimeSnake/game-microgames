@@ -16,7 +16,6 @@ import de.timesnake.library.basic.util.Status;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.util.Vector;
 
 import java.time.Duration;
 import java.util.List;
@@ -111,12 +110,15 @@ public abstract class LocationFinishGame extends MicroGame implements Listener {
     }
 
     if (user.getLocation().getY() < user.getWorld().getMinHeight()) {
-      user.getPlayer().setVelocity(new Vector());
-      user.teleport(this.getSpawnLocation());
+      this.onUserFallIntoVoid(user);
       return;
     }
 
     this.onUserMove(e);
+  }
+
+  protected void onUserFallIntoVoid(User user) {
+    user.teleport(this.getSpawnLocation());
   }
 
   protected abstract void onUserMove(UserMoveEvent e);

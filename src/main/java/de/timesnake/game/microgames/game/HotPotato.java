@@ -11,7 +11,6 @@ import de.timesnake.basic.bukkit.util.user.event.UserDamageEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserDropItemEvent;
 import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.bukkit.util.user.scoreboard.Sideboard;
-import de.timesnake.game.microgames.chat.Plugin;
 import de.timesnake.game.microgames.game.basis.ScoreGame;
 import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.server.MicroGamesServer;
@@ -19,6 +18,7 @@ import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.basic.util.UserSet;
 import de.timesnake.library.chat.Chat;
+import de.timesnake.library.chat.Plugin;
 import org.bukkit.Color;
 import org.bukkit.Instrument;
 import org.bukkit.Material;
@@ -92,7 +92,7 @@ public class HotPotato extends ScoreGame<Integer> implements Listener {
     user.playNote(Instrument.PIANO, Note.natural(0, Note.Tone.C));
 
     if (this.time.equals(TIME)) {
-      user.sendPluginTDMessage(Plugin.MICRO_GAMES, "§sYou have the §chot potato");
+      user.sendPluginTDMessage(Plugin.GAME, "§sYou have the §chot potato");
     }
 
     user.addPotionEffect(PotionEffectType.SLOWNESS, SLOWNESS_TICKS, SLOWNESS_AMPLIFIER);
