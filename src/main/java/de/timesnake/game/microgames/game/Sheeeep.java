@@ -34,7 +34,6 @@ import java.util.*;
 
 public class Sheeeep extends BoxedScoreGame<Integer> implements Listener {
 
-
   protected static final int COLOR_AMOUNT = 10;
   private static final ExItemStack SHEARS = new ExItemStack(Material.SHEARS).setSlot(4)
       .setMoveable(false).setDropable(false).unbreakable().immutable();

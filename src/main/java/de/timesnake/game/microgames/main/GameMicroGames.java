@@ -6,13 +6,14 @@ package de.timesnake.game.microgames.main;
 
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.ServerManager;
-import de.timesnake.game.microgames.chat.Plugin;
 import de.timesnake.game.microgames.server.MicroGamesServerManager;
 import de.timesnake.game.microgames.user.SkipGameCmd;
-import java.util.List;
+import de.timesnake.library.chat.Plugin;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.List;
 
 public class GameMicroGames extends JavaPlugin {
 
@@ -31,7 +32,7 @@ public class GameMicroGames extends JavaPlugin {
     MicroGamesServerManager.getInstance().onMicroGamesEnable();
 
     Server.getCommandManager().addCommand(this, "microgames", List.of("mg"), new SkipGameCmd(),
-        Plugin.MICRO_GAMES);
+        Plugin.GAME);
   }
 
 

@@ -5,14 +5,23 @@
 package de.timesnake.game.microgames.game;
 
 import de.timesnake.basic.bukkit.util.Server;
+import de.timesnake.basic.bukkit.util.user.User;
+import de.timesnake.basic.bukkit.util.user.event.UserBlockBreakEvent;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
+import de.timesnake.basic.bukkit.util.world.ExWorld;
 import de.timesnake.basic.game.util.game.Map;
 import de.timesnake.game.microgames.game.basis.FallOutGame;
 import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.basic.util.Tuple;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.TNTPrimed;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.block.TNTPrimeEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.time.Duration;
@@ -50,6 +59,7 @@ public class HotFeet extends FallOutGame {
     super.onMapLoad(map);
 
     map.getWorld().setPVP(false);
+    map.getWorld().restrict(ExWorld.Restriction.AUTO_PRIME_TNT, false);
   }
 
   @Override
@@ -67,6 +77,11 @@ public class HotFeet extends FallOutGame {
   public void start() {
     super.start();
     this.despawnBlocks = Server.getInGameUsers().size();
+
+    for (User user : Server.getInGameUsers()) {
+      user.addItem(new ItemStack(Material.TNT, 3));
+      user.setGameMode(GameMode.SURVIVAL);
+    }
 
     this.startDespawning();
   }
@@ -137,5 +152,34 @@ public class HotFeet extends FallOutGame {
 
   public ExLocation getSecondCorner() {
     return this.currentMap.getLocation(SECOND_CORNER_INDEX);
+  }
+
+  @EventHandler
+  public void onBlockBreak(UserBlockBreakEvent e) {
+    if (!this.isGameRunning()) {
+      return;
+    }
+
+    e.setCancelled(true);
+  }
+
+  @EventHandler
+  public void onTntPrime(TNTPrimeEvent e) {
+    if (!this.isGameRunning()) {
+      return;
+    }
+
+    if (e.getPrimingEntity() instanceof TNTPrimed tnt) {
+      tnt.setFuseTicks(30);
+    }
+  }
+
+  @EventHandler
+  public void onExplode(EntityExplodeEvent e) {
+    if (!this.isGameRunning()) {
+      return;
+    }
+
+    e.blockList().clear();
   }
 }

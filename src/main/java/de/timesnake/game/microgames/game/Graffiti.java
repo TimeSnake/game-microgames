@@ -11,7 +11,6 @@ import de.timesnake.basic.bukkit.util.user.event.*;
 import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.bukkit.util.user.inventory.UserInventoryInteractEvent;
 import de.timesnake.basic.bukkit.util.user.inventory.UserInventoryInteractListener;
-import de.timesnake.game.microgames.chat.Plugin;
 import de.timesnake.game.microgames.game.basis.MicroGame;
 import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.server.MicroGamesServer;
@@ -19,6 +18,7 @@ import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.chat.Chat;
 import de.timesnake.library.chat.ExTextColor;
+import de.timesnake.library.chat.Plugin;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -165,13 +165,13 @@ public class Graffiti extends MicroGame implements Listener, UserInventoryIntera
 
       if (this.blueTeam.size() < teamSize) {
         this.blueTeam.add(user);
-        user.sendPluginMessage(Plugin.MICRO_GAMES,
+        user.sendPluginMessage(Plugin.GAME,
             Component.text("You joined", ExTextColor.PERSONAL)
                 .append(Component.text(" " + "blue", ExTextColor.VALUE)));
         user.teleport(this.currentMap.getLocation(BLUE_SPAWN_LOCATION_INDEX));
       } else {
         this.redTeam.add(user);
-        user.sendPluginMessage(Plugin.MICRO_GAMES,
+        user.sendPluginMessage(Plugin.GAME,
             Component.text("You joined", ExTextColor.PERSONAL)
                 .append(Component.text(" " + "red", ExTextColor.VALUE)));
         user.teleport(this.currentMap.getLocation(RED_SPAWN_LOCATION_INDEX));
