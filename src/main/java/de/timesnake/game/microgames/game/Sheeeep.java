@@ -13,7 +13,6 @@ import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.entities.EntityManager;
 import de.timesnake.library.entities.entity.SheepBuilder;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
@@ -53,13 +52,11 @@ public class Sheeeep extends BoxedScoreGame<Integer> implements Listener {
             "Be the first who sheared 10 sheep"),
         1,
         Duration.ofMinutes(3));
-
-    Server.registerListener(this, GameMicroGames.getPlugin());
   }
 
   @Override
-  public void onMapLoad(de.timesnake.basic.game.util.game.Map map) {
-    super.onMapLoad(map);
+  public void onMapInit(de.timesnake.basic.game.util.game.Map map) {
+    super.onMapInit(map);
 
     map.getWorld().setPVP(false);
   }
@@ -77,7 +74,7 @@ public class Sheeeep extends BoxedScoreGame<Integer> implements Listener {
   }
 
   @Override
-  protected void applyBeforeStart() {
+  public void applyBeforeStart() {
     super.applyBeforeStart();
 
     List<Block> blocks = new ArrayList<>(this.getBlocksWithinBox());
@@ -115,11 +112,6 @@ public class Sheeeep extends BoxedScoreGame<Integer> implements Listener {
   }
 
   @Override
-  public boolean hasSideboard() {
-    return false;
-  }
-
-  @Override
   public Integer getDefaultScore() {
     return 0;
   }
@@ -127,11 +119,6 @@ public class Sheeeep extends BoxedScoreGame<Integer> implements Listener {
   @Override
   public void reset() {
     super.reset();
-    this.sheep.forEach(s -> s.remove(Entity.RemovalReason.DISCARDED));
-    if (this.previousMap != null) {
-      Server.getWorldManager().reloadWorld(this.previousMap.getWorld());
-    }
-
     this.colors.clear();
     this.colorsByUser.clear();
   }

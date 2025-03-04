@@ -11,7 +11,6 @@ import de.timesnake.basic.bukkit.util.world.ExWorld;
 import de.timesnake.basic.bukkit.util.world.ExWorld.Restriction;
 import de.timesnake.basic.game.util.game.Map;
 import de.timesnake.game.microgames.game.basis.BoxedScoreGame;
-import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.basic.util.Tuple;
@@ -44,18 +43,11 @@ public class Firefighter extends BoxedScoreGame<Integer> implements Listener {
         List.of("§hGoal: §pmost punched out fires", "Punch out fires by clicking left."),
         1,
         Duration.ofSeconds(45));
-
-    Server.registerListener(this, GameMicroGames.getPlugin());
   }
 
   @Override
-  public Integer getLocationAmount() {
-    return 5;
-  }
-
-  @Override
-  public void onMapLoad(Map map) {
-    super.onMapLoad(map);
+  public void onMapInit(Map map) {
+    super.onMapInit(map);
 
     ExWorld world = map.getWorld();
 
@@ -73,7 +65,7 @@ public class Firefighter extends BoxedScoreGame<Integer> implements Listener {
   }
 
   @Override
-  protected void applyBeforeStart() {
+  public void applyBeforeStart() {
     super.applyBeforeStart();
     this.spreadFire();
   }
@@ -123,15 +115,6 @@ public class Firefighter extends BoxedScoreGame<Integer> implements Listener {
   public void stop() {
     super.calcPlaces(true);
     super.stop();
-  }
-
-  @Override
-  public void reset() {
-    super.reset();
-
-    if (this.previousMap != null) {
-      Server.getWorldManager().reloadWorld(this.previousMap.getWorld());
-    }
   }
 
   @Override

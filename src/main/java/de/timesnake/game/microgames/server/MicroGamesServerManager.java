@@ -76,7 +76,7 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
     super.getGame().loadMaps(true);
 
     this.loadGame(new LadderKing());
-    this.loadGame(new ColorSwap());
+    //this.loadGame(new ColorSwap());
     this.loadGame(new Parkour());
     this.loadGame(new KnockOut());
     this.loadGame(new BlockJump());
@@ -86,15 +86,17 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
     this.loadGame(new TntRun());
     this.loadGame(new Firefighter());
     this.loadGame(new Spleef());
-    this.loadGame(new ColorPunch());
+    //this.loadGame(new ColorPunch());
     this.loadGame(new EggHunter());
     this.loadGame(new OreMiner());
     this.loadGame(new Sheeeep());
     this.loadGame(new SlimySlime());
     this.loadGame(new SandStorm());
-    this.loadGame(new HotFeet());
+    //this.loadGame(new HotFeet());
     this.loadGame(new RiseUp());
     this.loadGame(new BuildOver());
+    this.loadGame(new PuddleJumping());
+    //this.loadGame(new BlockCount());
 
     this.partyManager = new PartyManager();
 
@@ -190,7 +192,7 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
       ((MicroGamesUser) user).joinSpectator();
     }
 
-    this.broadcastMicroGamesTDMessage("§wSwitching to §v" + nextGame.getDisplayName());
+    this.broadcastMicroGamesTDMessage("§hSwitching to §v" + nextGame.getDisplayName());
     nextGame.prepare();
 
     this.delayTask = Server.runTaskLaterSynchrony(() -> {
@@ -333,7 +335,7 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
 
       this.broadcastMicroGamesTDMessage("");
       this.broadcastMicroGamesTDMessage("");
-      this.broadcastMicroGamesTDMessage("§wParty has ended");
+      this.broadcastMicroGamesTDMessage("§hParty has ended");
       this.broadcastMicroGamesTDMessage(Chat.getLineTDSeparator());
 
       Server.broadcastTDTitle(users.get(0).getTDChatName() + "§p wins", "§wParty has ended",

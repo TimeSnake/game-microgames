@@ -25,11 +25,6 @@ public class Parkour extends LocationFinishGame implements Listener {
   }
 
   @Override
-  public boolean hasSideboard() {
-    return false;
-  }
-
-  @Override
   public void onUserMove(UserMoveEvent e) {
     if (e.getUser().getLocation().getBlock().equals(this.getFinishLocation().getBlock())) {
       super.addWinner(((MicroGamesUser) e.getUser()), true);

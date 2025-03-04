@@ -10,7 +10,6 @@ import de.timesnake.basic.bukkit.util.user.event.UserDamageEvent;
 import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.game.microgames.game.basis.ShrinkingPlatformGame;
-import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -38,7 +37,6 @@ public class KnockOut extends ShrinkingPlatformGame implements Listener {
             "After a time, the platform becomes smaller."),
         2,
         Duration.ofMinutes(2));
-    Server.registerListener(this, GameMicroGames.getPlugin());
   }
 
   @Override
@@ -48,7 +46,7 @@ public class KnockOut extends ShrinkingPlatformGame implements Listener {
   }
 
   @Override
-  protected void applyBeforeStart() {
+  public void applyBeforeStart() {
     for (User user : Server.getPreGameUsers()) {
       user.teleport(this.getSpawnLocation());
       user.lockInventoryItemMove();
@@ -85,16 +83,6 @@ public class KnockOut extends ShrinkingPlatformGame implements Listener {
   @Override
   public void reset() {
     super.reset();
-  }
-
-  @Override
-  public boolean hasSideboard() {
-    return false;
-  }
-
-  @Override
-  public boolean onUserJoin(MicroGamesUser user) {
-    return false;
   }
 
   @Override

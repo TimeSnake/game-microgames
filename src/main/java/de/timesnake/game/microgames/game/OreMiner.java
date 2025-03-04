@@ -10,13 +10,11 @@ import de.timesnake.basic.bukkit.util.user.event.UserBlockBreakEvent;
 import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.bukkit.util.world.ExBlock;
 import de.timesnake.game.microgames.game.basis.BoxedScoreGame;
-import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Tuple;
 import de.timesnake.library.basic.util.WeightedRandomCollection;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -64,17 +62,15 @@ public class OreMiner extends BoxedScoreGame<Integer> implements Listener {
         List.of("§hGoal: §pmost ore points", "Mine ores to get points.", "More noble ores gives more points."),
         1,
         Duration.ofSeconds(60));
-
-    Server.registerListener(this, GameMicroGames.getPlugin());
   }
 
   @Override
   public void prepare() {
     super.prepare();
 
-    Collection<Block> blocks = this.getBlocksWithinBox();
+    Collection<ExBlock> blocks = this.getBlocksWithinBox();
 
-    for (Block block : blocks) {
+    for (ExBlock block : blocks) {
       if (this.random.nextFloat() < ORE_DENSITY) {
         Material ore = oreWeights.next();
         this.setOreVine(block, ore, 1.0 / (2 * ORE_POINTS.get(ore)), blocks);
@@ -83,7 +79,7 @@ public class OreMiner extends BoxedScoreGame<Integer> implements Listener {
     }
   }
 
-  private void setOreVine(Block block, Material ore, double chance, Collection<Block> blocks) {
+  private void setOreVine(ExBlock block, Material ore, double chance, Collection<ExBlock> blocks) {
     if (block.getType().equals(ore)) {
       return;
     }
@@ -94,7 +90,7 @@ public class OreMiner extends BoxedScoreGame<Integer> implements Listener {
       return;
     }
 
-    for (Block besideBlock : ExBlock.fromBlock(block).getBesideBlocks()) {
+    for (ExBlock besideBlock : block.getBesideBlocks()) {
       if (this.random.nextFloat() < chance && blocks.contains(besideBlock)) {
         this.setOreVine(besideBlock, ore, chance / 2, blocks);
       }
@@ -102,7 +98,7 @@ public class OreMiner extends BoxedScoreGame<Integer> implements Listener {
   }
 
   @Override
-  protected void applyBeforeStart() {
+  public void applyBeforeStart() {
     Server.getPreGameUsers().forEach(u -> u.setItem(PICKAXE));
   }
 
@@ -121,14 +117,6 @@ public class OreMiner extends BoxedScoreGame<Integer> implements Listener {
     Server.getInGameUsers().forEach(u -> this.updateUserScoreOnSideboard((MicroGamesUser) u));
     this.calcPlaces(true);
     super.stop();
-  }
-
-  @Override
-  public void reset() {
-    super.reset();
-    if (this.previousMap != null) {
-      Server.getWorldManager().reloadWorld(this.previousMap.getWorld());
-    }
   }
 
   @Override

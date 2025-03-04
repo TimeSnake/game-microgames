@@ -10,7 +10,6 @@ import de.timesnake.basic.bukkit.util.user.event.UserDeathEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserMoveEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserRespawnEvent;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
-import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Status;
 import org.bukkit.Material;
@@ -29,7 +28,6 @@ public abstract class LocationFinishGame extends MicroGame implements Listener {
                             List<String> description,
                             Integer minPlayers, Duration maxTime) {
     super(name, displayName, material, headLine, description, minPlayers, maxTime);
-    Server.registerListener(this, GameMicroGames.getPlugin());
   }
 
   @Override
@@ -39,7 +37,7 @@ public abstract class LocationFinishGame extends MicroGame implements Listener {
   }
 
   @Override
-  protected void applyBeforeStart() {
+  public void applyBeforeStart() {
     super.applyBeforeStart();
 
     for (User user : Server.getPreGameUsers()) {
@@ -61,24 +59,10 @@ public abstract class LocationFinishGame extends MicroGame implements Listener {
   }
 
   @Override
-  public void reset() {
-    super.reset();
-
-    if (this.previousMap != null) {
-      Server.getWorldManager().reloadWorld(this.previousMap.getWorld());
-    }
-  }
-
-  @Override
   public void onUserQuit(MicroGamesUser user) {
     if (Server.getInGameUsers().isEmpty()) {
       this.stop();
     }
-  }
-
-  @Override
-  public Integer getLocationAmount() {
-    return 4;
   }
 
   public ExLocation getFinishLocation() {

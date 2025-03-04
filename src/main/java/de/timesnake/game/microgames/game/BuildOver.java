@@ -11,11 +11,10 @@ import de.timesnake.basic.bukkit.util.user.event.UserDeathEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserMoveEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserRespawnEvent;
 import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
+import de.timesnake.basic.bukkit.util.world.BlockPolygon;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
-import de.timesnake.basic.bukkit.util.world.ExPolygon;
 import de.timesnake.basic.game.util.game.Map;
 import de.timesnake.game.microgames.game.basis.LocationFinishGame;
-import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.RandomList;
 import de.timesnake.library.chat.Plugin;
@@ -36,7 +35,7 @@ public class BuildOver extends LocationFinishGame implements Listener {
       .setDropable(false);
   private static final RandomList<Material> BUILDING_BLOCKS = new RandomList<>(Tag.WOOL.getValues());
 
-  private HashMap<Map, ExPolygon> polygonByMap;
+  private HashMap<Map, BlockPolygon> polygonByMap;
 
   public BuildOver() {
     super("build_over", "Build Over",
@@ -45,22 +44,20 @@ public class BuildOver extends LocationFinishGame implements Listener {
         List.of("§hGoal: §pfirst at finish", "Reach the finish at first."),
         1,
         Duration.ofMinutes(4));
-
-    Server.registerListener(this, GameMicroGames.getPlugin());
   }
 
   @Override
-  public void beforeMapLoad() {
-    super.beforeMapLoad();
+  public void beforeMapInit() {
+    super.beforeMapInit();
 
     this.polygonByMap = new HashMap<>();
   }
 
   @Override
-  public void onMapLoad(Map map) {
-    super.onMapLoad(map);
+  public void onMapInit(Map map) {
+    super.onMapInit(map);
 
-    this.polygonByMap.put(map, new ExPolygon(map.getWorld(), map.getLocationsSorted(10, 100)));
+    this.polygonByMap.put(map, map.getBlockPolygon(10, 100));
   }
 
   @Override
@@ -71,11 +68,11 @@ public class BuildOver extends LocationFinishGame implements Listener {
   }
 
   @Override
-  protected void applyBeforeStart() {
+  public void applyBeforeStart() {
     super.applyBeforeStart();
 
     Server.getPreGameUsers().forEach(u -> {
-      ItemStack blocks = new ItemStack(BUILDING_BLOCKS.getRandom()).asQuantity(64);
+      ItemStack blocks = new ItemStack(BUILDING_BLOCKS.getAny()).asQuantity(64);
       u.addItem(blocks);
       u.addItem(blocks);
       u.addItem(SHEARS);
@@ -102,15 +99,10 @@ public class BuildOver extends LocationFinishGame implements Listener {
     super.onUserRepsawn(e);
     User user = e.getUser();
     user.clearInventory();
-    ItemStack blocks = new ItemStack(BUILDING_BLOCKS.getRandom()).asQuantity(64);
+    ItemStack blocks = new ItemStack(BUILDING_BLOCKS.getAny()).asQuantity(64);
     user.addItem(blocks);
     user.addItem(blocks);
     user.addItem(SHEARS);
-  }
-
-  @Override
-  public boolean hasSideboard() {
-    return false;
   }
 
   @Override

@@ -6,6 +6,7 @@ package de.timesnake.game.microgames.game.basis;
 
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
+import de.timesnake.game.microgames.game.extension.FallOutGame;
 import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.library.chat.ExTextColor;
 import net.kyori.adventure.text.Component;
@@ -18,7 +19,7 @@ import org.bukkit.scheduler.BukkitTask;
 import java.time.Duration;
 import java.util.List;
 
-public abstract class ShrinkingPlatformGame extends FallOutGame {
+public abstract class ShrinkingPlatformGame extends MicroGame implements FallOutGame {
 
   private BukkitTask decreaseTask;
   private Integer delay;

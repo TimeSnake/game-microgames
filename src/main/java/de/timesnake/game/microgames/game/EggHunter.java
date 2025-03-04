@@ -34,7 +34,7 @@ public class EggHunter extends ScoreGame<Integer> {
   }
 
   @Override
-  protected void applyBeforeStart() {
+  public void applyBeforeStart() {
     super.applyBeforeStart();
   }
 
@@ -52,14 +52,6 @@ public class EggHunter extends ScoreGame<Integer> {
   }
 
   @Override
-  public void reset() {
-    super.reset();
-    if (this.previousMap != null) {
-      Server.getWorldManager().reloadWorld(this.previousMap.getWorld());
-    }
-  }
-
-  @Override
   public boolean hasSideboard() {
     return true;
   }
@@ -67,11 +59,6 @@ public class EggHunter extends ScoreGame<Integer> {
   @Override
   public String getScoreName() {
     return "Clicked Eggs";
-  }
-
-  @Override
-  public boolean onUserJoin(MicroGamesUser user) {
-    return false;
   }
 
   @Override

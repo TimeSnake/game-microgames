@@ -59,8 +59,6 @@ public class HotPotato extends ScoreGame<Integer> implements Listener {
             "Potato holders have a cooldown, before they can give the potato away."),
         2,
         null);
-
-    Server.registerListener(this, GameMicroGames.getPlugin());
   }
 
   @Override
@@ -73,7 +71,7 @@ public class HotPotato extends ScoreGame<Integer> implements Listener {
   }
 
   @Override
-  protected void applyBeforeStart() {
+  public void applyBeforeStart() {
     super.applyBeforeStart();
 
     for (User user : Server.getPreGameUsers()) {
@@ -188,11 +186,6 @@ public class HotPotato extends ScoreGame<Integer> implements Listener {
   @Override
   public boolean hasSideboard() {
     return true;
-  }
-
-  @Override
-  public boolean onUserJoin(MicroGamesUser user) {
-    return false;
   }
 
   @Override

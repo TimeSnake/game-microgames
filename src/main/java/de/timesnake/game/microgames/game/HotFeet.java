@@ -7,10 +7,11 @@ package de.timesnake.game.microgames.game;
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.event.UserBlockBreakEvent;
-import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
 import de.timesnake.basic.game.util.game.Map;
-import de.timesnake.game.microgames.game.basis.FallOutGame;
+import de.timesnake.game.microgames.game.basis.MicroGame;
+import de.timesnake.game.microgames.game.extension.ArenaGame;
+import de.timesnake.game.microgames.game.extension.FallOutGame;
 import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.basic.util.Tuple;
@@ -29,10 +30,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class HotFeet extends FallOutGame {
-
-  private static final Integer FIRST_CORNER_INDEX = 3;
-  private static final Integer SECOND_CORNER_INDEX = 4;
+public class HotFeet extends MicroGame implements ArenaGame, FallOutGame {
 
   private static final int DESPAWN_TIME = 40;
 
@@ -51,12 +49,11 @@ public class HotFeet extends FallOutGame {
             "Try to be the last standing on white blocks."),
         1,
         Duration.ofSeconds(180));
-    Server.registerListener(this, GameMicroGames.getPlugin());
   }
 
   @Override
-  public void onMapLoad(Map map) {
-    super.onMapLoad(map);
+  public void onMapInit(Map map) {
+    super.onMapInit(map);
 
     map.getWorld().setPVP(false);
     map.getWorld().restrict(ExWorld.Restriction.AUTO_PRIME_TNT, false);
@@ -66,9 +63,8 @@ public class HotFeet extends FallOutGame {
   public void prepare() {
     super.prepare();
 
-    this.blocksWithDespawnTicks = this.currentMap.getWorld().getBlocksWithinCubic(this.getFirstCorner(),
-            this.getSecondCorner()).stream()
-        .map(b -> new Tuple<>(b, 0))
+    this.blocksWithDespawnTicks = this.getArena().getHighestBlocksInside().stream()
+        .map(b -> new Tuple<>(b.getBlock(), 0))
         .collect(Collectors.toList());
     this.blocksWithDespawnTicks.forEach(b -> b.getA().setType(Material.WHITE_CONCRETE));
   }
@@ -138,20 +134,7 @@ public class HotFeet extends FallOutGame {
 
   @Override
   public Integer getDeathHeight() {
-    return this.getFirstCorner().getBlockY();
-  }
-
-  @Override
-  public boolean hasSideboard() {
-    return false;
-  }
-
-  public ExLocation getFirstCorner() {
-    return this.currentMap.getLocation(FIRST_CORNER_INDEX);
-  }
-
-  public ExLocation getSecondCorner() {
-    return this.currentMap.getLocation(SECOND_CORNER_INDEX);
+    return 0;
   }
 
   @EventHandler
@@ -170,7 +153,7 @@ public class HotFeet extends FallOutGame {
     }
 
     if (e.getPrimingEntity() instanceof TNTPrimed tnt) {
-      tnt.setFuseTicks(30);
+      tnt.setFuseTicks(20);
     }
   }
 
@@ -180,6 +163,6 @@ public class HotFeet extends FallOutGame {
       return;
     }
 
-    e.blockList().clear();
+    e.setYield(0);
   }
 }

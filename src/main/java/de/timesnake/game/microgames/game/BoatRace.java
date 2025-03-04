@@ -46,7 +46,7 @@ public class BoatRace extends LocationFinishGame implements Listener {
   }
 
   @Override
-  protected void applyBeforeStart() {
+  public void applyBeforeStart() {
     super.applyBeforeStart();
 
     for (User user : Server.getPreGameUsers()) {

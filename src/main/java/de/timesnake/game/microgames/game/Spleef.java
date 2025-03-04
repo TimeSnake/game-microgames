@@ -10,8 +10,8 @@ import de.timesnake.basic.bukkit.util.user.event.UserBlockBreakEvent;
 import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.basic.bukkit.util.world.ExWorld.Restriction;
-import de.timesnake.game.microgames.game.basis.FallOutGame;
-import de.timesnake.game.microgames.main.GameMicroGames;
+import de.timesnake.game.microgames.game.basis.MicroGame;
+import de.timesnake.game.microgames.game.extension.FallOutGame;
 import de.timesnake.library.basic.util.Status;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -26,7 +26,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Random;
 
-public class Spleef extends FallOutGame {
+public class Spleef extends MicroGame implements FallOutGame {
 
   private static final ExItemStack SHOVEL = new ExItemStack(Material.GOLDEN_SHOVEL)
       .addExEnchantment(Enchantment.EFFICIENCY, 10)
@@ -47,12 +47,6 @@ public class Spleef extends FallOutGame {
             "Use the shovel to spleef other players."),
         2,
         Duration.ofMinutes(3));
-    Server.registerListener(this, GameMicroGames.getPlugin());
-  }
-
-  @Override
-  public Integer getLocationAmount() {
-    return 4;
   }
 
   @Override
@@ -63,7 +57,7 @@ public class Spleef extends FallOutGame {
   }
 
   @Override
-  protected void applyBeforeStart() {
+  public void applyBeforeStart() {
     for (User user : Server.getPreGameUsers()) {
       user.teleport(this.getSpawnLocation());
       user.addItem(SHOVEL);
@@ -78,14 +72,6 @@ public class Spleef extends FallOutGame {
     for (User user : Server.getInGameUsers()) {
       user.setInvulnerable(false);
       user.setGameMode(GameMode.SURVIVAL);
-    }
-  }
-
-  @Override
-  public void reset() {
-    super.reset();
-    if (this.previousMap != null) {
-      Server.getWorldManager().reloadWorld(this.previousMap.getWorld());
     }
   }
 

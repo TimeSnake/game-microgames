@@ -48,8 +48,8 @@ public class SandStorm extends MicroGame {
   }
 
   @Override
-  public void onMapLoad(Map map) {
-    super.onMapLoad(map);
+  public void onMapInit(Map map) {
+    super.onMapInit(map);
   }
 
   @Override
@@ -81,15 +81,6 @@ public class SandStorm extends MicroGame {
 
     if (this.moveTask != null) {
       this.moveTask.cancel();
-    }
-  }
-
-  @Override
-  public void reset() {
-    super.reset();
-
-    if (this.previousMap != null) {
-      Server.getWorldManager().reloadWorld(this.previousMap.getWorld());
     }
   }
 

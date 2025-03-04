@@ -130,13 +130,7 @@ public class Graffiti extends MicroGame implements Listener, UserInventoryIntera
     super("graffiti", "Graffiti", Material.SEA_PICKLE,
         "Paint the most walls", List.of(), 2, null);
 
-    Server.registerListener(this, GameMicroGames.getPlugin());
     Server.getInventoryEventManager().addInteractListener(this, PAINT_GUN);
-  }
-
-  @Override
-  public Integer getLocationAmount() {
-    return 5;
   }
 
   @Override
@@ -146,13 +140,13 @@ public class Graffiti extends MicroGame implements Listener, UserInventoryIntera
   }
 
   @Override
-  public void onMapLoad(de.timesnake.basic.game.util.game.Map map) {
-    super.onMapLoad(map);
+  public void onMapInit(de.timesnake.basic.game.util.game.Map map) {
+    super.onMapInit(map);
     map.getWorld().setGameRule(GameRule.NATURAL_REGENERATION, false);
   }
 
   @Override
-  protected void applyBeforeStart() {
+  public void applyBeforeStart() {
 
     List<User> users = new ArrayList<>(Server.getPreGameUsers());
     Collections.shuffle(users);
@@ -273,20 +267,11 @@ public class Graffiti extends MicroGame implements Listener, UserInventoryIntera
     this.time = TIME;
     this.cooldownUsers.clear();
     this.jumpTasksByUser.clear();
-
-    if (this.previousMap != null) {
-      Server.getWorldManager().reloadWorld(this.previousMap.getWorld());
-    }
   }
 
   @Override
   public boolean hasSideboard() {
     return true;
-  }
-
-  @Override
-  public boolean onUserJoin(MicroGamesUser user) {
-    return false;
   }
 
   @Override

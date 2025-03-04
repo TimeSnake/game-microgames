@@ -7,9 +7,11 @@ package de.timesnake.game.microgames.game;
 import de.timesnake.basic.bukkit.core.server.MathHelper;
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.user.User;
-import de.timesnake.basic.bukkit.util.world.ExLocation;
-import de.timesnake.basic.bukkit.util.world.ExWorld;
-import de.timesnake.game.microgames.game.basis.FallOutGame;
+import de.timesnake.basic.bukkit.util.world.BlockPolygon;
+import de.timesnake.basic.bukkit.util.world.ExBlock;
+import de.timesnake.game.microgames.game.basis.MicroGame;
+import de.timesnake.game.microgames.game.extension.ArenaGame;
+import de.timesnake.game.microgames.game.extension.FallOutGame;
 import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.server.MicroGamesServer;
 import de.timesnake.game.microgames.user.MicroGamesUser;
@@ -19,7 +21,6 @@ import org.bukkit.Instrument;
 import org.bukkit.Material;
 import org.bukkit.Note;
 import org.bukkit.Tag;
-import org.bukkit.block.Block;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
@@ -27,15 +28,13 @@ import org.bukkit.scheduler.BukkitTask;
 import java.time.Duration;
 import java.util.*;
 
-public class ColorSwap extends FallOutGame implements Listener {
-
-  protected static final Integer FIRST_CORNER_LOCATION_INDEX = 3;
-  protected static final Integer SECOND_CORNER_LOCATION_INDEX = 4;
+public class ColorSwap extends MicroGame implements FallOutGame, ArenaGame, Listener {
 
   protected static final Integer MAX_LEVEL = 30;
 
   protected static final List<Material> MATERIALS = List.of(Material.BLACK_WOOL, Material.BLUE_WOOL, Material.GRAY_WOOL,
-      Material.GREEN_WOOL, Material.LIGHT_BLUE_WOOL, Material.LIGHT_GRAY_WOOL, Material.LIME_WOOL, Material.MAGENTA_WOOL,
+      Material.GREEN_WOOL, Material.LIGHT_BLUE_WOOL, Material.LIGHT_GRAY_WOOL, Material.LIME_WOOL,
+      Material.MAGENTA_WOOL,
       Material.ORANGE_WOOL, Material.PURPLE_WOOL, Material.RED_WOOL, Material.WHITE_WOOL, Material.YELLOW_WOOL);
 
   protected static final Integer LEVEL_TICKS = 2 * 20; //for first level
@@ -47,10 +46,9 @@ public class ColorSwap extends FallOutGame implements Listener {
   private final Random random = new Random();
 
   private final HashMap<Integer, Level> levels = new HashMap<>();
-  protected int beginX;
-  protected int beginZ;
-  protected int endX;
-  protected int endZ;
+  protected BlockPolygon arena;
+  protected List<List<ExBlock>> blocks;
+
   private Integer currentLevel = 1;
   private BukkitTask waitingTask;
   private BukkitTask countdownTask;
@@ -69,12 +67,6 @@ public class ColorSwap extends FallOutGame implements Listener {
   public ColorSwap(String name, String displayName, Material material, String headLine, List<String> description,
                    Integer minPlayers, Duration maxTime) {
     super(name, displayName, material, headLine, description, minPlayers, maxTime);
-    Server.registerListener(this, GameMicroGames.getPlugin());
-  }
-
-  @Override
-  public Integer getLocationAmount() {
-    return 5;
   }
 
   @Override
@@ -88,14 +80,8 @@ public class ColorSwap extends FallOutGame implements Listener {
 
     super.currentMap.getWorld().setPVP(false);
 
-    ExLocation firstCorner = this.getFirstCorner();
-    ExLocation secondCorner = this.getSecondCorner();
-
-    this.beginX = Math.min(firstCorner.getBlockX(), secondCorner.getBlockX());
-    this.beginZ = Math.min(firstCorner.getBlockZ(), secondCorner.getBlockZ());
-
-    this.endX = Math.max(firstCorner.getBlockX(), secondCorner.getBlockX());
-    this.endZ = Math.max(firstCorner.getBlockZ(), secondCorner.getBlockZ());
+    this.arena = this.getArena();
+    this.blocks = this.arena.getBlocksInsideSortedByXThenZ();
 
     this.clearFloor();
 
@@ -117,7 +103,7 @@ public class ColorSwap extends FallOutGame implements Listener {
   }
 
   @Override
-  protected void applyBeforeStart() {
+  public void applyBeforeStart() {
     super.applyBeforeStart();
 
     for (User user : Server.getPreGameUsers()) {
@@ -157,14 +143,8 @@ public class ColorSwap extends FallOutGame implements Listener {
   @Override
   public void reset() {
     super.reset();
-    this.clearFloor();
-
     this.currentLevel = 1;
     super.sideboard.setScore(3, "§f" + this.currentLevel);
-
-    if (this.previousMap != null) {
-      Server.getWorldManager().reloadWorld(this.previousMap.getWorld());
-    }
   }
 
   public void startLevel() {
@@ -205,12 +185,8 @@ public class ColorSwap extends FallOutGame implements Listener {
   }
 
   private void clearFloor() {
-    ExWorld world = this.currentMap.getWorld();
-    int y = this.getFirstCorner().getBlockY();
-
-    for (int x = this.beginX; x <= this.endX; x++) {
-      for (int z = this.beginZ; z <= this.endZ; z++) {
-        Block block = world.getBlockAt(x, y, z);
+    for (List<ExBlock> blocks : this.blocks) {
+      for (ExBlock block : blocks) {
         if (this.isReplaceable(block)) {
           block.setType(Material.WHITE_WOOL);
         }
@@ -218,26 +194,18 @@ public class ColorSwap extends FallOutGame implements Listener {
     }
   }
 
-  public ExLocation getFirstCorner() {
-    return this.currentMap.getLocation(FIRST_CORNER_LOCATION_INDEX);
-  }
-
-  public ExLocation getSecondCorner() {
-    return this.currentMap.getLocation(SECOND_CORNER_LOCATION_INDEX);
-  }
-
   @Override
   public Integer getDeathHeight() {
-    return this.getFirstCorner().getBlockY();
+    return this.arena.getMinHeight();
   }
 
   @Override
-  protected void addWinner(MicroGamesUser user, boolean firstWins) {
+  public void addWinner(MicroGamesUser user, boolean firstWins) {
     super.addWinner(user, firstWins);
     super.sideboard.setScore(0, String.valueOf(Server.getInGameUsers().size()));
   }
 
-  private boolean isReplaceable(Block block) {
+  private boolean isReplaceable(ExBlock block) {
     return block.isEmpty() || Tag.WOOL.isTagged(block.getType());
   }
 
@@ -246,18 +214,18 @@ public class ColorSwap extends FallOutGame implements Listener {
     private final Integer level;
     private final Integer ticks;
     private final Material primaryMaterial;
-    private final HashMap<Block, Material> blocks = new HashMap<>();
+    private final HashMap<ExBlock, Material> blocks = new HashMap<>();
 
     protected Level(Integer level, Integer ticks) {
       this.level = level;
       this.ticks = ticks;
 
-      int materialsNumber = (int) (ColorSwap.DIFFERENT_MATERIALS + (level - 1) * ColorSwap.DIFFERENT_MATERIALS_INCREASE);
+      int materialsNumber =
+          (int) (ColorSwap.DIFFERENT_MATERIALS + (level - 1) * ColorSwap.DIFFERENT_MATERIALS_INCREASE);
 
       ArrayList<Material> materials = new ArrayList<>(ColorSwap.MATERIALS);
       ArrayList<Material> selectedMaterials = new ArrayList<>();
 
-      //get Materials
       for (int i = 0; i < materialsNumber; i++) {
         int index = ColorSwap.this.random.nextInt(materials.size());
         selectedMaterials.add(materials.get(index));
@@ -266,24 +234,24 @@ public class ColorSwap extends FallOutGame implements Listener {
 
       HashSet<Material> availableMaterials = new HashSet<>();
 
-      //create pattern and save in HashMap
-      ExWorld world = ColorSwap.this.currentMap.getWorld();
-      int y = ColorSwap.this.getFirstCorner().getBlockY();
-
-      int type = ColorSwap.this.random.nextInt(3);
+      int type = ColorSwap.this.random.nextInt(4);
 
       switch (type) {
         case 0 -> {
-          for (int x = ColorSwap.this.beginX; x <= ColorSwap.this.endX; x += 2) {
-            for (int z = ColorSwap.this.beginZ; z <= ColorSwap.this.endZ; z += 2) {
+          for (List<ExBlock> blocks : ColorSwap.this.blocks) {
+            for (ExBlock block : blocks) {
+              if (this.blocks.containsKey(block)) {
+                continue;
+              }
 
               Material material = selectedMaterials.get(ColorSwap.this.random.nextInt(selectedMaterials.size()));
               availableMaterials.add(material);
 
               for (int patternX = 0; patternX < 2; patternX++) {
                 for (int patternZ = 0; patternZ < 2; patternZ++) {
-                  if (x + patternX <= ColorSwap.this.endX && z + patternZ <= ColorSwap.this.endZ) {
-                    this.blocks.put(world.getBlockAt(x + patternX, y, z + patternZ), material);
+                  ExBlock block2 = block.getExRelative(patternX, 0, patternZ);
+                  if (ColorSwap.this.arena.contains(block2)) {
+                    this.blocks.putIfAbsent(block2, material);
                   }
                 }
               }
@@ -291,65 +259,58 @@ public class ColorSwap extends FallOutGame implements Listener {
           }
         }
         case 1 -> {
-          boolean xz = ColorSwap.this.random.nextBoolean();
-          if (xz) {
-            int halfZEnd = ColorSwap.this.endZ - (ColorSwap.this.endZ - ColorSwap.this.beginZ) / 2;
+          int zCenter = ColorSwap.this.arena.getCenterBlock().getZ();
 
-            for (int x = ColorSwap.this.beginX; x <= ColorSwap.this.endX; x += 1) {
-
-              Material material = selectedMaterials.get(ColorSwap.this.random.nextInt(selectedMaterials.size()));
-              availableMaterials.add(material);
-
-              for (int z = ColorSwap.this.beginZ; z <= halfZEnd; z += 1) {
-                this.blocks.put(world.getBlockAt(x, y, z), material);
+          for (List<ExBlock> blocks : ColorSwap.this.blocks) {
+            Material material = selectedMaterials.get(ColorSwap.this.random.nextInt(selectedMaterials.size()));
+            availableMaterials.add(material);
+            for (ExBlock block : blocks) {
+              if (block.getZ() == zCenter) {
+                material = selectedMaterials.get(ColorSwap.this.random.nextInt(selectedMaterials.size()));
+                availableMaterials.add(material);
               }
-
-              material = selectedMaterials.get(ColorSwap.this.random.nextInt(selectedMaterials.size()));
-              availableMaterials.add(material);
-
-              for (int z = halfZEnd + 1; z <= ColorSwap.this.endZ; z += 1) {
-                this.blocks.put(world.getBlockAt(x, y, z), material);
-              }
-            }
-          } else {
-            int halfXEnd = ColorSwap.this.endX - (ColorSwap.this.endX - ColorSwap.this.beginX) / 2;
-
-            for (int z = ColorSwap.this.beginZ; z <= ColorSwap.this.endZ; z += 1) {
-
-              Material material = selectedMaterials.get(ColorSwap.this.random.nextInt(selectedMaterials.size()));
-              availableMaterials.add(material);
-
-              for (int x = ColorSwap.this.beginX; x <= halfXEnd; x += 1) {
-                this.blocks.put(world.getBlockAt(x, y, z), material);
-              }
-
-              material = selectedMaterials.get(ColorSwap.this.random.nextInt(selectedMaterials.size()));
-              availableMaterials.add(material);
-
-              for (int x = halfXEnd + 1; x <= ColorSwap.this.endX; x += 1) {
-                this.blocks.put(world.getBlockAt(x, y, z), material);
-              }
+              this.blocks.put(block, material);
             }
           }
         }
         case 2 -> {
-          for (int x = ColorSwap.this.beginX; x <= ColorSwap.this.endX; x += 1) {
-            for (int z = ColorSwap.this.beginZ; z <= ColorSwap.this.endZ; z += 1) {
+          for (List<ExBlock> blocks : ColorSwap.this.blocks) {
+            for (ExBlock block : blocks) {
               Material material = selectedMaterials.get(ColorSwap.this.random.nextInt(selectedMaterials.size()));
               availableMaterials.add(material);
-              this.blocks.put(world.getBlockAt(x, y, z), material);
+              this.blocks.put(block, material);
+            }
+          }
+        }
+        case 3 -> {
+          for (List<ExBlock> blocks : ColorSwap.this.blocks) {
+            Material material1 = selectedMaterials.get(ColorSwap.this.random.nextInt(selectedMaterials.size()));
+            Material material2 = selectedMaterials.get(ColorSwap.this.random.nextInt(selectedMaterials.size()));
+            availableMaterials.add(material1);
+            availableMaterials.add(material2);
+
+            boolean alt = true;
+            for (ExBlock block : blocks) {
+              if (alt) {
+                this.blocks.put(block, material1);
+                alt = false;
+              } else {
+                this.blocks.put(block, material2);
+                alt = true;
+              }
             }
           }
         }
       }
 
       //get primaryMaterial
-      this.primaryMaterial = new ArrayList<>(availableMaterials).get(ColorSwap.this.random.nextInt(availableMaterials.size()));
+      this.primaryMaterial =
+          new ArrayList<>(availableMaterials).get(ColorSwap.this.random.nextInt(availableMaterials.size()));
     }
 
     public void switchPattern() {
-      for (Map.Entry<Block, Material> entry : this.blocks.entrySet()) {
-        Block block = entry.getKey();
+      for (Map.Entry<ExBlock, Material> entry : this.blocks.entrySet()) {
+        ExBlock block = entry.getKey();
         if (ColorSwap.this.isReplaceable(block)) {
           block.setType(entry.getValue());
         }
@@ -357,7 +318,7 @@ public class ColorSwap extends FallOutGame implements Listener {
     }
 
     public void switchPatternToPrimaryMaterial() {
-      for (Map.Entry<Block, Material> entry : this.blocks.entrySet()) {
+      for (Map.Entry<ExBlock, Material> entry : this.blocks.entrySet()) {
         if (!entry.getValue().equals(this.primaryMaterial) && ColorSwap.this.isReplaceable(entry.getKey())) {
           entry.getKey().setType(Material.AIR);
         }

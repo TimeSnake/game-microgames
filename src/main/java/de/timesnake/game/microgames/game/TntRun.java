@@ -8,7 +8,8 @@ import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.event.UserMoveEvent;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
-import de.timesnake.game.microgames.game.basis.FallOutGame;
+import de.timesnake.game.microgames.game.basis.MicroGame;
+import de.timesnake.game.microgames.game.extension.FallOutGame;
 import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.library.basic.util.Status;
 import org.bukkit.Location;
@@ -22,7 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class TntRun extends FallOutGame implements Listener {
+public class TntRun extends MicroGame implements FallOutGame, Listener {
 
   protected static final Integer DEATH_HEIGHT_LOCATION_INDEX = 3;
 
@@ -38,17 +39,11 @@ public class TntRun extends FallOutGame implements Listener {
         "TNT Run",
         Material.TNT,
         "Try not to fall",
-        List.of("§hGoal: §plast man standing.", "Blocks your standing on gets tnt and despawn.", "Keep running to not" +
-            " fall."),
+        List.of("§hGoal: §plast man standing.",
+            "Blocks your standing on gets tnt and despawn.",
+            "Keep running to not fall."),
         1,
         Duration.ofMinutes(5));
-
-    Server.registerListener(this, GameMicroGames.getPlugin());
-  }
-
-  @Override
-  public Integer getLocationAmount() {
-    return 4;
   }
 
   @Override
@@ -58,7 +53,7 @@ public class TntRun extends FallOutGame implements Listener {
   }
 
   @Override
-  protected void applyBeforeStart() {
+  public void applyBeforeStart() {
     super.applyBeforeStart();
   }
 
@@ -116,9 +111,6 @@ public class TntRun extends FallOutGame implements Listener {
   public void reset() {
     super.reset();
     this.removedBlocks.clear();
-    if (this.previousMap != null) {
-      Server.getWorldManager().reloadWorld(this.previousMap.getWorld());
-    }
   }
 
   @Override
@@ -148,7 +140,7 @@ public class TntRun extends FallOutGame implements Listener {
       return;
     }
 
-    super.onUserMove(e);
+    FallOutGame.super.onUserMove(e);
 
     e.getFrom().getBlock().setType(Material.AIR);
     this.removeBlocks(e.getFrom().clone().add(0, -1, 0));

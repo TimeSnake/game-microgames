@@ -28,12 +28,13 @@ import org.bukkit.Sound;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
+import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.time.Duration;
 import java.util.*;
 
-public abstract class MicroGame {
+public abstract class MicroGame implements MicroGameExtensionBase, Listener {
 
   protected static final Integer SPEC_LOCATION_INDEX = 0;
   protected static final Integer START_LOCATION_INDEX = 1;
@@ -83,7 +84,7 @@ public abstract class MicroGame {
     this.timeBar = Server.createBossBar("Time left: §c§l" + Chat.getTimeString(timeSec), BarColor.WHITE,
         BarStyle.SOLID);
 
-    this.beforeMapLoad();
+    this.beforeMapInit();
 
     for (Map map : MicroGamesServer.getGame().getMaps()) {
       if (map.getProperty("type") == null) {
@@ -97,13 +98,8 @@ public abstract class MicroGame {
           continue;
         }
 
-        if (map.getLocations().size() < this.getLocationAmount()) {
-          this.logger.warn("Can not load map '{}', too few locations", map.getName());
-          continue;
-        }
-
         this.maps.add(map);
-        this.onMapLoad(map);
+        this.onMapInit(map);
 
         this.logger.info("Added map '{}' to game '{}'", map.getName(), this.displayName);
       }
@@ -113,13 +109,17 @@ public abstract class MicroGame {
         .registerSideboard(new SideboardBuilder()
             .name(name)
             .title("§6§l" + displayName));
+
+    Server.registerListener(this, GameMicroGames.getPlugin());
   }
 
-  public void beforeMapLoad() {
+  @Override
+  public void beforeMapInit() {
 
   }
 
-  public void onMapLoad(Map map) {
+  @Override
+  public void onMapInit(Map map) {
     ExWorld world = map.getWorld();
 
     world.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
@@ -138,10 +138,7 @@ public abstract class MicroGame {
     world.setAutoSave(false);
   }
 
-  public Integer getLocationAmount() {
-    return 3;
-  }
-
+  @Override
   public void prepare() {
     this.previousMap = this.currentMap;
 
@@ -154,6 +151,7 @@ public abstract class MicroGame {
     }
   }
 
+  @Override
   public void load() {
     this.timeSec = this.maxTimeSec;
     this.timeBar.setTitle("Time left: §c§l" + Chat.getTimeString(this.timeSec));
@@ -178,10 +176,12 @@ public abstract class MicroGame {
     Server.runTaskLaterSynchrony(this::applyBeforeStart, 5 * 20, GameMicroGames.getPlugin());
   }
 
-  protected void applyBeforeStart() {
+  @Override
+  public void applyBeforeStart() {
     Server.getPreGameUsers().forEach(u -> u.teleport(this.getStartLocation()));
   }
 
+  @Override
   public void start() {
     for (User user : Server.getPreGameUsers()) {
       user.setStatus(Status.User.IN_GAME);
@@ -202,7 +202,8 @@ public abstract class MicroGame {
     }
   }
 
-  protected void addWinner(MicroGamesUser user, boolean firstWins) {
+  @Override
+  public void addWinner(MicroGamesUser user, boolean firstWins) {
     if (!user.getStatus().equals(Status.User.OUT_GAME)) {
       user.joinSpectator();
     }
@@ -215,11 +216,11 @@ public abstract class MicroGame {
 
     if (firstWins) {
       user.setPlace(this.currentPlace);
-      MicroGamesServer.broadcastMicroGamesTDMessage(user.getTDChatName() + "§w finished #" + this.currentPlace);
+      MicroGamesServer.broadcastMicroGamesTDMessage(user.getTDChatName() + "§h finished #" + this.currentPlace);
       this.currentPlace++;
     } else {
       user.setPlace(users + 1);
-      MicroGamesServer.broadcastMicroGamesTDMessage(user.getTDChatName() + "§w finished #" + (users + 1));
+      MicroGamesServer.broadcastMicroGamesTDMessage(user.getTDChatName() + "§h finished #" + (users + 1));
     }
 
     if (users == 1) {
@@ -243,12 +244,14 @@ public abstract class MicroGame {
 
   }
 
-  protected void addRemainingAsWinner(boolean firstWins) {
+  @Override
+  public void addRemainingAsWinner(boolean firstWins) {
     for (User user : Server.getInGameUsers()) {
       ((MicroGamesUser) user).setPlace(firstWins ? this.currentPlace : 1);
     }
   }
 
+  @Override
   public void stop() {
     if (!this.isGameRunning) {
       return;
@@ -316,88 +319,123 @@ public abstract class MicroGame {
     MicroGamesServer.nextGame();
   }
 
-  protected String getWinMessage(MicroGamesUser user, int place) {
+  @Override
+  public String getWinMessage(MicroGamesUser user, int place) {
     return "§6§l" + place + ". " + user.getTDChatName();
   }
 
+  @Override
   public void reset() {
-
+    if (this.previousMap != null) {
+      Server.getWorldManager().reloadWorld(this.previousMap.getWorld());
+    }
   }
 
-  public abstract boolean hasSideboard();
+  @Override
+  public boolean hasSideboard() {
+    return false;
+  }
 
+  @Override
   public boolean onUserJoin(MicroGamesUser user) {
     return false;
   }
 
+  @Override
   public void onUserQuit(MicroGamesUser user) {
     if (Server.getInGameUsers().size() <= 1) {
       this.stop();
     }
   }
 
+  @Override
   public ExLocation getSpecLocation() {
     return this.currentMap.getLocation(SPEC_LOCATION_INDEX);
   }
 
+  @Override
   public ExLocation getStartLocation() {
     return this.currentMap.getLocation(START_LOCATION_INDEX);
   }
 
+  @Override
   public ExLocation getSpawnLocation() {
     return this.currentMap.getLocation(SPAWN_LOCATION_INDEX);
   }
 
+  @Override
   public boolean isGameRunning() {
     return isGameRunning;
   }
 
+  @Override
   public String getName() {
     return name;
   }
 
+  @Override
   public String getDisplayName() {
     return displayName;
   }
 
+  @Override
   public String getHeadLine() {
     return headLine;
   }
 
+  @Override
   public List<String> getDescription() {
     return description;
   }
 
+  @Override
   public Sideboard getSideboard() {
     return sideboard;
   }
 
+  @Override
   public List<Map> getMaps() {
     return maps;
   }
 
+  @Override
   public Integer getMinPlayers() {
     return minPlayers;
   }
 
+  @Override
+  public Map getCurrentMap() {
+    return currentMap;
+  }
+
+  @Override
   public Integer getVotes() {
     return votes;
   }
 
+  @Override
   public void resetVotes() {
     this.votes = 0;
   }
 
+  @Override
   public void addVote() {
     this.votes++;
   }
 
+  @Override
   public void removeVote() {
     this.votes--;
   }
 
+  @Override
   public Material getMaterial() {
     return material;
+  }
+
+  @Override
+  public Random getRandom() {
+    return random;
   }
 
   @Override

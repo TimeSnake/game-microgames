@@ -43,7 +43,6 @@ public class LadderKing extends ScoreGame<Integer> implements Listener {
             "Be in sum the most time on top."),
         2,
         Duration.ofSeconds(90));
-    Server.registerListener(this, GameMicroGames.getPlugin());
   }
 
   @Override
@@ -57,7 +56,7 @@ public class LadderKing extends ScoreGame<Integer> implements Listener {
   }
 
   @Override
-  protected void applyBeforeStart() {
+  public void applyBeforeStart() {
     List<ExLocation> spawnLocations = super.currentMap.getLocations(4);
     for (User user : Server.getPreGameUsers()) {
       user.teleport(spawnLocations.get(super.random.nextInt(spawnLocations.size())));

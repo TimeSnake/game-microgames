@@ -51,12 +51,11 @@ public class RiseUp extends ScoreGame<Integer> implements Listener {
         ),
         2,
         Duration.ofSeconds(120));
-    Server.registerListener(this, GameMicroGames.getPlugin());
   }
 
   @Override
-  public void onMapLoad(Map map) {
-    super.onMapLoad(map);
+  public void onMapInit(Map map) {
+    super.onMapInit(map);
 
     ExWorld world = map.getWorld();
 
@@ -102,7 +101,7 @@ public class RiseUp extends ScoreGame<Integer> implements Listener {
   }
 
   @Override
-  protected void applyBeforeStart() {
+  public void applyBeforeStart() {
     super.applyBeforeStart();
 
     List<Material> materials = new ArrayList<>(Tag.WOOL.getValues());
@@ -135,15 +134,6 @@ public class RiseUp extends ScoreGame<Integer> implements Listener {
   }
 
   @Override
-  public void reset() {
-    super.reset();
-
-    if (this.previousMap != null) {
-      Server.getWorldManager().reloadWorld(this.previousMap.getWorld());
-    }
-  }
-
-  @Override
   public boolean hasSideboard() {
     return true;
   }
@@ -155,11 +145,6 @@ public class RiseUp extends ScoreGame<Integer> implements Listener {
 
   private ExLocation getGoalLocation() {
     return this.currentMap.getLocation(GOAL_LOCATION_INDEX);
-  }
-
-  @Override
-  public Integer getLocationAmount() {
-    return 4;
   }
 
   @EventHandler

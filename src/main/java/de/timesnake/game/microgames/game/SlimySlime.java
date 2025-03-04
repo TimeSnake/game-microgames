@@ -55,12 +55,11 @@ public class SlimySlime extends ScoreGame<Integer> implements Listener {
             "Feed slimy slime to get points."),
         1,
         Duration.ofSeconds(90));
-    Server.registerListener(this, GameMicroGames.getPlugin());
   }
 
   @Override
-  public void onMapLoad(Map map) {
-    super.onMapLoad(map);
+  public void onMapInit(Map map) {
+    super.onMapInit(map);
 
     map.getWorld().restrict(ExWorld.Restriction.NO_PLAYER_DAMAGE, true);
     map.getWorld().setPVP(false);
@@ -98,19 +97,6 @@ public class SlimySlime extends ScoreGame<Integer> implements Listener {
 
     if (this.spawnTask != null) {
       this.spawnTask.cancel();
-    }
-  }
-
-  @Override
-  public void reset() {
-    super.reset();
-
-    if (this.mainSlime != null) {
-      this.mainSlime.remove(net.minecraft.world.entity.Entity.RemovalReason.DISCARDED);
-    }
-
-    if (this.previousMap != null) {
-      Server.getWorldManager().reloadWorld(this.previousMap.getWorld());
     }
   }
 

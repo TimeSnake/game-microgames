@@ -65,7 +65,7 @@ public abstract class ScoreGame<Score extends Comparable<Score>> extends MicroGa
   }
 
   @Override
-  protected String getWinMessage(MicroGamesUser user, int place) {
+  public String getWinMessage(MicroGamesUser user, int place) {
     return super.getWinMessage(user, place) + "  §7(" + this.scores.get(user) + ")";
   }
 
