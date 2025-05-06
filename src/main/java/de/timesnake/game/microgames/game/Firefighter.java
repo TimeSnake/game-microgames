@@ -73,29 +73,27 @@ public class Firefighter extends BoxedScoreGame<Integer> implements Listener {
   private void spreadFire() {
     ExWorld world = this.currentMap.getWorld();
 
-    for (Block block : this.getBlocksWithinBox()) {
+    for (ExBlock block : this.getBlocksWithinBox()) {
       if (!block.isBurnable() || EXCLUDED_MATERIALS.contains(block.getType())) {
         continue;
       }
 
-      for (Tuple<Vector, BlockFace> tuple : ExBlock.NEAR_BLOCKS_WITH_FACING) {
-        Vector vec = tuple.getA();
-        BlockFace blockFace = tuple.getB();
+      for (BlockFace face : ExBlock.ADJACENT_BLOCK_FACINGS) {
 
-        Block nearBlock = block.getLocation().add(vec).getBlock();
+        ExBlock adjacentBlock = block.getExRelative(face);
 
-        if (!nearBlock.isEmpty()) {
+        if (!adjacentBlock.isEmpty()) {
           continue;
         }
 
+        adjacentBlock.setType(Material.FIRE);
+
         if (world.getRandom().nextFloat() < FIRE_CHANCE) {
-          nearBlock.setType(Material.FIRE);
-          if (blockFace != BlockFace.DOWN) {
-            BlockData blockData = nearBlock.getBlockData();
-            if (blockData instanceof Fire) {
-              ((Fire) blockData).setFace(blockFace, true);
-              nearBlock.setBlockData(blockData);
-            }
+          adjacentBlock.setType(Material.FIRE);
+          BlockData blockData = adjacentBlock.getBlockData();
+          if (blockData instanceof Fire && face != BlockFace.UP) {
+            ((Fire) blockData).setFace(face, true);
+            adjacentBlock.setBlockData(blockData);
           }
         }
       }
