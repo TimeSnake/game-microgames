@@ -8,22 +8,19 @@ import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.world.ExBlock;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
-import de.timesnake.basic.bukkit.util.world.ExWorld.Restriction;
+import de.timesnake.basic.bukkit.util.world.ExWorldOption;
 import de.timesnake.basic.game.util.game.Map;
 import de.timesnake.game.microgames.game.basis.BoxedScoreGame;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Status;
-import de.timesnake.library.basic.util.Tuple;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Fire;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.util.Vector;
 
 import java.time.Duration;
 import java.util.List;
@@ -51,16 +48,15 @@ public class Firefighter extends BoxedScoreGame<Integer> implements Listener {
 
     ExWorld world = map.getWorld();
 
-    world.restrict(Restriction.FIRE_PUNCH_OUT, false);
-    world.restrict(Restriction.FLINT_AND_STEEL, true);
-    world.restrict(Restriction.BLOCK_BURN_UP, false);
-    world.restrict(Restriction.NO_PLAYER_DAMAGE, true);
-    world.restrict(Restriction.BLOCK_BREAK, true);
-    world.restrict(Restriction.BLOCK_PLACE, true);
-    world.restrict(Restriction.LIGHT_UP_INTERACTION, false);
-    world.restrict(Restriction.FIRE_SPREAD_SPEED, 0f);
-    world.restrict(Restriction.NO_PLAYER_DAMAGE, true);
-    world.restrict(Restriction.DROP_PICK_ITEM, true);
+    world.setOption(ExWorldOption.ALLOW_FIRE_PUNCH_OUT, true);
+    world.setOption(ExWorldOption.ALLOW_FLINT_AND_STEEL, false);
+    world.setOption(ExWorldOption.BLOCK_BURN_UP, true);
+    world.setOption(ExWorldOption.ENABLE_PLAYER_DAMAGE, true);
+    world.setOption(ExWorldOption.ALLOW_BLOCK_BREAK, false);
+    world.setOption(ExWorldOption.ALLOW_BLOCK_PLACE, false);
+    world.setOption(ExWorldOption.ALLOW_LIGHT_UP_INTERACTION, true);
+    world.setOption(ExWorldOption.FIRE_SPREAD_SPEED, 0f);
+    world.setOption(ExWorldOption.ALLOW_DROP_PICK_ITEM, false);
     world.setPVP(false);
   }
 

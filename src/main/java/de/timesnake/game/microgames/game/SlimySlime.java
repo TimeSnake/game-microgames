@@ -8,7 +8,7 @@ import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
-import de.timesnake.basic.bukkit.util.world.ExWorld;
+import de.timesnake.basic.bukkit.util.world.ExWorldOption;
 import de.timesnake.basic.game.util.game.Map;
 import de.timesnake.game.microgames.game.basis.ScoreGame;
 import de.timesnake.game.microgames.main.GameMicroGames;
@@ -61,7 +61,7 @@ public class SlimySlime extends ScoreGame<Integer> implements Listener {
   public void onMapInit(Map map) {
     super.onMapInit(map);
 
-    map.getWorld().restrict(ExWorld.Restriction.NO_PLAYER_DAMAGE, true);
+    map.getWorld().setOption(ExWorldOption.ENABLE_PLAYER_DAMAGE, true);
     map.getWorld().setPVP(false);
   }
 

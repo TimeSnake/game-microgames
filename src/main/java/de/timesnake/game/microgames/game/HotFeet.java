@@ -7,7 +7,7 @@ package de.timesnake.game.microgames.game;
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.event.UserBlockBreakEvent;
-import de.timesnake.basic.bukkit.util.world.ExWorld;
+import de.timesnake.basic.bukkit.util.world.ExWorldOption;
 import de.timesnake.basic.game.util.game.Map;
 import de.timesnake.game.microgames.game.basis.MicroGame;
 import de.timesnake.game.microgames.game.extension.ArenaGame;
@@ -56,7 +56,7 @@ public class HotFeet extends MicroGame implements ArenaGame, FallOutGame {
     super.onMapInit(map);
 
     map.getWorld().setPVP(false);
-    map.getWorld().restrict(ExWorld.Restriction.AUTO_PRIME_TNT, false);
+    map.getWorld().setOption(ExWorldOption.AUTO_PRIME_TNT, true);
   }
 
   @Override

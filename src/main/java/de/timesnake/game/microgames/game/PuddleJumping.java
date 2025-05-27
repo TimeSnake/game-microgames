@@ -10,7 +10,7 @@ import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.event.UserMoveEvent;
 import de.timesnake.basic.bukkit.util.world.BlockPolygon;
 import de.timesnake.basic.bukkit.util.world.ExBlock;
-import de.timesnake.basic.bukkit.util.world.ExWorld;
+import de.timesnake.basic.bukkit.util.world.ExWorldOption;
 import de.timesnake.basic.game.util.game.Map;
 import de.timesnake.game.microgames.game.basis.ScoreGame;
 import de.timesnake.game.microgames.game.extension.ArenaGame;
@@ -49,7 +49,7 @@ public class PuddleJumping extends ScoreGame<Integer> implements ArenaGame, Rand
   @Override
   public void onMapInit(Map map) {
     super.onMapInit(map);
-    map.getWorld().restrict(ExWorld.Restriction.NO_PLAYER_DAMAGE, true);
+    map.getWorld().setOption(ExWorldOption.ENABLE_PLAYER_DAMAGE, true);
   }
 
   @Override

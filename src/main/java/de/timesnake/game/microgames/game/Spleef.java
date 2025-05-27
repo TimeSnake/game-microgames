@@ -9,7 +9,7 @@ import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.event.UserBlockBreakEvent;
 import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
-import de.timesnake.basic.bukkit.util.world.ExWorld.Restriction;
+import de.timesnake.basic.bukkit.util.world.ExWorldOption;
 import de.timesnake.game.microgames.game.basis.MicroGame;
 import de.timesnake.game.microgames.game.extension.FallOutGame;
 import de.timesnake.library.basic.util.Status;
@@ -53,7 +53,7 @@ public class Spleef extends MicroGame implements FallOutGame {
   public void prepare() {
     super.prepare();
     super.currentMap.getWorld().setPVP(true);
-    super.currentMap.getWorld().restrict(Restriction.NO_PLAYER_DAMAGE, false);
+    super.currentMap.getWorld().setOption(ExWorldOption.ENABLE_PLAYER_DAMAGE, false);
   }
 
   @Override

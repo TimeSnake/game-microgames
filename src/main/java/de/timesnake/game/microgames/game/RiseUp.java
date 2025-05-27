@@ -9,6 +9,7 @@ import de.timesnake.basic.bukkit.util.user.event.UserDamageEvent;
 import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
+import de.timesnake.basic.bukkit.util.world.ExWorldOption;
 import de.timesnake.basic.game.util.game.Map;
 import de.timesnake.game.microgames.game.basis.ScoreGame;
 import de.timesnake.game.microgames.main.GameMicroGames;
@@ -59,12 +60,12 @@ public class RiseUp extends ScoreGame<Integer> implements Listener {
 
     ExWorld world = map.getWorld();
 
-    world.restrict(ExWorld.Restriction.NO_PLAYER_DAMAGE, false);
-    world.restrict(ExWorld.Restriction.BLOCK_BREAK, true);
-    world.restrict(ExWorld.Restriction.BLOCK_PLACE, false);
-    world.restrict(ExWorld.Restriction.DROP_PICK_ITEM, false);
-    world.restrict(ExWorld.Restriction.FIRE_PUNCH_OUT, false);
-    world.restrict(ExWorld.Restriction.FLINT_AND_STEEL, false);
+    world.setOption(ExWorldOption.ENABLE_PLAYER_DAMAGE, false);
+    world.setOption(ExWorldOption.ALLOW_BLOCK_BREAK, false);
+    world.setOption(ExWorldOption.ALLOW_BLOCK_PLACE, true);
+    world.setOption(ExWorldOption.ALLOW_DROP_PICK_ITEM, true);
+    world.setOption(ExWorldOption.ALLOW_FIRE_PUNCH_OUT, true);
+    world.setOption(ExWorldOption.ALLOW_FLINT_AND_STEEL, true);
   }
 
   @Override
