@@ -30,7 +30,7 @@ import java.util.List;
 
 public class RiseUp extends ScoreGame<Integer> implements Listener {
 
-  private static final int GOAL_LOCATION_INDEX = 3;
+  private static final int GOAL_LOCATION_INDEX = 10;
 
   private static final int HORIZONTAL_RANGE = 5;
   private static final int VERTICAL_RANGE = 4;
@@ -60,12 +60,14 @@ public class RiseUp extends ScoreGame<Integer> implements Listener {
 
     ExWorld world = map.getWorld();
 
-    world.setOption(ExWorldOption.ENABLE_PLAYER_DAMAGE, false);
+    world.setOption(ExWorldOption.ENABLE_PLAYER_DAMAGE, true);
     world.setOption(ExWorldOption.ALLOW_BLOCK_BREAK, false);
     world.setOption(ExWorldOption.ALLOW_BLOCK_PLACE, true);
     world.setOption(ExWorldOption.ALLOW_DROP_PICK_ITEM, true);
     world.setOption(ExWorldOption.ALLOW_FIRE_PUNCH_OUT, true);
-    world.setOption(ExWorldOption.ALLOW_FLINT_AND_STEEL, true);
+    world.setOption(ExWorldOption.ALLOW_FLINT_AND_STEEL_AND_FIRE_CHARGE, true);
+    world.setOption(ExWorldOption.ALLOW_BLOCK_IGNITE, true);
+    world.setOption(ExWorldOption.BLOCK_BURN_UP, true);
   }
 
   @Override
@@ -93,7 +95,7 @@ public class RiseUp extends ScoreGame<Integer> implements Listener {
   private void updateScores() {
     for (User user : Server.getInGameUsers()) {
       ExLocation userLoc = user.getExLocation().middleHorizontalBlock();
-      int vertDiff = userLoc.getBlockY() - this.getStartLocation().getBlockY();
+      int vertDiff = userLoc.getBlockY() - this.getSpawnLocation().getBlockY();
       int distToGoal = ((int) userLoc.middleHorizontalBlock().updateY(0).distance(this.getGoalLocation().updateY(0)));
       int vertDiffToGoal = userLoc.getBlockY() - this.getGoalLocation().getBlockY();
       this.updateUserScore(user, (u, score) -> distToGoal > 48 ? 0 : (vertDiff +

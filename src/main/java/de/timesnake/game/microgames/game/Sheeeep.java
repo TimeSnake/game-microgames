@@ -7,17 +7,20 @@ package de.timesnake.game.microgames.game;
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
+import de.timesnake.basic.bukkit.util.world.ExBlock;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
-import de.timesnake.game.microgames.game.basis.BoxedScoreGame;
+import de.timesnake.game.microgames.game.basis.ScoreGame;
+import de.timesnake.game.microgames.game.extension.ArenaGame;
 import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.user.MicroGamesUser;
+import de.timesnake.library.basic.util.RandomList;
 import de.timesnake.library.entities.EntityManager;
 import de.timesnake.library.entities.entity.SheepBuilder;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
-import net.minecraft.world.entity.animal.Sheep;
+import net.minecraft.world.entity.animal.sheep.Sheep;
 import net.minecraft.world.entity.player.Player;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
@@ -31,7 +34,7 @@ import org.bukkit.event.player.PlayerShearEntityEvent;
 import java.time.Duration;
 import java.util.*;
 
-public class Sheeeep extends BoxedScoreGame<Integer> implements Listener {
+public class Sheeeep extends ScoreGame<Integer> implements ArenaGame, Listener {
 
   protected static final int COLOR_AMOUNT = 10;
   private static final ExItemStack SHEARS = new ExItemStack(Material.SHEARS).setSlot(4)
@@ -77,17 +80,12 @@ public class Sheeeep extends BoxedScoreGame<Integer> implements Listener {
   public void applyBeforeStart() {
     super.applyBeforeStart();
 
-    List<Block> blocks = new ArrayList<>(this.getBlocksWithinBox());
+    RandomList<ExBlock> blocks = new RandomList<>(this.getArena().getHighestBlocksInside(this::isValidSpawnBlock));
 
     this.currentMap.getWorld().getEntitiesByClass(org.bukkit.entity.Sheep.class).forEach(org.bukkit.entity.Entity::remove);
 
     for (DyeColor color : this.colors) {
-      Block block;
-
-      do {
-        block = this.currentMap.getWorld().getHighestBlockAt(blocks.get(this.random.nextInt(blocks.size())).getLocation());
-      } while (block.getY() == this.currentMap.getWorld().getMinHeight() || !this.isValidSpawnBlock(block));
-
+      Block block = blocks.getAny();
       this.spawnSheep(ExLocation.fromLocation(block.getLocation().add(0, 1, 0)), color);
     }
 

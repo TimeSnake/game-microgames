@@ -10,7 +10,6 @@ import de.timesnake.basic.bukkit.util.user.event.UserDamageEvent;
 import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.game.microgames.game.basis.ShrinkingPlatformGame;
-import de.timesnake.game.microgames.user.MicroGamesUser;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
@@ -80,29 +79,12 @@ public class KnockOut extends ShrinkingPlatformGame implements Listener {
     return this.getSpawnLocation();
   }
 
-  @Override
-  public void reset() {
-    super.reset();
-  }
-
-  @Override
-  public void onUserQuit(MicroGamesUser user) {
-    if (Server.getInGameUsers().size() <= 1) {
-      this.stop();
-    }
-  }
-
   @EventHandler
   public void onEntityDamage(UserDamageEvent e) {
     if (!this.isGameRunning()) {
       return;
     }
     e.setCancelDamage(true);
-  }
-
-  @Override
-  public Integer getDeathHeight() {
-    return this.getSpawnLocation().getBlockY() - 1;
   }
 
 }

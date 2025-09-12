@@ -7,7 +7,6 @@ package de.timesnake.game.microgames.game;
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.event.UserMoveEvent;
-import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.game.microgames.game.basis.MicroGame;
 import de.timesnake.game.microgames.game.extension.FallOutGame;
 import de.timesnake.game.microgames.main.GameMicroGames;
@@ -24,8 +23,6 @@ import java.util.List;
 import java.util.Set;
 
 public class TntRun extends MicroGame implements FallOutGame, Listener {
-
-  protected static final Integer DEATH_HEIGHT_LOCATION_INDEX = 3;
 
   protected static final Integer REMOVE_DELAY = 19;
 
@@ -111,20 +108,6 @@ public class TntRun extends MicroGame implements FallOutGame, Listener {
   public void reset() {
     super.reset();
     this.removedBlocks.clear();
-  }
-
-  @Override
-  public boolean hasSideboard() {
-    return false;
-  }
-
-  public ExLocation getDeathLocation() {
-    return super.currentMap.getLocation(DEATH_HEIGHT_LOCATION_INDEX);
-  }
-
-  @Override
-  public Integer getDeathHeight() {
-    return this.getDeathLocation().getBlockY();
   }
 
   @EventHandler

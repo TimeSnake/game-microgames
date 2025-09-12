@@ -9,7 +9,8 @@ import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.UserChatCommandListener;
 import de.timesnake.basic.bukkit.util.user.event.UserChatCommandEvent;
 import de.timesnake.basic.game.util.game.Map;
-import de.timesnake.game.microgames.game.basis.BoxedScoreGame;
+import de.timesnake.game.microgames.game.basis.ScoreGame;
+import de.timesnake.game.microgames.game.extension.ArenaGame;
 import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.server.MicroGamesServer;
 import de.timesnake.game.microgames.user.MicroGamesUser;
@@ -24,7 +25,7 @@ import org.bukkit.entity.EntityType;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AnimalFarm extends BoxedScoreGame<Integer> {
+public class AnimalFarm extends ScoreGame<Integer> implements ArenaGame {
 
   private static final int ROUNDS = 5;
   private static final int MIN_ANIMALS_PER_TYPE = 3;
@@ -50,7 +51,7 @@ public class AnimalFarm extends BoxedScoreGame<Integer> {
   public void onMapInit(Map map) {
     super.onMapInit(map);
 
-    List<Block> blocks = new ArrayList<>(this.getBlocksWithinBox());
+    List<Block> blocks = new ArrayList<>(this.getArena().getBlocksInside(b -> true));
 
     for (Block block : blocks) {
       if (block.getType().equals(Material.GRASS_BLOCK) && block.getRelative(BlockFace.UP).getType().isEmpty()) {

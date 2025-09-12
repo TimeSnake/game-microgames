@@ -37,8 +37,7 @@ import java.util.*;
 public abstract class MicroGame implements MicroGameExtensionBase, Listener {
 
   protected static final Integer SPEC_LOCATION_INDEX = 0;
-  protected static final Integer START_LOCATION_INDEX = 1;
-  protected static final Integer SPAWN_LOCATION_INDEX = 2;
+  protected static final Integer SPAWN_LOCATION_INDEX = 1;
 
   public static final java.util.Map<Integer, Integer> PARTY_POINTS = java.util.Map.of(
       1, 6,
@@ -178,7 +177,7 @@ public abstract class MicroGame implements MicroGameExtensionBase, Listener {
 
   @Override
   public void applyBeforeStart() {
-    Server.getPreGameUsers().forEach(u -> u.teleport(this.getStartLocation()));
+    Server.getPreGameUsers().forEach(u -> u.teleport(this.getSpawnLocation()));
   }
 
   @Override
@@ -351,11 +350,6 @@ public abstract class MicroGame implements MicroGameExtensionBase, Listener {
   @Override
   public ExLocation getSpecLocation() {
     return this.currentMap.getLocation(SPEC_LOCATION_INDEX);
-  }
-
-  @Override
-  public ExLocation getStartLocation() {
-    return this.currentMap.getLocation(START_LOCATION_INDEX);
   }
 
   @Override

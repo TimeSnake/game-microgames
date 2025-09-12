@@ -195,11 +195,6 @@ public class ColorSwap extends MicroGame implements FallOutGame, ArenaGame, List
   }
 
   @Override
-  public Integer getDeathHeight() {
-    return this.arena.getMinHeight();
-  }
-
-  @Override
   public void addWinner(MicroGamesUser user, boolean firstWins) {
     super.addWinner(user, firstWins);
     super.sideboard.setScore(0, String.valueOf(Server.getInGameUsers().size()));

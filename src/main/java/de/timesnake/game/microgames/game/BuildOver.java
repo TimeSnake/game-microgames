@@ -13,8 +13,8 @@ import de.timesnake.basic.bukkit.util.user.event.UserRespawnEvent;
 import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.bukkit.util.world.BlockPolygon;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
-import de.timesnake.basic.game.util.game.Map;
 import de.timesnake.game.microgames.game.basis.LocationFinishGame;
+import de.timesnake.game.microgames.game.extension.ArenaGame;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.RandomList;
 import de.timesnake.library.chat.Plugin;
@@ -26,16 +26,15 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
 import java.time.Duration;
-import java.util.HashMap;
 import java.util.List;
 
-public class BuildOver extends LocationFinishGame implements Listener {
+public class BuildOver extends LocationFinishGame implements ArenaGame, Listener {
 
   private static final ExItemStack SHEARS = new ExItemStack(Material.SHEARS)
       .setDropable(false);
   private static final RandomList<Material> BUILDING_BLOCKS = new RandomList<>(Tag.WOOL.getValues());
 
-  private HashMap<Map, BlockPolygon> polygonByMap;
+  private BlockPolygon arena;
 
   public BuildOver() {
     super("build_over", "Build Over",
@@ -47,17 +46,9 @@ public class BuildOver extends LocationFinishGame implements Listener {
   }
 
   @Override
-  public void beforeMapInit() {
-    super.beforeMapInit();
-
-    this.polygonByMap = new HashMap<>();
-  }
-
-  @Override
-  public void onMapInit(Map map) {
-    super.onMapInit(map);
-
-    this.polygonByMap.put(map, map.getBlockPolygon(10, 100));
+  public void prepare() {
+    super.prepare();
+    this.arena = this.getArena();
   }
 
   @Override
@@ -125,7 +116,7 @@ public class BuildOver extends LocationFinishGame implements Listener {
       return;
     }
 
-    if (!this.polygonByMap.get(this.currentMap).contains(ExLocation.fromLocation(e.getBlock().getLocation()))) {
+    if (!this.arena.contains(ExLocation.fromLocation(e.getBlock().getLocation()))) {
       e.getUser().sendPluginTDMessage(Plugin.GAME, "§wYou can not build here");
       e.setCancelled(true);
     }

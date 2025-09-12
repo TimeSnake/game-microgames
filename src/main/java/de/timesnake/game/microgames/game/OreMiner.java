@@ -9,7 +9,8 @@ import de.timesnake.basic.bukkit.util.user.event.CancelPriority;
 import de.timesnake.basic.bukkit.util.user.event.UserBlockBreakEvent;
 import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.bukkit.util.world.ExBlock;
-import de.timesnake.game.microgames.game.basis.BoxedScoreGame;
+import de.timesnake.game.microgames.game.basis.ScoreGame;
+import de.timesnake.game.microgames.game.extension.ArenaGame;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Tuple;
 import de.timesnake.library.basic.util.WeightedRandomCollection;
@@ -25,11 +26,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-public class OreMiner extends BoxedScoreGame<Integer> implements Listener {
+public class OreMiner extends ScoreGame<Integer> implements ArenaGame, Listener {
 
   private static final float ORE_DENSITY = 0.05f;
 
   private static final Map<Material, Integer> ORE_POINTS = java.util.Map.of(
+      Material.NETHER_QUARTZ_ORE, -3,
+      Material.NETHER_GOLD_ORE, -8,
       Material.COAL_ORE, 1,
       Material.COPPER_ORE, 2,
       Material.IRON_ORE, 4,
@@ -46,7 +49,10 @@ public class OreMiner extends BoxedScoreGame<Integer> implements Listener {
       .immutable();
 
   private final WeightedRandomCollection<Material> oreWeights = new WeightedRandomCollection<Material>(this.random)
-      .addAll(new Tuple<>(0.325, Material.COAL_ORE),
+      .addAll(
+          new Tuple<>(0.25, Material.NETHER_QUARTZ_ORE),
+          new Tuple<>(0.175, Material.NETHER_GOLD_ORE),
+          new Tuple<>(0.325, Material.COAL_ORE),
           new Tuple<>(0.25, Material.COPPER_ORE),
           new Tuple<>(0.175, Material.IRON_ORE),
           new Tuple<>(0.125, Material.GOLD_ORE),
@@ -55,11 +61,14 @@ public class OreMiner extends BoxedScoreGame<Integer> implements Listener {
       );
 
   public OreMiner() {
-    super("oreminer",
+    super("ore_miner",
         "Ore Miner",
         Material.DEEPSLATE_DIAMOND_ORE,
         "Mine most valuable ores",
-        List.of("§hGoal: §pmost ore points", "Mine ores to get points.", "More noble ores gives more points."),
+        List.of("§hGoal: §pmost ore points", "Mine ores to get points.", "More noble ores give more points.", "Red " +
+                                                                                                              "ores " +
+                                                                                                              "give " +
+                                                                                                              "negative points."),
         1,
         Duration.ofSeconds(60));
   }
@@ -68,12 +77,12 @@ public class OreMiner extends BoxedScoreGame<Integer> implements Listener {
   public void prepare() {
     super.prepare();
 
-    Collection<ExBlock> blocks = this.getBlocksWithinBox();
+    Collection<ExBlock> blocks = this.getArena().getBlocksInside(b -> true);
 
     for (ExBlock block : blocks) {
       if (this.random.nextFloat() < ORE_DENSITY) {
         Material ore = oreWeights.next();
-        this.setOreVine(block, ore, 1.0 / (2 * ORE_POINTS.get(ore)), blocks);
+        this.setOreVine(block, ore, 1.0 / (2 * Math.abs(ORE_POINTS.get(ore))), blocks);
 
       }
     }

@@ -62,7 +62,7 @@ public class BoatRace extends LocationFinishGame implements Listener {
       user.setAllowFlight(false);
     }
 
-    this.getStartLocation().clone().add(0, -1, 0).getBlock().setType(Material.WATER);
+    this.getSpawnLocation().clone().add(0, -1, 0).getBlock().setType(Material.WATER);
   }
 
   @Override
@@ -101,9 +101,9 @@ public class BoatRace extends LocationFinishGame implements Listener {
   }
 
   private void setUserInBoat(User user) {
-    Boat boat = (Boat) this.getStartLocation().getWorld().spawnEntity(this.getStartLocation(), EntityType.BOAT);
+    Boat boat = (Boat) this.getSpawnLocation().getWorld().spawnEntity(this.getSpawnLocation(), EntityType.OAK_BOAT);
     boat.setInvulnerable(true);
-    boat.setRotation(this.getStartLocation().getYaw(), 0);
+    boat.setRotation(this.getSpawnLocation().getYaw(), 0);
 
     Boat oldBoat = this.boatByUser.get(user);
 
@@ -134,7 +134,7 @@ public class BoatRace extends LocationFinishGame implements Listener {
       return;
     }
 
-    if (!e.getVehicle().getType().equals(EntityType.BOAT)) {
+    if (!e.getVehicle().getType().equals(EntityType.OAK_BOAT)) {
       return;
     }
 

@@ -10,6 +10,7 @@ import de.timesnake.basic.bukkit.util.user.event.UserDamageByUserEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserDamageEvent;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.game.microgames.game.basis.ScoreGame;
+import de.timesnake.game.microgames.game.extension.RandomSpawnLocation;
 import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.server.MicroGamesServer;
 import de.timesnake.game.microgames.user.MicroGamesUser;
@@ -23,11 +24,9 @@ import org.bukkit.scheduler.BukkitTask;
 import java.time.Duration;
 import java.util.List;
 
-public class LadderKing extends ScoreGame<Integer> implements Listener {
+public class LadderKing extends ScoreGame<Integer> implements Listener, RandomSpawnLocation {
 
-  private static final Integer LADDER_LOCATION_INDEX = 3;
-  // spawn locations all above 3
-
+  private static final Integer LADDER_LOCATION_INDEX = 10;
   private static final Integer SCORE_PERIOD = 10;
 
   private BukkitTask scoreTask;
@@ -57,11 +56,13 @@ public class LadderKing extends ScoreGame<Integer> implements Listener {
 
   @Override
   public void applyBeforeStart() {
-    List<ExLocation> spawnLocations = super.currentMap.getLocations(4);
-    for (User user : Server.getPreGameUsers()) {
-      user.teleport(spawnLocations.get(super.random.nextInt(spawnLocations.size())));
-      user.lockLocation();
-    }
+    super.applyBeforeStart();
+    Server.getPreGameUsers().forEach(User::lockLocation);
+  }
+
+  @Override
+  public ExLocation getSpawnLocation() {
+    return RandomSpawnLocation.super.getSpawnLocation();
   }
 
   @Override

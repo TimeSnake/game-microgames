@@ -6,11 +6,13 @@ package de.timesnake.game.microgames.game;
 
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.user.User;
+import de.timesnake.basic.bukkit.util.world.BlockPolygon;
 import de.timesnake.basic.bukkit.util.world.ExBlock;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
 import de.timesnake.basic.bukkit.util.world.ExWorldOption;
 import de.timesnake.basic.game.util.game.Map;
-import de.timesnake.game.microgames.game.basis.BoxedScoreGame;
+import de.timesnake.game.microgames.game.basis.ScoreGame;
+import de.timesnake.game.microgames.game.extension.ArenaGame;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Status;
 import org.bukkit.GameMode;
@@ -26,11 +28,13 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Set;
 
-public class Firefighter extends BoxedScoreGame<Integer> implements Listener {
+public class Firefighter extends ScoreGame<Integer> implements ArenaGame, Listener {
 
   private static final double FIRE_CHANCE = 0.15;
 
   private static final Set<Material> EXCLUDED_MATERIALS = Set.of(Material.SHORT_GRASS, Material.TALL_GRASS);
+
+  private BlockPolygon arena;
 
   public Firefighter() {
     super("firefighter",
@@ -49,15 +53,22 @@ public class Firefighter extends BoxedScoreGame<Integer> implements Listener {
     ExWorld world = map.getWorld();
 
     world.setOption(ExWorldOption.ALLOW_FIRE_PUNCH_OUT, true);
-    world.setOption(ExWorldOption.ALLOW_FLINT_AND_STEEL, false);
+    world.setOption(ExWorldOption.ALLOW_FLINT_AND_STEEL_AND_FIRE_CHARGE, false);
     world.setOption(ExWorldOption.BLOCK_BURN_UP, true);
-    world.setOption(ExWorldOption.ENABLE_PLAYER_DAMAGE, true);
+    world.setOption(ExWorldOption.ENABLE_PLAYER_DAMAGE, false);
     world.setOption(ExWorldOption.ALLOW_BLOCK_BREAK, false);
     world.setOption(ExWorldOption.ALLOW_BLOCK_PLACE, false);
     world.setOption(ExWorldOption.ALLOW_LIGHT_UP_INTERACTION, true);
     world.setOption(ExWorldOption.FIRE_SPREAD_SPEED, 0f);
     world.setOption(ExWorldOption.ALLOW_DROP_PICK_ITEM, false);
     world.setPVP(false);
+  }
+
+  @Override
+  public void prepare() {
+    super.prepare();
+
+    this.arena = this.getArena();
   }
 
   @Override
@@ -69,11 +80,7 @@ public class Firefighter extends BoxedScoreGame<Integer> implements Listener {
   private void spreadFire() {
     ExWorld world = this.currentMap.getWorld();
 
-    for (ExBlock block : this.getBlocksWithinBox()) {
-      if (!block.isBurnable() || EXCLUDED_MATERIALS.contains(block.getType())) {
-        continue;
-      }
-
+    for (ExBlock block : this.arena.getBlocksInside(b -> b.isBurnable() && !EXCLUDED_MATERIALS.contains(b.getType()))) {
       for (BlockFace face : ExBlock.ADJACENT_BLOCK_FACINGS) {
 
         ExBlock adjacentBlock = block.getExRelative(face);
@@ -82,12 +89,10 @@ public class Firefighter extends BoxedScoreGame<Integer> implements Listener {
           continue;
         }
 
-        adjacentBlock.setType(Material.FIRE);
-
         if (world.getRandom().nextFloat() < FIRE_CHANCE) {
           adjacentBlock.setType(Material.FIRE);
           BlockData blockData = adjacentBlock.getBlockData();
-          if (blockData instanceof Fire && face != BlockFace.UP) {
+          if (blockData instanceof Fire && face != BlockFace.DOWN) {
             ((Fire) blockData).setFace(face, true);
             adjacentBlock.setBlockData(blockData);
           }

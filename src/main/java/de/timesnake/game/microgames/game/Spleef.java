@@ -8,7 +8,6 @@ import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.event.UserBlockBreakEvent;
 import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
-import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.basic.bukkit.util.world.ExWorldOption;
 import de.timesnake.game.microgames.game.basis.MicroGame;
 import de.timesnake.game.microgames.game.extension.FallOutGame;
@@ -32,8 +31,6 @@ public class Spleef extends MicroGame implements FallOutGame {
       .addExEnchantment(Enchantment.EFFICIENCY, 10)
       .setUnbreakable(true).setDropable(false).setMoveable(false).immutable();
 
-  protected static final Integer DEATH_HEIGHT_LOCATION_INDEX = 3;
-
   private final Random random = new Random();
 
   public Spleef() {
@@ -53,7 +50,7 @@ public class Spleef extends MicroGame implements FallOutGame {
   public void prepare() {
     super.prepare();
     super.currentMap.getWorld().setPVP(true);
-    super.currentMap.getWorld().setOption(ExWorldOption.ENABLE_PLAYER_DAMAGE, false);
+    super.currentMap.getWorld().setOption(ExWorldOption.ENABLE_PLAYER_DAMAGE, true);
   }
 
   @Override
@@ -73,20 +70,6 @@ public class Spleef extends MicroGame implements FallOutGame {
       user.setInvulnerable(false);
       user.setGameMode(GameMode.SURVIVAL);
     }
-  }
-
-  @Override
-  public boolean hasSideboard() {
-    return false;
-  }
-
-  public ExLocation getDeathLocation() {
-    return super.currentMap.getLocation(DEATH_HEIGHT_LOCATION_INDEX);
-  }
-
-  @Override
-  public Integer getDeathHeight() {
-    return this.getDeathLocation().getBlockY();
   }
 
   @EventHandler
@@ -123,7 +106,7 @@ public class Spleef extends MicroGame implements FallOutGame {
     if (e.getHitEntity() != null && e.getHitEntity() instanceof Player) {
       ((Player) e.getHitEntity()).damage(0.01, e.getEntity());
       ((Player) e.getHitEntity()).setHealth(((Player) e.getHitEntity()).getAttribute(
-          Attribute.GENERIC_MAX_HEALTH).getBaseValue());
+          Attribute.MAX_HEALTH).getBaseValue());
       e.getHitEntity().setVelocity(e.getEntity().getVelocity().normalize());
     }
   }

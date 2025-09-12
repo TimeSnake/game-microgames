@@ -21,7 +21,7 @@ import java.util.List;
 
 public abstract class LocationFinishGame extends MicroGame implements Listener {
 
-  protected static final Integer FINISH_LOCATION_INDEX = 3;
+  protected static final Integer FINISH_LOCATION_INDEX = 10;
 
 
   public LocationFinishGame(String name, String displayName, Material material, String headLine,

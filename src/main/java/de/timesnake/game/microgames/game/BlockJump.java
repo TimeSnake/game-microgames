@@ -57,8 +57,8 @@ public class BlockJump extends LocationFinishGame implements Listener {
     ExWorld world = this.getSpawnLocation().getExWorld();
     int ground = this.getSpawnLocation().getBlockY();
 
-    int xBorder = (int) (this.getSpecLocation().getBlockX() - 0.5 * ARENA_SIZE);
-    int zBorder = (int) (this.getStartLocation().getBlockZ() - 0.5 * ARENA_SIZE);
+    int xBorder = (int) (this.getSpawnLocation().getBlockX() - 0.5 * ARENA_SIZE);
+    int zBorder = (int) (this.getSpawnLocation().getBlockZ() - 0.5 * ARENA_SIZE);
 
     for (int y = 0; y < HEIGHT; y++) {
       for (int i = (int) (this.randomBM() * DENSITY * ARENA_SIZE); i > 0; i--) {

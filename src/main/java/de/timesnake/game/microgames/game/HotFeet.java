@@ -57,13 +57,15 @@ public class HotFeet extends MicroGame implements ArenaGame, FallOutGame {
 
     map.getWorld().setPVP(false);
     map.getWorld().setOption(ExWorldOption.AUTO_PRIME_TNT, true);
+    map.getWorld().setOption(ExWorldOption.ENABLE_BLOCK_EXPLOSION, true);
+    map.getWorld().setOption(ExWorldOption.ENABLE_ENTITY_EXPLOSION, true);
   }
 
   @Override
   public void prepare() {
     super.prepare();
 
-    this.blocksWithDespawnTicks = this.getArena().getHighestBlocksInside().stream()
+    this.blocksWithDespawnTicks = this.getArena().getHighestBlocksInside(b -> true).stream()
         .map(b -> new Tuple<>(b.getBlock(), 0))
         .collect(Collectors.toList());
     this.blocksWithDespawnTicks.forEach(b -> b.getA().setType(Material.WHITE_CONCRETE));
@@ -130,11 +132,6 @@ public class HotFeet extends MicroGame implements ArenaGame, FallOutGame {
     if (this.despawnTask != null) {
       this.despawnTask.cancel();
     }
-  }
-
-  @Override
-  public Integer getDeathHeight() {
-    return 0;
   }
 
   @EventHandler

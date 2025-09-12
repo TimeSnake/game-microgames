@@ -45,8 +45,6 @@ public interface MicroGameExtensionBase {
 
   ExLocation getSpecLocation();
 
-  ExLocation getStartLocation();
-
   ExLocation getSpawnLocation();
 
   boolean isGameRunning();

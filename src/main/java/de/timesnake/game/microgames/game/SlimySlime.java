@@ -30,8 +30,8 @@ import java.util.List;
 
 public class SlimySlime extends ScoreGame<Integer> implements Listener {
 
-  private static final int MAIN_SLIME_LOC_INDEX = 3;
-  private static final int SLIME_SPAWN_LOC_START_INDEX = 4;
+  private static final int MAIN_SLIME_LOC_INDEX = 10;
+  private static final int SLIME_SPAWN_LOC_START_INDEX = 11;
 
   private static final double SLIME_SPAWN_CHANCE = 0.25;
   private static final int MAX_SLIMES_PER_SPAWN = 3;
@@ -61,7 +61,7 @@ public class SlimySlime extends ScoreGame<Integer> implements Listener {
   public void onMapInit(Map map) {
     super.onMapInit(map);
 
-    map.getWorld().setOption(ExWorldOption.ENABLE_PLAYER_DAMAGE, true);
+    map.getWorld().setOption(ExWorldOption.ENABLE_PLAYER_DAMAGE, false);
     map.getWorld().setPVP(false);
   }
 

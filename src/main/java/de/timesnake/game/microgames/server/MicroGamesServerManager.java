@@ -76,7 +76,7 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
     super.getGame().loadMaps(true);
 
     this.loadGame(new LadderKing());
-    //this.loadGame(new ColorSwap());
+    this.loadGame(new ColorSwap());
     this.loadGame(new Parkour());
     this.loadGame(new KnockOut());
     this.loadGame(new BlockJump());
@@ -86,13 +86,13 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
     this.loadGame(new TntRun());
     this.loadGame(new Firefighter());
     this.loadGame(new Spleef());
-    //this.loadGame(new ColorPunch());
+    this.loadGame(new ColorPunch());
     this.loadGame(new EggHunter());
-    this.loadGame(new OreMiner());
+    //this.loadGame(new OreMiner());
     this.loadGame(new Sheeeep());
     this.loadGame(new SlimySlime());
-    this.loadGame(new SandStorm());
-    //this.loadGame(new HotFeet());
+    //this.loadGame(new SandStorm());
+    this.loadGame(new HotFeet());
     this.loadGame(new RiseUp());
     this.loadGame(new BuildOver());
     this.loadGame(new PuddleJumping());
@@ -430,7 +430,7 @@ public class MicroGamesServerManager extends GameServerManager<Game<NonTmpGameIn
     User user = e.getUser();
     if (e.getTo().getY() < user.getWorld().getMinHeight() - 10) {
       user.getPlayer().setVelocity(new Vector());
-      user.teleport(this.currentGame.getStartLocation());
+      user.teleport(this.currentGame.getSpawnLocation());
     }
   }
 

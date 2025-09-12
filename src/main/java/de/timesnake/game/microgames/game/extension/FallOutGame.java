@@ -19,8 +19,6 @@ import java.time.Duration;
 
 public interface FallOutGame extends MicroGameExtensionBase, Listener {
 
-  Integer getDeathHeight();
-
   @EventHandler
   default void onUserMove(UserMoveEvent e) {
     User user = e.getUser();
@@ -33,7 +31,7 @@ public interface FallOutGame extends MicroGameExtensionBase, Listener {
       return;
     }
 
-    if (e.getTo().getY() <= this.getDeathHeight()) {
+    if (e.getTo().getY() <= this.getCurrentMap().getLocation(99).getBlockY()) {
       user.showTDTitle("§wYou lose!", "", Duration.ofSeconds(3));
       Server.broadcastSound(Sound.ENTITY_PLAYER_HURT, 2);
 

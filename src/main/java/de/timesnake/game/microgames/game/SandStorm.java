@@ -6,9 +6,10 @@ package de.timesnake.game.microgames.game;
 
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.user.User;
-import de.timesnake.basic.bukkit.util.world.ExLocation;
+import de.timesnake.basic.bukkit.util.world.BlockPolygon;
 import de.timesnake.basic.game.util.game.Map;
 import de.timesnake.game.microgames.game.basis.MicroGame;
+import de.timesnake.game.microgames.game.extension.ArenaGame;
 import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.game.microgames.user.MicroGamesUser;
 import de.timesnake.library.basic.util.Tuple;
@@ -20,14 +21,13 @@ import org.bukkit.scheduler.BukkitTask;
 import java.time.Duration;
 import java.util.List;
 
-public class SandStorm extends MicroGame {
+public class SandStorm extends MicroGame implements ArenaGame {
 
   private static final int SAND_SPAWN_RATE = 30;
   private static final double SAND_CHANCE = 0.1;
   private static final int HEIGHT_DIFF = 20;
 
-  private static final Integer FIRST_CORNER_INDEX = 3;
-  private static final Integer SECOND_CORNER_INDEX = 4;
+  private BlockPolygon arena;
 
   private BukkitTask moveTask;
   private BukkitTask sandTask;
@@ -56,6 +56,7 @@ public class SandStorm extends MicroGame {
   public void prepare() {
     super.prepare();
 
+    this.arena = this.getArena();
     this.currentMap.getWorld().setPVP(false);
   }
 
@@ -107,34 +108,16 @@ public class SandStorm extends MicroGame {
   }
 
   private void spawnSand(int time) {
-    for (Block block : this.currentMap.getWorld().getBlocksWithinCubic(this.getFirstCorner(), this.getSecondCorner())) {
-      if (this.random.nextDouble() <= SAND_CHANCE) {
-        this.currentMap.getWorld().spawnFallingBlock(block.getLocation().add(0.5, HEIGHT_DIFF, 0.5),
-            Material.SAND.createBlockData());
-      }
+    for (Block block : this.arena.getBlocksInside(b -> this.random.nextDouble() <= SAND_CHANCE)) {
+      this.currentMap.getWorld().spawnFallingBlock(block.getLocation().add(0.5, HEIGHT_DIFF, 0.5),
+          Material.SAND.createBlockData());
     }
 
     if (time % 8 == 0 && time <= 117 * 10) {
-      for (Block block : this.currentMap.getWorld().getBlocksWithinCubic(this.getFirstCorner(),
-          this.getSecondCorner().clone().add(0, this.deathHeight, 0))) {
-        if (block.getType().equals(Material.SAND)) {
-          block.setType(Material.RED_SAND);
-        }
+      for (Block block : this.arena.getBlocksInsideOnHeight(this.deathHeight, b -> b.getType().equals(Material.SAND))) {
+        block.setType(Material.RED_SAND);
       }
       this.deathHeight++;
     }
-  }
-
-  @Override
-  public boolean hasSideboard() {
-    return false;
-  }
-
-  public ExLocation getFirstCorner() {
-    return this.currentMap.getLocation(FIRST_CORNER_INDEX);
-  }
-
-  public ExLocation getSecondCorner() {
-    return this.currentMap.getLocation(SECOND_CORNER_INDEX);
   }
 }

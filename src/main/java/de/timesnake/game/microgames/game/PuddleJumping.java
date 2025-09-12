@@ -10,11 +10,12 @@ import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.event.UserMoveEvent;
 import de.timesnake.basic.bukkit.util.world.BlockPolygon;
 import de.timesnake.basic.bukkit.util.world.ExBlock;
+import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.basic.bukkit.util.world.ExWorldOption;
 import de.timesnake.basic.game.util.game.Map;
 import de.timesnake.game.microgames.game.basis.ScoreGame;
 import de.timesnake.game.microgames.game.extension.ArenaGame;
-import de.timesnake.game.microgames.game.extension.RandomStartLocation;
+import de.timesnake.game.microgames.game.extension.RandomSpawnLocation;
 import de.timesnake.game.microgames.main.GameMicroGames;
 import de.timesnake.library.basic.util.RandomList;
 import org.bukkit.Instrument;
@@ -30,7 +31,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class PuddleJumping extends ScoreGame<Integer> implements ArenaGame, RandomStartLocation {
+public class PuddleJumping extends ScoreGame<Integer> implements ArenaGame, RandomSpawnLocation {
 
   private static final int MAX_PUDDLE_SIZE = 3;
   private static final float PUDDLE_GENERATION_TRIES_PER_BLOCK = 0.03f;
@@ -49,7 +50,7 @@ public class PuddleJumping extends ScoreGame<Integer> implements ArenaGame, Rand
   @Override
   public void onMapInit(Map map) {
     super.onMapInit(map);
-    map.getWorld().setOption(ExWorldOption.ENABLE_PLAYER_DAMAGE, true);
+    map.getWorld().setOption(ExWorldOption.ENABLE_PLAYER_DAMAGE, false);
   }
 
   @Override
@@ -70,7 +71,7 @@ public class PuddleJumping extends ScoreGame<Integer> implements ArenaGame, Rand
   @Override
   public void start() {
     super.start();
-    Server.getPreGameUsers().forEach(User::unlockLocation);
+    Server.getInGameUsers().forEach(User::unlockLocation);
   }
 
   @Override
@@ -88,6 +89,11 @@ public class PuddleJumping extends ScoreGame<Integer> implements ArenaGame, Rand
   @Override
   public boolean hasSideboard() {
     return true;
+  }
+
+  @Override
+  public ExLocation getSpawnLocation() {
+    return RandomSpawnLocation.super.getSpawnLocation();
   }
 
   private void generatePuddles() {
@@ -168,7 +174,7 @@ public class PuddleJumping extends ScoreGame<Integer> implements ArenaGame, Rand
       }
 
       this.teleportTasks.put(user, Server.runTaskLaterSynchrony(() -> {
-        user.teleport(this.getStartLocation());
+        user.teleport(this.getSpawnLocation());
         this.teleportTasks.remove(user);
       }, TELEPORT_DELAY.toTicks(), GameMicroGames.getPlugin()));
     }
